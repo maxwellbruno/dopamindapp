@@ -45,85 +45,133 @@ const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mr-3">
-              <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
-              </svg>
+    <div className="min-h-screen bg-gradient-to-br from-cloud-white via-gray-50 to-blue-50 flex items-center justify-center p-4">
+      <div className="max-w-md w-full">
+        {/* Logo and Branding */}
+        <div className="text-center mb-8 animate-fade-in-up">
+          <div className="flex items-center justify-center mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-serenity-blue to-mindful-mint rounded-3xl flex items-center justify-center mr-4 neuro-shadow">
+              <div className="text-2xl">🧠</div>
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Dopamind</h1>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-midnight-slate to-gray-700 bg-clip-text text-transparent">
+              Dopamind
+            </h1>
           </div>
-          <p className="text-gray-600">
-            {isLogin ? 'Welcome back!' : 'Start your wellness journey'}
+          <p className="text-slate-600 text-lg font-medium mb-2">
+            {isLogin ? 'Welcome back' : 'Begin your wellness journey'}
+          </p>
+          <p className="text-slate-500 text-sm">
+            {isLogin ? 'Sign in to continue your progress' : 'Create an account to get started'}
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <Label htmlFor="name">Full Name</Label>
+        {/* Auth Form Card */}
+        <div className="glass-card rounded-3xl p-8 neuro-shadow animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {!isLogin && (
+              <div className="space-y-2">
+                <Label 
+                  htmlFor="name" 
+                  className="text-slate-700 font-semibold text-sm"
+                >
+                  Full Name
+                </Label>
+                <Input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter your full name"
+                  required={!isLogin}
+                  className="h-12 bg-slate-50 border-zen-ash text-midnight-slate placeholder:text-slate-400 rounded-2xl focus:border-lavender-haze focus:ring-lavender-haze/20 transition-all duration-300"
+                />
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Label 
+                htmlFor="email" 
+                className="text-slate-700 font-semibold text-sm"
+              >
+                Email Address
+              </Label>
               <Input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Enter your full name"
-                required={!isLogin}
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                className="h-12 bg-slate-50 border-zen-ash text-midnight-slate placeholder:text-slate-400 rounded-2xl focus:border-lavender-haze focus:ring-lavender-haze/20 transition-all duration-300"
               />
             </div>
-          )}
-          
-          <div>
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              required
-            />
+            
+            <div className="space-y-2">
+              <Label 
+                htmlFor="password" 
+                className="text-slate-700 font-semibold text-sm"
+              >
+                Password
+              </Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                required
+                className="h-12 bg-slate-50 border-zen-ash text-midnight-slate placeholder:text-slate-400 rounded-2xl focus:border-lavender-haze focus:ring-lavender-haze/20 transition-all duration-300"
+              />
+            </div>
+
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-4 animate-fade-in-up">
+                <p className="text-red-600 text-sm text-center font-medium">{error}</p>
+              </div>
+            )}
+
+            <Button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="w-full h-12 bg-serenity-blue hover:bg-blue-400 text-midnight-slate font-semibold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed neuro-shadow"
+            >
+              {isSubmitting ? (
+                <div className="flex items-center justify-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-midnight-slate/30 border-t-midnight-slate rounded-full animate-spin"></div>
+                  <span>Please wait...</span>
+                </div>
+              ) : (
+                isLogin ? 'Sign In' : 'Create Account'
+              )}
+            </Button>
+          </form>
+
+          {/* Switch Auth Mode */}
+          <div className="mt-8 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsLogin(!isLogin);
+                setError('');
+                setEmail('');
+                setPassword('');
+                setName('');
+              }}
+              className="text-slate-600 hover:text-lavender-haze text-sm font-medium transition-colors duration-300 hover:underline"
+            >
+              {isLogin 
+                ? "Don't have an account? Create one" 
+                : 'Already have an account? Sign in'
+              }
+            </button>
           </div>
-          
-          <div>
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
+        </div>
 
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
-
-          <Button 
-            type="submit" 
-            className="w-full" 
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Loading...' : (isLogin ? 'Sign In' : 'Sign Up')}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <button
-            type="button"
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-            }}
-            className="text-blue-600 hover:text-blue-800 text-sm"
-          >
-            {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-          </button>
+        {/* Footer */}
+        <div className="text-center mt-8">
+          <p className="text-slate-400 text-xs">
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </p>
         </div>
       </div>
     </div>
