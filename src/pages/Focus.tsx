@@ -1,360 +1,360 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
 
-interface FocusSession {
-  id: string;
-  name: string;
-  duration: number;
-  completed: boolean;
-  date: string;
+interface SubscriptionData {
+  isPro: boolean;
+  isElite: boolean;
+  subscriptionEnd: string | null;
+  tier: 'free' | 'pro' | 'elite';
 }
 
 const Focus: React.FC = () => {
+  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
+    isPro: false,
+    isElite: false,
+    subscriptionEnd: null,
+    tier: 'free'
+  });
+
+  const [timeLeft, setTimeLeft] = useState(25 * 60);
+  const [isRunning, setIsRunning] = useState(false);
   const [sessionName, setSessionName] = useState('');
-  const [workDuration, setWorkDuration] = useState(25);
+  const [sessionDuration, setSessionDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
-  const [timeLeft, setTimeLeft] = useState(workDuration * 60);
-  const [isActive, setIsActive] = useState(false);
   const [isBreak, setIsBreak] = useState(false);
   const [isBreathing, setIsBreathing] = useState(false);
-  const [breathPhase, setBreathPhase] = useState<'in' | 'hold' | 'out'>('in');
-  const [ambientSound, setAmbientSound] = useState<string>('none');
-  const [sessions, setSessions] = useLocalStorage<FocusSession[]>('dopamind_sessions', []);
-  
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const breathIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const [breathPhase, setBreathePhase] = useState<'in' | 'hold' | 'out'>('in');
+  const [breathTimer, setBreatheTimer] = useState(4);
+  const [selectedSound, setSelectedSound] = useState<string | null>(null);
+
+  const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
+  const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0}');
+
+  const totalSessions = sessions.length;
+  const currentStreak = stats.currentStreak || 0;
+
+  const isPremium = subscription.isPro || subscription.isElite;
+
+  // Free tier limitations
+  const maxFreeSessionDuration = 25; // minutes
+  const maxFreeSessions = 3; // per day
+  const todaySessions = sessions.filter((session: any) => {
+    const sessionDate = new Date(session.date);
+    const today = new Date();
+    return sessionDate.toDateString() === today.toDateString();
+  }).length;
+
+  const canStartSession = isPremium || todaySessions < maxFreeSessions;
+  const canCustomizeDuration = isPremium;
 
   useEffect(() => {
-    setTimeLeft((isBreak ? breakDuration : workDuration) * 60);
-  }, [workDuration, breakDuration, isBreak]);
-
-  useEffect(() => {
-    if (isActive && timeLeft > 0) {
-      intervalRef.current = setInterval(() => {
-        setTimeLeft((prev) => prev - 1);
+    let interval: NodeJS.Timeout;
+    if (isRunning && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft(timeLeft - 1);
       }, 1000);
     } else if (timeLeft === 0) {
-      handleSessionComplete();
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      handleTimerComplete();
     }
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isActive, timeLeft]);
+    return () => clearInterval(interval);
+  }, [isRunning, timeLeft]);
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
     if (isBreathing) {
-      breathIntervalRef.current = setInterval(() => {
-        setBreathPhase((prev) => {
-          if (prev === 'in') return 'hold';
-          if (prev === 'hold') return 'out';
-          return 'in';
+      interval = setInterval(() => {
+        setBreatheTimer(prev => {
+          if (prev <= 1) {
+            setBreathePhase(current => {
+              if (current === 'in') return 'hold';
+              if (current === 'hold') return 'out';
+              return 'in';
+            });
+            return current === 'hold' ? 2 : 4;
+          }
+          return prev - 1;
         });
-      }, 4000);
-    } else {
-      if (breathIntervalRef.current) {
-        clearInterval(breathIntervalRef.current);
-      }
+      }, 1000);
     }
+    return () => clearInterval(interval);
+  }, [isBreathing, breathPhase]);
 
-    return () => {
-      if (breathIntervalRef.current) {
-        clearInterval(breathIntervalRef.current);
-      }
-    };
-  }, [isBreathing]);
-
-  const handleSessionComplete = () => {
-    setIsActive(false);
+  const handleTimerComplete = () => {
+    setIsRunning(false);
     
     if (!isBreak) {
-      const newSession: FocusSession = {
-        id: Date.now().toString(),
+      const newSession = {
+        id: Date.now(),
         name: sessionName || 'Focus Session',
-        duration: workDuration,
-        completed: true,
-        date: new Date().toISOString()
+        duration: sessionDuration,
+        date: new Date().toISOString(),
       };
-      setSessions(prev => [newSession, ...prev]);
       
-      // Update stats
-      const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
-      stats.totalFocusMinutes += workDuration;
-      localStorage.setItem('dopamind_stats', JSON.stringify(stats));
+      const updatedSessions = [...sessions, newSession];
+      localStorage.setItem('dopamind_sessions', JSON.stringify(updatedSessions));
+      
+      const updatedStats = {
+        ...stats,
+        totalFocusMinutes: stats.totalFocusMinutes + sessionDuration,
+        currentStreak: stats.currentStreak + 1,
+      };
+      localStorage.setItem('dopamind_stats', JSON.stringify(updatedStats));
+      
+      setIsBreak(true);
+      setTimeLeft(breakDuration * 60);
+    } else {
+      setIsBreak(false);
+      setTimeLeft(sessionDuration * 60);
     }
-    
-    setIsBreak(!isBreak);
-    setTimeLeft((isBreak ? workDuration : breakDuration) * 60);
   };
 
   const startTimer = () => {
-    setIsActive(true);
+    if (!canStartSession) return;
+    setIsRunning(true);
   };
 
-  const pauseTimer = () => {
-    setIsActive(false);
-  };
+  const pauseTimer = () => setIsRunning(false);
 
   const resetTimer = () => {
-    setIsActive(false);
-    setTimeLeft((isBreak ? breakDuration : workDuration) * 60);
+    setIsRunning(false);
+    setIsBreak(false);
+    setTimeLeft(sessionDuration * 60);
   };
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const getBreathInstruction = () => {
-    switch (breathPhase) {
-      case 'in': return 'Breathe In';
-      case 'hold': return 'Hold';
-      case 'out': return 'Breathe Out';
+  const handleSessionDurationChange = (value: number) => {
+    if (!canCustomizeDuration && value > maxFreeSessionDuration) return;
+    setSessionDuration(value);
+    if (!isRunning) {
+      setTimeLeft(value * 60);
     }
   };
 
-  const ambientSounds = [
-    { id: 'none', name: 'Silence', icon: '🔇' },
-    { id: 'ocean', name: 'Ocean Waves', icon: '🌊' },
-    { id: 'forest', name: 'Forest Sounds', icon: '🌲' },
-    { id: 'cafe', name: 'Café Ambience', icon: '☕' },
-    { id: 'rain', name: 'Gentle Rain', icon: '🌧️' },
+  const startBreathingExercise = () => {
+    setIsBreathing(true);
+    setBreathePhase('in');
+    setBreatheTimer(4);
+  };
+
+  const stopBreathingExercise = () => {
+    setIsBreathing(false);
+  };
+
+  const soundOptions = [
+    { id: 'lofi', name: 'LoFi Music', premium: false },
+    { id: 'whitenoise', name: 'White Noise', premium: false },
+    { id: 'ocean', name: 'Ocean Waves', premium: true },
+    { id: 'forest', name: 'Forest Sounds', premium: true },
+    { id: 'cafe', name: 'Café Ambience', premium: true },
+    { id: 'rain', name: 'Gentle Rain', premium: true },
   ];
 
+  const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cloud-white via-serenity-blue/5 to-mindful-mint/10 pb-20">
-      {/* Floating Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-32 right-10 w-40 h-40 bg-lavender-haze/15 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-32 left-10 w-32 h-32 bg-serenity-blue/15 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }}></div>
-      </div>
-
-      <div className="relative px-4 pt-8">
+    <div className="min-h-screen bg-gradient-to-br from-cloud-white via-gray-50 to-blue-50 pb-20">
+      <div className="px-4 pt-8">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center animate-fade-in-up">
-            Focus Session
-          </h1>
+          <h1 className="text-2xl font-bold text-midnight-slate mb-6 text-center animate-fade-in-up">Focus</h1>
 
-          {!isBreathing ? (
-            <>
-              <div className="glass-card rounded-3xl p-8 neuro-shadow mb-6 animate-fade-in-up">
-                {/* Timer Display */}
-                <div className="text-center mb-8">
-                  <div className="relative mb-6">
-                    {/* Outer ring progress */}
-                    <div className="w-48 h-48 mx-auto relative">
-                      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          fill="none"
-                          className="text-gray-200"
-                        />
-                        <circle
-                          cx="50"
-                          cy="50"
-                          r="45"
-                          stroke="url(#gradient)"
-                          strokeWidth="3"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 45}`}
-                          strokeDashoffset={`${2 * Math.PI * 45 * (1 - ((isBreak ? breakDuration : workDuration) * 60 - timeLeft) / ((isBreak ? breakDuration : workDuration) * 60))}`}
-                          className="transition-all duration-1000 ease-out"
-                          strokeLinecap="round"
-                        />
-                        <defs>
-                          <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                            <stop offset="0%" stopColor="#A3C9F9" />
-                            <stop offset="100%" stopColor="#A8E6CF" />
-                          </linearGradient>
-                        </defs>
-                      </svg>
-                      
-                      {/* Timer Text */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="text-center">
-                          <div className="text-4xl font-mono font-bold bg-gradient-to-r from-serenity-blue to-mindful-mint bg-clip-text text-transparent mb-2">
-                            {formatTime(timeLeft)}
-                          </div>
-                          <div className="text-sm text-gray-600 font-medium">
-                            {isBreak ? 'Break Time' : sessionName || 'Focus Time'}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+          {/* Session Input */}
+          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up">
+            <Input
+              placeholder="Name your focus session"
+              value={sessionName}
+              onChange={(e) => setSessionName(e.target.value)}
+              className="w-full bg-slate-50 border-zen-ash text-midnight-slate placeholder:text-slate-400 rounded-2xl h-12 focus:border-lavender-haze focus:ring-lavender-haze/20"
+            />
+          </div>
 
-                  {/* Control Buttons */}
-                  <div className="flex justify-center space-x-4 mb-6">
-                    {!isActive ? (
-                      <Button 
-                        onClick={startTimer} 
-                        className="bg-gradient-to-r from-serenity-blue to-mindful-mint hover:from-serenity-blue/90 hover:to-mindful-mint/90 text-white px-8 py-3 rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:shadow-xl hover:scale-105"
-                      >
-                        Start Focus
-                      </Button>
-                    ) : (
-                      <Button 
-                        onClick={pauseTimer} 
-                        className="bg-gradient-to-r from-gentle-amber to-tranquil-green hover:from-gentle-amber/90 hover:to-tranquil-green/90 text-white px-8 py-3 rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:shadow-xl"
-                      >
-                        Pause
-                      </Button>
-                    )}
-                    <Button 
-                      onClick={resetTimer} 
-                      className="bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 hover:bg-white hover:shadow-lg px-6 py-3 rounded-2xl font-semibold transition-all duration-300"
-                    >
-                      Reset
-                    </Button>
+          {/* Timer Display */}
+          <div className="glass-card rounded-3xl p-8 neuro-shadow mb-6 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+            <div className="text-6xl font-bold bg-gradient-to-r from-serenity-blue to-mindful-mint bg-clip-text text-transparent mb-4">
+              {formatTime(timeLeft)}
+            </div>
+            <p className="text-slate-600 mb-6">
+              {isBreak ? 'Break Time' : 'Focus Time'} • {isBreak ? breakDuration : sessionDuration} min
+            </p>
+
+            <div className="flex gap-3 justify-center">
+              {!canStartSession ? (
+                <div className="text-center">
+                  <p className="text-sm text-slate-600 mb-3">Free users: {todaySessions}/{maxFreeSessions} sessions today</p>
+                  <Button 
+                    disabled
+                    className="bg-gray-300 text-gray-500 rounded-2xl px-8 h-12"
+                  >
+                    Daily Limit Reached
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <Button 
+                    onClick={isRunning ? pauseTimer : startTimer}
+                    className="bg-gradient-to-r from-serenity-blue to-mindful-mint text-white font-semibold rounded-2xl px-8 h-12 neuro-shadow hover:scale-[1.02] transition-transform"
+                  >
+                    {isRunning ? 'Pause' : 'Start'}
+                  </Button>
+                  <Button 
+                    onClick={resetTimer}
+                    variant="outline"
+                    className="rounded-2xl px-8 h-12 border-zen-ash"
+                  >
+                    Reset
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Session Settings */}
+          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <h3 className="text-lg font-semibold text-midnight-slate mb-4">Session Settings</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-slate-700 font-medium">Session Duration</span>
+                  <span className="text-slate-600">{sessionDuration} min</span>
+                  {!canCustomizeDuration && sessionDuration >= maxFreeSessionDuration && (
+                    <span className="text-xs text-orange-600 bg-orange-50 px-2 py-1 rounded-full">Free Limit</span>
+                  )}
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max={canCustomizeDuration ? "240" : maxFreeSessionDuration.toString()}
+                  value={sessionDuration}
+                  onChange={(e) => handleSessionDurationChange(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                {!canCustomizeDuration && (
+                  <p className="text-xs text-slate-500 mt-1">Upgrade to Pro for custom durations up to 4 hours</p>
+                )}
+              </div>
+
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-slate-700 font-medium">Break Duration</span>
+                  <span className="text-slate-600">{breakDuration} min</span>
+                </div>
+                <input
+                  type="range"
+                  min="5"
+                  max="30"
+                  value={breakDuration}
+                  onChange={(e) => setBreakDuration(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Session Stats */}
+          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <h3 className="text-lg font-semibold text-midnight-slate mb-4">Session Stats</h3>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <div className="w-10 h-10 bg-gradient-to-br from-gentle-amber to-tranquil-green rounded-full flex items-center justify-center">
+                  <span className="text-lg">📊</span>
+                </div>
+                <div>
+                  <div className="text-lg font-bold text-midnight-slate">Total Sessions: {totalSessions}</div>
+                  <div className="text-sm text-slate-600">Current Streak: {currentStreak} days</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Breathing Exercise */}
+          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+            <h3 className="text-lg font-semibold text-midnight-slate mb-4">Breathing Exercise</h3>
+            
+            {!isBreathing ? (
+              <div className="text-center">
+                <p className="text-slate-600 mb-4">Practice mindful breathing to center yourself</p>
+                <Button 
+                  onClick={startBreathingExercise}
+                  className="bg-gradient-to-r from-lavender-haze to-mindful-mint text-white font-semibold rounded-2xl px-6 h-10 neuro-shadow"
+                >
+                  Start Breathing
+                </Button>
+              </div>
+            ) : (
+              <div className="text-center">
+                <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-lg transition-all duration-1000 ${
+                  breathPhase === 'in' ? 'bg-serenity-blue scale-110' :
+                  breathPhase === 'hold' ? 'bg-lavender-haze scale-110' :
+                  'bg-mindful-mint scale-90'
+                }`}>
+                  {breathTimer}
+                </div>
+                <p className="text-lg font-semibold text-midnight-slate mb-2">
+                  {breathPhase === 'in' ? 'Breathe In' : breathPhase === 'hold' ? 'Hold' : 'Breathe Out'}
+                </p>
+                <Button 
+                  onClick={stopBreathingExercise}
+                  variant="outline"
+                  className="rounded-2xl"
+                >
+                  Stop
+                </Button>
+              </div>
+            )}
+          </div>
+
+          {/* Ambient Sounds */}
+          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            <h3 className="text-lg font-semibold text-midnight-slate mb-4">Ambient Sounds</h3>
+            
+            <div className="space-y-3">
+              {availableSounds.map((sound) => (
+                <div key={sound.id} className="flex items-center justify-between">
+                  <span className="text-slate-700">{sound.name}</span>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="radio"
+                      name="sound"
+                      value={sound.id}
+                      checked={selectedSound === sound.id}
+                      onChange={(e) => setSelectedSound(e.target.value)}
+                      className="text-serenity-blue"
+                    />
                   </div>
                 </div>
-
-                {/* Ambient Sounds */}
-                <div className="mb-6">
-                  <Label className="text-sm font-semibold text-gray-700 mb-3 block">Ambient Sounds</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {ambientSounds.map((sound) => (
-                      <button
-                        key={sound.id}
-                        onClick={() => setAmbientSound(sound.id)}
-                        className={`p-3 rounded-xl text-center transition-all duration-300 ${
-                          ambientSound === sound.id
-                            ? 'bg-gradient-to-br from-serenity-blue to-mindful-mint text-white shadow-lg'
-                            : 'bg-white/60 hover:bg-white/80 text-gray-700'
-                        }`}
-                      >
-                        <div className="text-lg mb-1">{sound.icon}</div>
-                        <div className="text-xs font-medium">{sound.name}</div>
-                      </button>
+              ))}
+              
+              {!isPremium && (
+                <div className="pt-2 border-t border-slate-200">
+                  <p className="text-xs text-slate-500 mb-2">Premium sounds available with Pro</p>
+                  <div className="space-y-2">
+                    {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
+                      <div key={sound.id} className="flex items-center justify-between opacity-50">
+                        <span className="text-slate-400">{sound.name} 🔒</span>
+                      </div>
                     ))}
                   </div>
                 </div>
+              )}
+            </div>
+          </div>
 
-                {!isBreak && (
-                  <div className="space-y-4 mb-6">
-                    <div>
-                      <Label htmlFor="sessionName" className="text-sm font-semibold text-gray-700">Session Name</Label>
-                      <Input
-                        id="sessionName"
-                        value={sessionName}
-                        onChange={(e) => setSessionName(e.target.value)}
-                        placeholder="What are you working on?"
-                        className="mt-2 bg-white/60 border-gray-200 rounded-xl"
-                      />
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="workDuration" className="text-sm font-semibold text-gray-700">Work (min)</Label>
-                        <Input
-                          id="workDuration"
-                          type="number"
-                          value={workDuration}
-                          onChange={(e) => setWorkDuration(Number(e.target.value))}
-                          min="1"
-                          max="120"
-                          className="mt-2 bg-white/60 border-gray-200 rounded-xl"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="breakDuration" className="text-sm font-semibold text-gray-700">Break (min)</Label>
-                        <Input
-                          id="breakDuration"
-                          type="number"
-                          value={breakDuration}
-                          onChange={(e) => setBreakDuration(Number(e.target.value))}
-                          min="1"
-                          max="30"
-                          className="mt-2 bg-white/60 border-gray-200 rounded-xl"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Breathing Exercise Button */}
-                <div className="flex justify-center">
-                  <Button 
-                    onClick={() => setIsBreathing(true)}
-                    className="bg-gradient-to-r from-lavender-haze to-serenity-blue hover:from-lavender-haze/90 hover:to-serenity-blue/90 text-white px-6 py-3 rounded-2xl font-semibold shadow-lg transition-all duration-300 hover:shadow-xl"
-                  >
-                    🫁 Breathing Exercise
-                  </Button>
-                </div>
-              </div>
-
-              {/* Recent Sessions */}
-              <div className="glass-card rounded-3xl p-6 neuro-shadow animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                <h3 className="font-semibold text-gray-800 mb-4 flex items-center">
-                  <span className="text-lg mr-2">📊</span>
-                  Recent Sessions
-                </h3>
-                <div className="space-y-3 max-h-40 overflow-y-auto">
-                  {sessions.slice(0, 5).map((session) => (
-                    <div key={session.id} className="flex justify-between items-center py-3 px-4 bg-white/40 rounded-xl border border-gray-100">
-                      <div>
-                        <div className="font-medium text-sm text-gray-800">{session.name}</div>
-                        <div className="text-xs text-gray-500">
-                          {new Date(session.date).toLocaleDateString()}
-                        </div>
-                      </div>
-                      <div className="text-sm font-semibold bg-gradient-to-r from-serenity-blue to-mindful-mint bg-clip-text text-transparent">
-                        {session.duration}m
-                      </div>
-                    </div>
-                  ))}
-                  {sessions.length === 0 && (
-                    <div className="text-center text-gray-500 py-8">
-                      <div className="text-4xl mb-2">🌱</div>
-                      <p className="text-sm">No sessions yet. Start your first focus session!</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="glass-card rounded-3xl p-8 neuro-shadow text-center animate-fade-in-up">
-              <h2 className="text-xl font-semibold mb-8 text-gray-800">Breathing Exercise</h2>
-              
-              <div className="mb-8">
-                <div 
-                  className={`w-40 h-40 mx-auto rounded-full bg-gradient-to-br from-serenity-blue to-lavender-haze flex items-center justify-center transition-all duration-4000 shadow-2xl ${
-                    breathPhase === 'in' ? 'scale-110 shadow-serenity-blue/30' : 
-                    breathPhase === 'hold' ? 'scale-110 shadow-lavender-haze/30' : 
-                    'scale-90 shadow-mindful-mint/30'
-                  } ${breathPhase === 'in' ? 'animate-breathe' : ''}`}
-                >
-                  <div className="text-white font-semibold text-lg">
-                    {getBreathInstruction()}
-                  </div>
-                </div>
-              </div>
-              
-              <p className="text-gray-600 mb-8 leading-relaxed">
-                Follow the circle's rhythm to breathe deeply and find your center
-              </p>
-              
-              <Button 
-                onClick={() => setIsBreathing(false)} 
-                className="bg-white/80 backdrop-blur-sm border border-gray-200 text-gray-700 hover:bg-white hover:shadow-lg px-8 py-3 rounded-2xl font-semibold transition-all duration-300"
-              >
-                Return to Timer
-              </Button>
+          {/* Free User Upgrade Prompt */}
+          {!canStartSession && (
+            <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+              <PremiumUpgradePrompt 
+                feature="Unlimited Focus Sessions"
+                description="Remove daily limits and access custom session durations, premium soundscapes, and advanced analytics."
+                tier="pro"
+              />
             </div>
           )}
         </div>
