@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,7 +9,7 @@ const AuthScreen: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const { login, signup } = useAuth();
+  const { login, register } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +17,7 @@ const AuthScreen: React.FC = () => {
       if (isLogin) {
         await login(email, password);
       } else {
-        await signup(email, password, name);
+        await register(email, password, name);
       }
     } catch (error) {
       console.error('Auth error:', error);
@@ -130,4 +129,3 @@ const AuthScreen: React.FC = () => {
 };
 
 export default AuthScreen;
-
