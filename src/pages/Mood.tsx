@@ -1,10 +1,10 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { ChevronLeft } from 'lucide-react';
 
 interface MoodEntry {
   id: string;
@@ -35,8 +35,8 @@ const Mood: React.FC = () => {
   ];
 
   const activities = [
-    'Worked out', 'Had coffee', 'Slept well', 'Meditated', 'Spent time outdoors',
-    'Socialized', 'Ate healthy', 'Listened to music', 'Read a book', 'Learned something new'
+    'Exercise', 'Work', 'Reading', 'Meditation', 'Socializing',
+    'Gaming', 'Music', 'Sleep', 'Outdoor', 'Learning'
   ];
 
   const handleActivityToggle = (activity: string) => {
@@ -97,7 +97,6 @@ const Mood: React.FC = () => {
       
       let dayMood = '';
       if (dayEntries.length > 0) {
-        // Get the most recent mood for that day
         dayMood = moods.find(m => m.label === dayEntries[0].mood)?.emoji || '';
       }
 
@@ -112,25 +111,34 @@ const Mood: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 pb-20">
-      <div className="px-4 pt-8">
+    <div className="min-h-screen bg-gray-50 pb-20">
+      {/* Header */}
+      <div className="bg-blue-800 px-4 py-6">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">Mood Tracker</h1>
+          <div className="flex items-center justify-between">
+            <ChevronLeft className="w-6 h-6 text-white" />
+            <h1 className="text-xl font-bold text-white">Mood Tracker</h1>
+            <div className="w-6 h-6"></div>
+          </div>
+        </div>
+      </div>
 
+      <div className="px-4 pt-6">
+        <div className="max-w-md mx-auto">
           {!showForm ? (
             <>
-              <div className="bg-white rounded-2xl p-6 shadow-lg mb-6 text-center">
-                <h2 className="text-lg font-semibold text-gray-800 mb-4">How are you feeling today?</h2>
+              <div className="dopamind-card p-6 mb-6">
+                <h2 className="text-lg font-semibold text-blue-800 mb-4 text-center">How are you feeling?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="bg-blue-500 hover:bg-blue-600 w-full"
+                  className="bg-emerald-500 hover:bg-emerald-600 text-white w-full h-12 rounded-xl font-semibold"
                 >
                   Track Your Mood
                 </Button>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-                <h3 className="font-semibold text-gray-800 mb-4">This Month</h3>
+              <div className="dopamind-card p-6 mb-6">
+                <h3 className="font-semibold text-blue-800 mb-4">This Month</h3>
                 <div className="grid grid-cols-7 gap-2">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
                     <div key={day} className="text-center text-xs text-gray-500 font-medium p-2">
@@ -141,7 +149,7 @@ const Mood: React.FC = () => {
                     <div 
                       key={day} 
                       className={`aspect-square flex items-center justify-center text-sm rounded-lg ${
-                        hasEntry ? 'bg-blue-100' : 'bg-gray-50'
+                        hasEntry ? 'bg-emerald-100' : 'bg-gray-50'
                       }`}
                     >
                       {mood ? (
@@ -154,13 +162,13 @@ const Mood: React.FC = () => {
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl p-6 shadow-lg mb-6">
-                <h3 className="font-semibold text-gray-800 mb-4">Wellness Suggestion</h3>
+              <div className="dopamind-card p-6 mb-6">
+                <h3 className="font-semibold text-blue-800 mb-4">Wellness Suggestion</h3>
                 <p className="text-gray-600">{getMoodSuggestion()}</p>
               </div>
 
-              <div className="bg-white rounded-2xl p-4 shadow-lg">
-                <h3 className="font-semibold text-gray-800 mb-3">Recent Entries</h3>
+              <div className="dopamind-card p-4">
+                <h3 className="font-semibold text-blue-800 mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {
                     const moodData = moods.find(m => m.label === entry.mood);
@@ -169,7 +177,7 @@ const Mood: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
                             <span className="text-lg">{moodData?.emoji}</span>
-                            <span className="font-medium">{entry.mood}</span>
+                            <span className="font-medium text-blue-800">{entry.mood}</span>
                           </div>
                           <span className="text-xs text-gray-500">
                             {new Date(entry.date).toLocaleDateString()}
@@ -199,13 +207,14 @@ const Mood: React.FC = () => {
               </div>
             </>
           ) : (
-            <div className="bg-white rounded-2xl p-6 shadow-lg">
+            <div className="dopamind-card p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-gray-800">Track Your Mood</h2>
+                <h2 className="text-lg font-semibold text-blue-800">How are you feeling?</h2>
                 <Button 
                   onClick={() => setShowForm(false)}
                   variant="outline"
                   size="sm"
+                  className="text-gray-500 border-gray-200"
                 >
                   Cancel
                 </Button>
@@ -213,7 +222,6 @@ const Mood: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <Label className="text-base font-medium mb-3 block">How are you feeling?</Label>
                   <div className="grid grid-cols-4 gap-3">
                     {moods.map((mood) => (
                       <button
@@ -221,57 +229,63 @@ const Mood: React.FC = () => {
                         onClick={() => setSelectedMood(mood.label)}
                         className={`p-3 rounded-xl text-center transition-all ${
                           selectedMood === mood.label 
-                            ? `${mood.color} ring-2 ring-blue-500` 
+                            ? 'bg-emerald-100 ring-2 ring-emerald-500' 
                             : 'bg-gray-50 hover:bg-gray-100'
                         }`}
                       >
                         <div className="text-2xl mb-1">{mood.emoji}</div>
-                        <div className="text-xs font-medium">{mood.label}</div>
+                        <div className="text-xs font-medium text-blue-800">{mood.label}</div>
                       </button>
                     ))}
                   </div>
                 </div>
 
                 <div>
-                  <Label className="text-base font-medium mb-3 block">
-                    Intensity (1-10): {intensity}
+                  <Label className="text-base font-medium mb-3 block text-blue-800">
+                    Intensity
                   </Label>
-                  <input
-                    type="range"
-                    min="1"
-                    max="10"
-                    value={intensity}
-                    onChange={(e) => setIntensity(Number(e.target.value))}
-                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  />
+                  <div className="relative">
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={intensity}
+                      onChange={(e) => setIntensity(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer range-emerald"
+                    />
+                    <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-blue-800 text-white px-2 py-1 rounded text-sm">
+                      {intensity}
+                    </div>
+                  </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="note" className="text-base font-medium mb-3 block">
-                    What's on your mind? (optional)
+                  <Label htmlFor="note" className="text-base font-medium mb-3 block text-blue-800">
+                    Notes
                   </Label>
                   <Textarea
                     id="note"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    placeholder="Describe your feelings or what influenced your mood..."
+                    placeholder="What's on your mind?"
                     rows={3}
+                    className="border-gray-200 focus:border-emerald-500 focus:ring-emerald-500/20 rounded-xl"
                   />
                 </div>
 
                 <div>
-                  <Label className="text-base font-medium mb-3 block">
-                    Activities today (select all that apply)
+                  <Label className="text-base font-medium mb-3 block text-blue-800">
+                    Activity
                   </Label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-3 gap-2">
                     {activities.map((activity) => (
                       <button
                         key={activity}
                         onClick={() => handleActivityToggle(activity)}
-                        className={`p-2 text-sm rounded-lg text-left transition-colors ${
+                        className={`p-2 text-sm rounded-lg text-center transition-colors ${
                           selectedActivities.includes(activity)
-                            ? 'bg-blue-100 text-blue-800 border border-blue-300'
-                            : 'bg-gray-50 hover:bg-gray-100 border border-gray-200'
+                            ? 'bg-emerald-500 text-white'
+                            : 'bg-gray-100 hover:bg-gray-200 text-blue-800'
                         }`}
                       >
                         {activity}
@@ -283,9 +297,9 @@ const Mood: React.FC = () => {
                 <Button 
                   onClick={handleSubmit}
                   disabled={!selectedMood}
-                  className="w-full bg-green-500 hover:bg-green-600"
+                  className="w-full bg-emerald-500 hover:bg-emerald-600 text-white h-12 rounded-xl font-semibold"
                 >
-                  Save Mood Entry
+                  Submit
                 </Button>
               </div>
             </div>

@@ -19,20 +19,20 @@ const LoadingScreen: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#F9FAFB] via-[#A3C9F9]/10 to-[#C7B8F5]/20 flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-800 via-blue-900 to-blue-950 flex items-center justify-center relative overflow-hidden">
       {/* Floating Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-[#A8E6CF]/20 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-[#C7B8F5]/20 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-3/4 left-1/3 w-32 h-32 bg-[#A3C9F9]/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-amber-500/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-3/4 left-1/3 w-32 h-32 bg-emerald-500/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className="text-center z-10 animate-fade-in-up">
-        {/* Brain Logo with Glow Effect */}
+        {/* Brain Logo with Mint Glow Effect */}
         <div className="mb-8 flex items-center justify-center">
           <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-[#A3C9F9] to-[#C7B8F5] rounded-full blur-xl opacity-50 animate-gentle-pulse"></div>
-            <div className="relative w-20 h-20 bg-gradient-to-br from-[#A3C9F9] to-[#A8E6CF] rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
+            <div className="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-60 animate-mint-glow"></div>
+            <div className="relative w-20 h-20 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
               <svg 
                 className="w-12 h-12 text-white drop-shadow-lg" 
                 fill="currentColor" 
@@ -49,24 +49,24 @@ const LoadingScreen: React.FC = () => {
 
         {/* App Name */}
         <h1 className="text-5xl font-bold mb-4">
-          <span className="bg-gradient-to-r from-[#A3C9F9] via-[#C7B8F5] to-[#A8E6CF] bg-clip-text text-transparent">
+          <span className="text-white">
             Dopamind
           </span>
         </h1>
         
-        <p className="text-lg text-gray-600 mb-8 font-medium">
+        <p className="text-lg text-amber-400 mb-8 font-medium">
           Your Digital Wellness Companion
         </p>
 
         {/* Progress Bar */}
         <div className="w-64 mx-auto">
-          <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
+          <div className="h-1 bg-blue-700 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-[#A3C9F9] to-[#A8E6CF] rounded-full transition-all duration-300 ease-out"
+              className="h-full bg-gradient-to-r from-emerald-400 to-emerald-500 rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
-          <p className="text-sm text-gray-500 mt-3 font-medium">
+          <p className="text-sm text-white/80 mt-3 font-medium">
             Preparing your mindful experience...
           </p>
         </div>
@@ -76,7 +76,7 @@ const LoadingScreen: React.FC = () => {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 bg-[#A3C9F9] rounded-full animate-gentle-pulse"
+              className="w-2 h-2 bg-emerald-400 rounded-full animate-gentle-pulse"
               style={{ animationDelay: `${i * 0.3}s` }}
             ></div>
           ))}

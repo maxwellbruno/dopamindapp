@@ -14,43 +14,41 @@
     --popover: 255 255 255;
     --popover-foreground: 55 65 81;
 
-    --primary: 163 201 249;
-    --primary-foreground: 30 41 59;
+    --primary: 16 185 129;
+    --primary-foreground: 255 255 255;
 
-    --secondary: 168 230 207;
-    --secondary-foreground: 30 41 59;
+    --secondary: 245 158 11;
+    --secondary-foreground: 255 255 255;
 
     --muted: 209 213 219;
     --muted-foreground: 107 114 128;
 
-    --accent: 199 184 245;
-    --accent-foreground: 30 41 59;
+    --accent: 30 58 138;
+    --accent-foreground: 255 255 255;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
     --border: 229 231 235;
     --input: 209 213 219;
-    --ring: 163 201 249;
+    --ring: 16 185 129;
 
     --radius: 0.75rem;
 
-    --success: 132 220 198;
-    --warning: 249 199 132;
+    --success: 16 185 129;
+    --warning: 245 158 11;
     
-    /* Dopamind Custom Colors */
-    --serenity-blue: 163 201 249;
-    --mindful-mint: 168 230 207;
-    --lavender-haze: 199 184 245;
-    --cloud-white: 249 250 251;
-    --midnight-slate: 30 31 40;
-    --zen-ash: 209 213 219;
-    --tranquil-green: 132 220 198;
-    --gentle-amber: 249 199 132;
+    /* Dopamind New Color Palette */
+    --deep-blue: 30 58 138;
+    --mint-green: 16 185 129;
+    --warm-orange: 245 158 11;
+    --pure-white: 255 255 255;
+    --light-gray: 156 163 175;
+    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
   .dark {
-    --background: 30 31 40;
+    --background: 30 58 138;
     --foreground: 248 250 252;
 
     --card: 39 41 53;
@@ -59,16 +57,16 @@
     --popover: 39 41 53;
     --popover-foreground: 248 250 252;
 
-    --primary: 163 201 249;
-    --primary-foreground: 30 31 40;
+    --primary: 16 185 129;
+    --primary-foreground: 255 255 255;
 
-    --secondary: 168 230 207;
-    --secondary-foreground: 30 31 40;
+    --secondary: 245 158 11;
+    --secondary-foreground: 255 255 255;
 
     --muted: 75 85 99;
     --muted-foreground: 156 163 175;
 
-    --accent: 199 184 245;
+    --accent: 30 58 138;
     --accent-foreground: 248 250 252;
 
     --destructive: 239 68 68;
@@ -76,7 +74,7 @@
 
     --border: 75 85 99;
     --input: 75 85 99;
-    --ring: 163 201 249;
+    --ring: 16 185 129;
   }
 }
 
@@ -122,6 +120,15 @@
   100% { background-position: 200% 0; }
 }
 
+@keyframes mint-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+  }
+}
+
 /* Custom Utility Classes */
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
@@ -139,31 +146,31 @@
   animation: gentle-pulse 2s ease-in-out infinite;
 }
 
+.animate-mint-glow {
+  animation: mint-glow 3s ease-in-out infinite;
+}
+
 .gradient-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(163, 201, 249, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
 
-/* Glassmorphism Effects */
-.glass-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+/* Modern Card Styles */
+.dopamind-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
 }
 
-.dark .glass-card {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+.dopamind-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-/* Neuro-aesthetic Shadows */
-.neuro-shadow {
-  box-shadow: 0 8px 32px rgba(163, 201, 249, 0.1);
-}
-
-.dark .neuro-shadow {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+/* Mint Green Glow Effect */
+.mint-glow {
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
 }
 
 /* Custom Scrollbar */
@@ -176,10 +183,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--serenity-blue));
+  background: rgb(var(--mint-green));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--accent));
+  background: rgb(var(--deep-blue));
 }

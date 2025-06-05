@@ -56,15 +56,12 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Dopamind Custom Colors
-				'serenity-blue': '#A3C9F9',
-				'mindful-mint': '#A8E6CF',
-				'lavender-haze': '#C7B8F5',
-				'cloud-white': '#F9FAFB',
-				'midnight-slate': '#1E1F28',
-				'zen-ash': '#D1D5DB',
-				'tranquil-green': '#84DCC6',
-				'gentle-amber': '#F9C784',
+				// Dopamind New Color Palette
+				'deep-blue': '#1E3A8A',
+				'mint-green': '#10B981', 
+				'warm-orange': '#F59E0B',
+				'pure-white': '#FFFFFF',
+				'light-gray': '#9CA3AF',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -109,6 +106,14 @@ export default {
 				'gentle-pulse': {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.7' }
+				},
+				'mint-glow': {
+					'0%, 100%': { 
+						boxShadow: '0 0 20px rgba(16, 185, 129, 0.3)'
+					},
+					'50%': { 
+						boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)'
+					}
 				}
 			},
 			animation: {
@@ -117,7 +122,8 @@ export default {
 				breathe: 'breathe 4s ease-in-out infinite',
 				float: 'float 3s ease-in-out infinite',
 				'fade-in-up': 'fade-in-up 0.6s ease-out',
-				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite'
+				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite',
+				'mint-glow': 'mint-glow 3s ease-in-out infinite'
 			}
 		}
 	},
