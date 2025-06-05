@@ -68,12 +68,12 @@ const Focus: React.FC = () => {
       interval = setInterval(() => {
         setBreatheTimer(prev => {
           if (prev <= 1) {
-            setBreathePhase(current => {
-              if (current === 'in') return 'hold';
-              if (current === 'hold') return 'out';
+            setBreathePhase(currentPhase => {
+              if (currentPhase === 'in') return 'hold';
+              if (currentPhase === 'hold') return 'out';
               return 'in';
             });
-            return current === 'hold' ? 2 : 4;
+            return breathPhase === 'hold' ? 2 : 4;
           }
           return prev - 1;
         });
