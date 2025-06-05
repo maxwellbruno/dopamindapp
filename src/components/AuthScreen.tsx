@@ -1,193 +1,133 @@
 
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAuth } from '../contexts/AuthContext';
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const { login, register } = useAuth();
+  const { login, signup } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
-
     try {
-      let success;
       if (isLogin) {
-        success = await login(email, password);
-        if (!success) {
-          setError('Invalid email or password');
-        }
+        await login(email, password);
       } else {
-        if (!name.trim()) {
-          setError('Name is required');
-          setIsSubmitting(false);
-          return;
-        }
-        success = await register(email, password, name);
-        if (!success) {
-          setError('Email already exists');
-        }
+        await signup(email, password, name);
       }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+    } catch (error) {
+      console.error('Auth error:', error);
     }
   };
 
   return (
-    <div className="min-h-screen bg-blue-800 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
-        {/* Logo and Branding */}
-        <div className="text-center mb-8 animate-fade-in-up">
-          <div className="flex items-center justify-center mb-6">
+    <div className="min-h-screen bg-light-mint flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        {/* Header with app icon */}
+        <div className="text-center mb-8">
+          <div className="mb-4 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-emerald-500 rounded-full blur-lg opacity-60 animate-mint-glow"></div>
-              <div className="relative w-16 h-16 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-3xl flex items-center justify-center shadow-xl">
-                <svg 
-                  className="w-10 h-10 text-white" 
-                  fill="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm3 13.5V16h-6v-.5C7.01 14.07 6 11.66 6 9c0-3.31 2.69-6 6-6s6 2.69 6 6c0 2.66-1.01 5.07-3 6.5z"/>
-                  <circle cx="10" cy="9" r="1"/>
-                  <circle cx="14" cy="9" r="1"/>
-                  <path d="M12 11c-1.1 0-2 .9-2 2h4c0-1.1-.9-2-2-2z"/>
-                </svg>
+              <div className="absolute inset-0 bg-mint-green/20 rounded-3xl blur-xl"></div>
+              <div className="relative w-16 h-16 bg-mint-green/20 rounded-3xl flex items-center justify-center">
+                <span className="text-4xl">🧠</span>
               </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">
-            Dopamind
-          </h1>
-          <p className="text-blue-800 text-lg font-medium mb-2">
-            {isLogin ? 'Welcome back' : 'Begin your wellness journey'}
-          </p>
-          <p className="text-emerald-400 text-sm">
-            {isLogin ? 'Sign in to continue your progress' : 'Create an account to get started'}
+          <h1 className="text-3xl font-bold text-deep-blue mb-1 tracking-wide">Dopamind</h1>
+        </div>
+
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-semibold text-deep-blue mb-1">
+            {isLogin ? 'Welcome back' : 'Create account'}
+          </h2>
+          <p className="text-gray-600 text-sm">
+            {isLogin ? 'Sign in to continue your progress' : 'Join thousands improving their digital wellness'}
           </p>
         </div>
 
-        {/* Auth Form Card */}
-        <div className="dopamind-card p-8 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-          <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Auth Card */}
+        <div className="dopamind-card p-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
-              <div className="space-y-2">
-                <Label 
-                  htmlFor="name" 
-                  className="text-blue-800 font-semibold text-sm"
-                >
+              <div>
+                <Label htmlFor="name" className="text-deep-blue font-medium text-sm">
                   Full Name
                 </Label>
                 <Input
                   id="name"
                   type="text"
+                  placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your full name"
+                  className="mt-1 border-mint-green focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-gray-50"
                   required={!isLogin}
-                  className="h-12 bg-white border-gray-200 text-blue-800 placeholder:text-gray-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
                 />
               </div>
             )}
             
-            <div className="space-y-2">
-              <Label 
-                htmlFor="email" 
-                className="text-blue-800 font-semibold text-sm"
-              >
+            <div>
+              <Label htmlFor="email" className="text-deep-blue font-medium text-sm">
                 Email Address
               </Label>
               <Input
                 id="email"
                 type="email"
+                placeholder="your@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
+                className="mt-1 border-mint-green focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-gray-50"
                 required
-                className="h-12 bg-white border-gray-200 text-blue-800 placeholder:text-gray-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
               />
             </div>
             
-            <div className="space-y-2">
-              <Label 
-                htmlFor="password" 
-                className="text-blue-800 font-semibold text-sm"
-              >
+            <div>
+              <Label htmlFor="password" className="text-deep-blue font-medium text-sm">
                 Password
               </Label>
               <Input
                 id="password"
                 type="password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
+                className="mt-1 border-mint-green focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-gray-50"
                 required
-                className="h-12 bg-white border-gray-200 text-blue-800 placeholder:text-gray-400 rounded-xl focus:border-emerald-500 focus:ring-emerald-500/20 transition-all duration-300"
               />
             </div>
-
-            {error && (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 animate-fade-in-up">
-                <p className="text-red-600 text-sm text-center font-medium">{error}</p>
-              </div>
-            )}
-
+            
             <Button 
-              type="submit" 
-              disabled={isSubmitting}
-              className="w-full h-12 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+              type="submit"
+              className="w-full bg-mint-green hover:bg-emerald-600 text-white h-12 rounded-xl font-semibold mt-6"
             >
-              {isSubmitting ? (
-                <div className="flex items-center justify-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Please wait...</span>
-                </div>
-              ) : (
-                isLogin ? 'Sign In' : 'Create Account'
-              )}
+              {isLogin ? 'Sign In' : 'Create Account'}
             </Button>
           </form>
-
-          {/* Switch Auth Mode */}
-          <div className="mt-8 text-center">
+          
+          <div className="mt-4 text-center">
             <button
-              type="button"
-              onClick={() => {
-                setIsLogin(!isLogin);
-                setError('');
-                setEmail('');
-                setPassword('');
-                setName('');
-              }}
-              className="text-amber-500 hover:text-amber-600 text-sm font-medium transition-colors duration-300 hover:underline"
+              onClick={() => setIsLogin(!isLogin)}
+              className="text-gray-600 text-sm"
             >
-              {isLogin 
-                ? "Don't have an account? Create one" 
-                : 'Already have an account? Sign in'
-              }
+              {isLogin ? "Don't have an account? " : "Already have an account? "}
+              <span className="text-warm-orange font-medium">
+                {isLogin ? 'Create one' : 'Sign in'}
+              </span>
             </button>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="text-center mt-8">
-          <p className="text-gray-400 text-xs">
-            By continuing, you agree to our Terms of Service and Privacy Policy
-          </p>
-        </div>
+        <p className="text-center text-xs text-gray-500 mt-6 px-4">
+          By continuing, you agree to our Terms of Service and Privacy Policy
+        </p>
       </div>
     </div>
   );
 };
 
 export default AuthScreen;
+

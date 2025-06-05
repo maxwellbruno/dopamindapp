@@ -44,6 +44,7 @@
     --warm-orange: 245 158 11;
     --pure-white: 255 255 255;
     --light-gray: 156 163 175;
+    --light-mint: 240 253 244;
     --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
   }
 
@@ -84,7 +85,7 @@
   }
 
   body {
-    @apply bg-background text-foreground font-inter antialiased;
+    @apply bg-light-mint text-foreground font-inter antialiased;
   }
 }
 
@@ -156,16 +157,16 @@
   animation: shimmer 2s infinite;
 }
 
-/* Modern Card Styles */
+/* Modern Card Styles - Updated */
 .dopamind-card {
   background: white;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border-radius: 1.125rem; /* 18px */
+  box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.08), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
   transition: all 0.3s ease;
 }
 
 .dopamind-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.08);
 }
 
 /* Mint Green Glow Effect */
@@ -179,7 +180,7 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(var(--muted));
+  background: rgb(var(--light-gray));
 }
 
 ::-webkit-scrollbar-thumb {
@@ -190,3 +191,4 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--deep-blue));
 }
+

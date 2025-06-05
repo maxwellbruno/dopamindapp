@@ -62,6 +62,7 @@ export default {
 				'warm-orange': '#F59E0B',
 				'pure-white': '#FFFFFF',
 				'light-gray': '#9CA3AF',
+				'light-mint': '#F0FDF4',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -129,3 +130,4 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
