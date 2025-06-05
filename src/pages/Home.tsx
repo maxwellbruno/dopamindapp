@@ -74,17 +74,17 @@ const Home: React.FC = () => {
   const isPremium = subscription.isPro || subscription.isElite;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cloud-white via-gray-50 to-blue-50 pb-20">
+    <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
         <div className="max-w-md mx-auto">
           {/* Header */}
           <div className="mb-8 animate-fade-in-up">
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h1 className="text-2xl font-bold text-midnight-slate">
+                <h1 className="text-2xl font-bold text-text-dark">
                   {getGreeting()}, {user?.name?.split(' ')[0]}
                 </h1>
-                <p className="text-slate-600">
+                <p className="text-text-light">
                   {currentTime.toLocaleDateString('en-US', { 
                     weekday: 'long', 
                     month: 'long', 
@@ -98,8 +98,8 @@ const Home: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <div className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
                     subscription.isElite 
-                      ? 'bg-gradient-to-r from-lavender-haze to-mindful-mint' 
-                      : 'bg-gradient-to-r from-serenity-blue to-mindful-mint'
+                      ? 'bg-gradient-to-r from-orange-accent to-teal-primary' 
+                      : 'bg-gradient-to-r from-teal-primary to-mint-green'
                   }`}>
                     {subscription.isElite ? '👑 Elite' : '🧠 Pro'}
                   </div>
@@ -110,46 +110,46 @@ const Home: React.FC = () => {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="glass-card rounded-3xl p-4 neuro-shadow animate-fade-in-up">
-              <h3 className="text-sm font-semibold text-slate-600 mb-2">Daily Focus</h3>
-              <div className="text-2xl font-bold bg-gradient-to-r from-serenity-blue to-mindful-mint bg-clip-text text-transparent">
+            <div className="dopamind-card p-4 animate-fade-in-up">
+              <h3 className="text-sm font-semibold text-text-light mb-2">Daily Focus</h3>
+              <div className="text-2xl font-bold text-teal-primary">
                 {totalHours}h {totalMinutes}m
               </div>
-              <div className="text-xs text-slate-500 mt-1">{todaySessions} sessions today</div>
+              <div className="text-xs text-text-light mt-1">{todaySessions} sessions today</div>
             </div>
 
-            <div className="glass-card rounded-3xl p-4 neuro-shadow animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-              <h3 className="text-sm font-semibold text-slate-600 mb-2">Mood Summary</h3>
-              <div className="text-2xl font-bold bg-gradient-to-r from-lavender-haze to-tranquil-green bg-clip-text text-transparent">
+            <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+              <h3 className="text-sm font-semibold text-text-light mb-2">Mood Summary</h3>
+              <div className="text-2xl font-bold text-orange-accent">
                 {getMoodLabel(averageMood)}
               </div>
-              <div className="text-xs text-slate-500 mt-1">{moods.length} entries</div>
+              <div className="text-xs text-text-light mt-1">{moods.length} entries</div>
             </div>
           </div>
 
           {/* Streak Card */}
-          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-lg font-semibold text-midnight-slate mb-1">Current Streak</h3>
-                <div className="text-3xl font-bold bg-gradient-to-r from-gentle-amber to-tranquil-green bg-clip-text text-transparent">
+                <h3 className="text-lg font-semibold text-text-dark mb-1">Current Streak</h3>
+                <div className="text-3xl font-bold text-orange-accent">
                   {stats.currentStreak} days
                 </div>
-                <p className="text-sm text-slate-600 mt-1">Keep up the momentum!</p>
+                <p className="text-sm text-text-light mt-1">Keep up the momentum!</p>
               </div>
               <div className="text-4xl animate-gentle-pulse">🔥</div>
             </div>
           </div>
 
           {/* Productivity Insight */}
-          <div className="glass-card rounded-3xl p-6 neuro-shadow mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-mindful-mint to-tranquil-green rounded-2xl flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-teal-primary to-mint-green rounded-2xl flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">💡</span>
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-midnight-slate mb-2">Daily Insight</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{dailyTip}</p>
+                <h3 className="text-lg font-semibold text-text-dark mb-2">Daily Insight</h3>
+                <p className="text-text-light text-sm leading-relaxed">{dailyTip}</p>
               </div>
             </div>
           </div>
@@ -157,22 +157,22 @@ const Home: React.FC = () => {
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4 mb-6">
             <Link to="/focus">
-              <div className="glass-card rounded-3xl p-6 neuro-shadow hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-serenity-blue to-mindful-mint rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <div className="dopamind-card p-6 hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <div className="w-12 h-12 bg-gradient-to-br from-teal-primary to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl text-white">🎯</span>
                 </div>
-                <h3 className="text-center font-semibold text-midnight-slate">Focus</h3>
-                <p className="text-center text-xs text-slate-600 mt-1">Start a session</p>
+                <h3 className="text-center font-semibold text-text-dark">Focus</h3>
+                <p className="text-center text-xs text-text-light mt-1">Start a session</p>
               </div>
             </Link>
 
             <Link to="/mood">
-              <div className="glass-card rounded-3xl p-6 neuro-shadow hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-lavender-haze to-tranquil-green rounded-2xl flex items-center justify-center mx-auto mb-3">
+              <div className="dopamind-card p-6 hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-teal-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl text-white">😊</span>
                 </div>
-                <h3 className="text-center font-semibold text-midnight-slate">Mood</h3>
-                <p className="text-center text-xs text-slate-600 mt-1">Track feelings</p>
+                <h3 className="text-center font-semibold text-text-dark">Mood</h3>
+                <p className="text-center text-xs text-text-light mt-1">Track feelings</p>
               </div>
             </Link>
           </div>
@@ -187,37 +187,37 @@ const Home: React.FC = () => {
               />
             </div>
           ) : (
-            <div className="glass-card rounded-3xl p-6 neuro-shadow animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-              <h3 className="text-lg font-semibold text-midnight-slate mb-4">Premium Features</h3>
+            <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+              <h3 className="text-lg font-semibold text-text-dark mb-4">Premium Features</h3>
               <div className="space-y-3">
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl">
-                  <div className="w-8 h-8 bg-gradient-to-br from-serenity-blue to-mindful-mint rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3 p-3 bg-light-gray rounded-2xl">
+                  <div className="w-8 h-8 bg-gradient-to-br from-teal-primary to-mint-green rounded-full flex items-center justify-center">
                     <span className="text-sm text-white">📊</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-midnight-slate">Advanced Analytics</p>
-                    <p className="text-xs text-slate-600">View detailed focus and mood patterns</p>
+                    <p className="text-sm font-semibold text-text-dark">Advanced Analytics</p>
+                    <p className="text-xs text-text-light">View detailed focus and mood patterns</p>
                   </div>
                 </div>
                 
-                <div className="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl">
-                  <div className="w-8 h-8 bg-gradient-to-br from-lavender-haze to-tranquil-green rounded-full flex items-center justify-center">
+                <div className="flex items-center space-x-3 p-3 bg-light-gray rounded-2xl">
+                  <div className="w-8 h-8 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
                     <span className="text-sm text-white">🎵</span>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-midnight-slate">Premium Soundscapes</p>
-                    <p className="text-xs text-slate-600">50+ ambient tracks for deep focus</p>
+                    <p className="text-sm font-semibold text-text-dark">Premium Soundscapes</p>
+                    <p className="text-xs text-text-light">50+ ambient tracks for deep focus</p>
                   </div>
                 </div>
 
                 {subscription.isElite && (
-                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-lavender-haze/10 to-mindful-mint/10 rounded-2xl border border-lavender-haze/20">
-                    <div className="w-8 h-8 bg-gradient-to-br from-lavender-haze to-mindful-mint rounded-full flex items-center justify-center">
+                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-orange-accent/10 to-teal-primary/10 rounded-2xl border border-orange-accent/20">
+                    <div className="w-8 h-8 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
                       <span className="text-sm text-white">👑</span>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-midnight-slate">Elite Coaching</p>
-                      <p className="text-xs text-slate-600">1-on-1 virtual wellness sessions</p>
+                      <p className="text-sm font-semibold text-text-dark">Elite Coaching</p>
+                      <p className="text-xs text-text-light">1-on-1 virtual wellness sessions</p>
                     </div>
                   </div>
                 )}

@@ -56,15 +56,16 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// New Dopamind Colors from the image
-				'navy-blue': '#1a365d',
-				'teal-primary': '#38b2ac',
-				'orange-accent': '#ed8936',
-				'card-white': '#f7fafc',
-				'text-dark': '#2d3748',
-				'text-light': '#718096',
-				'button-teal': '#319795',
-				'background-dark': '#1a202c',
+				// Updated Dopamind Colors from the final image
+				'dark-navy': '#1a2332',
+				'teal-primary': '#4ade80',
+				'mint-green': '#4ade80',
+				'orange-accent': '#f59e0b',
+				'card-white': '#ffffff',
+				'text-dark': '#1f2937',
+				'text-light': '#6b7280',
+				'light-gray': '#f3f4f6',
+				'darker-navy': '#0f172a',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -112,10 +113,10 @@ export default {
 				},
 				'teal-glow': {
 					'0%, 100%': { 
-						boxShadow: '0 0 20px rgba(56, 178, 172, 0.3)'
+						boxShadow: '0 0 20px rgba(74, 222, 128, 0.3)'
 					},
 					'50%': { 
-						boxShadow: '0 0 30px rgba(56, 178, 172, 0.6)'
+						boxShadow: '0 0 30px rgba(74, 222, 128, 0.6)'
 					}
 				}
 			},

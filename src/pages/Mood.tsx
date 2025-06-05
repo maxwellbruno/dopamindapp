@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,11 +24,11 @@ const Mood: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
 
   const moods = [
-    { emoji: '😕', label: 'Sad', color: 'bg-orange-100' },
+    { emoji: '😡', label: 'Angry', color: 'bg-red-100' },
+    { emoji: '😞', label: 'Sad', color: 'bg-blue-100' },
     { emoji: '😐', label: 'Neutral', color: 'bg-gray-100' },
-    { emoji: '😊', label: 'Happy', color: 'bg-yellow-100' },
-    { emoji: '😄', label: 'Great', color: 'bg-green-100', selected: true },
-    { emoji: '🤩', label: 'Amazing', color: 'bg-blue-100' },
+    { emoji: '😊', label: 'Happy', color: 'bg-teal-primary/20', selected: true },
+    { emoji: '😄', label: 'Great', color: 'bg-green-100' },
   ];
 
   const activities = [
@@ -72,7 +73,7 @@ const Mood: React.FC = () => {
 
   const getMoodSuggestion = () => {
     const recentEntries = moodEntries.slice(0, 3);
-    const negativeMoods = recentEntries.filter(entry => ['Sad', 'Neutral'].includes(entry.mood));
+    const negativeMoods = recentEntries.filter(entry => ['Sad', 'Neutral', 'Angry'].includes(entry.mood));
     
     if (negativeMoods.length >= 2) {
       return "Consider taking a short walk or doing a breathing exercise. Small actions can make a big difference! 🌱";
@@ -107,9 +108,9 @@ const Mood: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-navy-blue pb-20">
+    <div className="min-h-screen bg-light-gray pb-20">
       {/* Header */}
-      <div className="bg-navy-blue px-4 py-6 shadow-sm">
+      <div className="bg-dark-navy px-4 py-6 shadow-sm">
         <div className="max-w-md mx-auto flex items-center">
           <button className="text-white text-xl mr-4">←</button>
           <h1 className="text-xl font-bold text-white text-center flex-1">Mood Tracker</h1>
@@ -139,10 +140,10 @@ const Mood: React.FC = () => {
                       <button
                         key={mood.label}
                         onClick={() => setSelectedMood(mood.label)}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all ${
+                        className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all border-2 ${
                           selectedMood === mood.label || (selectedMood === '' && mood.selected)
-                            ? 'bg-teal-primary ring-2 ring-teal-primary ring-offset-2' 
-                            : 'bg-gray-100 hover:bg-gray-200'
+                            ? 'bg-teal-primary border-teal-primary shadow-lg transform scale-110' 
+                            : 'bg-white border-gray-200 hover:border-teal-primary'
                         }`}
                       >
                         {mood.emoji}
@@ -162,13 +163,13 @@ const Mood: React.FC = () => {
                       max="5"
                       value={intensity}
                       onChange={(e) => setIntensity(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, #38b2ac 0%, #38b2ac ${(intensity - 1) * 25}%, #e2e8f0 ${(intensity - 1) * 25}%, #e2e8f0 100%)`
+                        background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${(intensity - 1) * 25}%, #e5e7eb ${(intensity - 1) * 25}%, #e5e7eb 100%)`
                       }}
                     />
                     <div 
-                      className="absolute top-1/2 w-6 h-6 bg-navy-blue rounded-full transform -translate-y-1/2 -translate-x-3 pointer-events-none"
+                      className="absolute top-1/2 w-6 h-6 bg-teal-primary rounded-full transform -translate-y-1/2 -translate-x-3 pointer-events-none border-2 border-white shadow-lg"
                       style={{ left: `${(intensity - 1) * 25}%` }}
                     ></div>
                   </div>
@@ -182,9 +183,9 @@ const Mood: React.FC = () => {
                     id="note"
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
-                    placeholder=""
+                    placeholder="Describe your feelings or what influenced your mood"
                     rows={3}
-                    className="border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-gray-50"
+                    className="border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
                   />
                 </div>
 
@@ -199,10 +200,10 @@ const Mood: React.FC = () => {
                         onClick={() => handleActivityToggle(activity)}
                         className={`px-4 py-2 text-sm rounded-full transition-colors ${
                           selectedActivities.includes(activity)
-                            ? 'bg-button-teal text-white'
+                            ? 'bg-teal-primary text-white'
                             : activity === 'Exercise' 
-                              ? 'bg-button-teal text-white'
-                              : 'bg-gray-200 text-text-dark hover:bg-gray-300'
+                              ? 'bg-teal-primary text-white'
+                              : 'bg-light-gray text-text-dark hover:bg-gray-300 border border-gray-200'
                         }`}
                       >
                         {activity}
@@ -214,7 +215,7 @@ const Mood: React.FC = () => {
                 <Button 
                   onClick={handleSubmit}
                   disabled={!selectedMood}
-                  className="w-full bg-button-teal hover:bg-teal-primary text-white h-12 rounded-xl font-semibold"
+                  className="w-full bg-teal-primary hover:bg-mint-green text-white h-12 rounded-xl font-semibold"
                 >
                   Submit
                 </Button>
@@ -223,12 +224,12 @@ const Mood: React.FC = () => {
           ) : (
             <>
               <div className="dopamind-card p-6 mb-6">
-                <h2 className="text-lg font-semibold text-text-dark mb-4 text-center">Track Your Mood</h2>
+                <h2 className="text-lg font-semibold text-text-dark mb-4 text-center">How are you feeling today?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="bg-button-teal hover:bg-teal-primary text-white w-full h-12 rounded-xl font-semibold"
+                  className="bg-teal-primary hover:bg-mint-green text-white w-full h-12 rounded-xl font-semibold"
                 >
-                  How are you feeling?
+                  Track Your Mood
                 </Button>
               </div>
 
@@ -244,7 +245,7 @@ const Mood: React.FC = () => {
                     <div 
                       key={day} 
                       className={`aspect-square flex items-center justify-center text-sm rounded-lg ${
-                        hasEntry ? 'bg-teal-primary/20' : 'bg-gray-50'
+                        hasEntry ? 'bg-teal-primary/20' : 'bg-light-gray'
                       }`}
                     >
                       {mood ? (
@@ -284,7 +285,7 @@ const Mood: React.FC = () => {
                         {entry.activities.length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {entry.activities.map((activity, idx) => (
-                              <span key={idx} className="text-xs bg-gray-100 px-2 py-1 rounded">
+                              <span key={idx} className="text-xs bg-light-gray px-2 py-1 rounded border">
                                 {activity}
                               </span>
                             ))}
@@ -306,13 +307,13 @@ const Mood: React.FC = () => {
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-navy-blue px-6 py-4">
+      <div className="fixed bottom-0 left-0 right-0 bg-dark-navy px-6 py-4">
         <div className="flex justify-around items-center max-w-md mx-auto">
           <div className="flex flex-col items-center">
             <div className="text-white text-xl mb-1">🏠</div>
           </div>
           <div className="flex flex-col items-center">
-            <div className="text-white text-xl mb-1">📊</div>
+            <div className="text-white text-xl mb-1">🎯</div>
           </div>
           <div className="flex flex-col items-center">
             <div className="w-12 h-12 bg-orange-accent rounded-full flex items-center justify-center text-white text-xl">+</div>

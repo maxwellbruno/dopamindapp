@@ -19,7 +19,7 @@ const LoadingScreen: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-navy-blue flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-dark-navy flex items-center justify-center relative overflow-hidden">
       {/* Floating Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-teal-primary/10 rounded-full blur-3xl animate-float"></div>
@@ -32,11 +32,13 @@ const LoadingScreen: React.FC = () => {
         <div className="mb-8 flex items-center justify-center">
           <div className="relative">
             <div className="absolute inset-0 bg-teal-primary rounded-2xl blur-xl opacity-60 animate-teal-glow"></div>
-            <div className="relative w-20 h-20 brain-icon shadow-2xl animate-breathe">
-              {/* Brain halves */}
-              <div className="w-full h-full flex">
-                <div className="w-1/2 h-full bg-gradient-to-br from-teal-primary to-button-teal rounded-l-2xl"></div>
-                <div className="w-1/2 h-full bg-gradient-to-bl from-teal-primary to-button-teal rounded-r-2xl"></div>
+            <div className="relative w-20 h-20 bg-gradient-to-br from-teal-primary to-mint-green rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
+              {/* Brain icon using rounded rectangles to match the design */}
+              <div className="w-12 h-10 relative">
+                <div className="absolute left-0 top-0 w-5 h-8 bg-white rounded-l-full"></div>
+                <div className="absolute right-0 top-0 w-5 h-8 bg-white rounded-r-full"></div>
+                <div className="absolute left-2 top-1 w-1 h-6 bg-teal-primary rounded-full"></div>
+                <div className="absolute right-2 top-1 w-1 h-6 bg-teal-primary rounded-full"></div>
               </div>
             </div>
           </div>

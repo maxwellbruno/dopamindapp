@@ -5,78 +5,79 @@
 
 @layer base {
   :root {
-    --background: 247 250 252;
-    --foreground: 45 55 72;
+    --background: 243 244 246;
+    --foreground: 31 41 55;
 
     --card: 255 255 255;
-    --card-foreground: 45 55 72;
+    --card-foreground: 31 41 55;
 
     --popover: 255 255 255;
-    --popover-foreground: 45 55 72;
+    --popover-foreground: 31 41 55;
 
-    --primary: 56 178 172;
+    --primary: 74 222 128;
     --primary-foreground: 255 255 255;
 
-    --secondary: 237 137 54;
+    --secondary: 245 158 11;
     --secondary-foreground: 255 255 255;
 
-    --muted: 226 232 240;
-    --muted-foreground: 113 128 150;
+    --muted: 243 244 246;
+    --muted-foreground: 107 114 128;
 
-    --accent: 26 54 93;
+    --accent: 26 35 50;
     --accent-foreground: 255 255 255;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
-    --border: 226 232 240;
-    --input: 226 232 240;
-    --ring: 56 178 172;
+    --border: 229 231 235;
+    --input: 229 231 235;
+    --ring: 74 222 128;
 
-    --radius: 1rem;
+    --radius: 1.5rem;
 
-    --success: 56 178 172;
-    --warning: 237 137 54;
+    --success: 74 222 128;
+    --warning: 245 158 11;
     
-    /* New Dopamind Color Palette */
-    --navy-blue: 26 54 93;
-    --teal-primary: 56 178 172;
-    --orange-accent: 237 137 54;
-    --card-white: 247 250 252;
-    --text-dark: 45 55 72;
-    --text-light: 113 128 150;
-    --button-teal: 49 151 149;
-    --background-dark: 26 32 44;
+    /* Updated Dopamind Color Palette */
+    --dark-navy: 26 35 50;
+    --teal-primary: 74 222 128;
+    --mint-green: 74 222 128;
+    --orange-accent: 245 158 11;
+    --card-white: 255 255 255;
+    --text-dark: 31 41 55;
+    --text-light: 107 114 128;
+    --light-gray: 243 244 246;
+    --darker-navy: 15 23 42;
   }
 
   .dark {
-    --background: 26 32 44;
+    --background: 15 23 42;
     --foreground: 248 250 252;
 
-    --card: 45 55 72;
+    --card: 31 41 55;
     --card-foreground: 248 250 252;
 
-    --popover: 45 55 72;
+    --popover: 31 41 55;
     --popover-foreground: 248 250 252;
 
-    --primary: 56 178 172;
+    --primary: 74 222 128;
     --primary-foreground: 255 255 255;
 
-    --secondary: 237 137 54;
+    --secondary: 245 158 11;
     --secondary-foreground: 255 255 255;
 
-    --muted: 74 85 104;
-    --muted-foreground: 156 163 175;
+    --muted: 71 85 105;
+    --muted-foreground: 148 163 184;
 
-    --accent: 26 54 93;
+    --accent: 26 35 50;
     --accent-foreground: 248 250 252;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
-    --border: 74 85 104;
-    --input: 74 85 104;
-    --ring: 56 178 172;
+    --border: 71 85 105;
+    --input: 71 85 105;
+    --ring: 74 222 128;
   }
 }
 
@@ -86,7 +87,7 @@
   }
 
   body {
-    @apply bg-card-white text-foreground font-inter antialiased;
+    @apply bg-light-gray text-foreground font-inter antialiased;
   }
 }
 
@@ -124,10 +125,10 @@
 
 @keyframes teal-glow {
   0%, 100% { 
-    box-shadow: 0 0 20px rgba(56, 178, 172, 0.3);
+    box-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
   }
   50% { 
-    box-shadow: 0 0 30px rgba(56, 178, 172, 0.6);
+    box-shadow: 0 0 30px rgba(74, 222, 128, 0.6);
   }
 }
 
@@ -153,7 +154,7 @@
 }
 
 .gradient-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(56, 178, 172, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(74, 222, 128, 0.3), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
@@ -162,17 +163,17 @@
 .dopamind-card {
   background: white;
   border-radius: 1.5rem; /* 24px */
-  box-shadow: 0 4px 20px rgba(26, 54, 93, 0.1);
+  box-shadow: 0 4px 20px rgba(26, 35, 50, 0.1);
   transition: all 0.3s ease;
 }
 
 .dopamind-card:hover {
-  box-shadow: 0 8px 25px rgba(26, 54, 93, 0.15);
+  box-shadow: 0 8px 25px rgba(26, 35, 50, 0.15);
 }
 
 /* Teal Glow Effect */
 .teal-glow {
-  box-shadow: 0 0 20px rgba(56, 178, 172, 0.4);
+  box-shadow: 0 0 20px rgba(74, 222, 128, 0.4);
 }
 
 /* Custom Scrollbar */
@@ -190,12 +191,12 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--navy-blue));
+  background: rgb(var(--dark-navy));
 }
 
 /* Brain Icon Styling */
 .brain-icon {
-  background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+  background: linear-gradient(135deg, #4ade80, #22c55e);
   border-radius: 1rem;
   display: flex;
   align-items: center;
@@ -210,7 +211,7 @@
   left: 50%;
   width: 2px;
   height: 60%;
-  background: #2d3748;
+  background: #1f2937;
   transform: translate(-50%, -50%);
   border-radius: 1px;
 }
