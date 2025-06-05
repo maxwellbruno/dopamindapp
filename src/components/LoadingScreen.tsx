@@ -19,33 +19,37 @@ const LoadingScreen: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-deep-blue flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-navy-blue flex items-center justify-center relative overflow-hidden">
       {/* Floating Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-mint-green/10 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-warm-orange/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute top-3/4 left-1/3 w-32 h-32 bg-mint-green/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-teal-primary/10 rounded-full blur-3xl animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-orange-accent/10 rounded-full blur-2xl animate-float" style={{ animationDelay: '1s' }}></div>
+        <div className="absolute top-3/4 left-1/3 w-32 h-32 bg-teal-primary/20 rounded-full blur-xl animate-float" style={{ animationDelay: '2s' }}></div>
       </div>
 
       <div className="text-center z-10 animate-fade-in-up">
-        {/* Brain Logo with Mint Glow Effect */}
+        {/* Brain Logo with Teal Gradient */}
         <div className="mb-8 flex items-center justify-center">
           <div className="relative">
-            <div className="absolute inset-0 bg-mint-green rounded-full blur-xl opacity-60 animate-mint-glow"></div>
-            <div className="relative w-20 h-20 bg-gradient-to-br from-mint-green to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
-              <span className="text-4xl">🧠</span>
+            <div className="absolute inset-0 bg-teal-primary rounded-2xl blur-xl opacity-60 animate-teal-glow"></div>
+            <div className="relative w-20 h-20 brain-icon shadow-2xl animate-breathe">
+              {/* Brain halves */}
+              <div className="w-full h-full flex">
+                <div className="w-1/2 h-full bg-gradient-to-br from-teal-primary to-button-teal rounded-l-2xl"></div>
+                <div className="w-1/2 h-full bg-gradient-to-bl from-teal-primary to-button-teal rounded-r-2xl"></div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* App Name */}
         <h1 className="text-5xl font-bold mb-4">
-          <span className="text-mint-green">
+          <span className="text-white">
             Dopamind
           </span>
         </h1>
         
-        <p className="text-lg text-warm-orange mb-8 font-medium">
+        <p className="text-lg text-orange-accent mb-8 font-medium">
           Your Digital Wellness Companion
         </p>
 
@@ -53,7 +57,7 @@ const LoadingScreen: React.FC = () => {
         <div className="w-64 mx-auto">
           <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-mint-green rounded-full transition-all duration-300 ease-out"
+              className="h-full bg-teal-primary rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
@@ -67,7 +71,7 @@ const LoadingScreen: React.FC = () => {
           {[0, 1, 2].map((i) => (
             <div
               key={i}
-              className="w-2 h-2 bg-mint-green rounded-full animate-gentle-pulse"
+              className="w-2 h-2 bg-teal-primary rounded-full animate-gentle-pulse"
               style={{ animationDelay: `${i * 0.3}s` }}
             ></div>
           ))}
@@ -78,4 +82,3 @@ const LoadingScreen: React.FC = () => {
 };
 
 export default LoadingScreen;
-

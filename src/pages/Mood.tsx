@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,16 +23,16 @@ const Mood: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
 
   const moods = [
-    { emoji: '😫', label: 'Stressed', color: 'bg-red-100' },
-    { emoji: '😐', label: 'Meh', color: 'bg-gray-100' },
-    { emoji: '🙂', label: 'Okay', color: 'bg-blue-100' },
-    { emoji: '😊', label: 'Good', color: 'bg-green-100' },
-    { emoji: '😁', label: 'Great', color: 'bg-yellow-100' },
+    { emoji: '😕', label: 'Sad', color: 'bg-orange-100' },
+    { emoji: '😐', label: 'Neutral', color: 'bg-gray-100' },
+    { emoji: '😊', label: 'Happy', color: 'bg-yellow-100' },
+    { emoji: '😄', label: 'Great', color: 'bg-green-100', selected: true },
+    { emoji: '🤩', label: 'Amazing', color: 'bg-blue-100' },
   ];
 
   const activities = [
-    'Worked out', 'Had coffee', 'Meditated', 'Slept well', 
-    'Read a book', 'Socialized', 'Ate well', 'Screen time'
+    'Exercise', 'Work', 'Reading', 'Social', 
+    'Sleep', 'Meditation', 'Hobbies', 'Travel'
   ];
 
   const handleActivityToggle = (activity: string) => {
@@ -73,7 +72,7 @@ const Mood: React.FC = () => {
 
   const getMoodSuggestion = () => {
     const recentEntries = moodEntries.slice(0, 3);
-    const negativeMoods = recentEntries.filter(entry => ['Stressed', 'Meh'].includes(entry.mood));
+    const negativeMoods = recentEntries.filter(entry => ['Sad', 'Neutral'].includes(entry.mood));
     
     if (negativeMoods.length >= 2) {
       return "Consider taking a short walk or doing a breathing exercise. Small actions can make a big difference! 🌱";
@@ -108,33 +107,136 @@ const Mood: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-mint pb-20">
+    <div className="min-h-screen bg-navy-blue pb-20">
       {/* Header */}
-      <div className="bg-deep-blue px-4 py-6 shadow-sm">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-xl font-bold text-white text-center">Mood Tracker</h1>
+      <div className="bg-navy-blue px-4 py-6 shadow-sm">
+        <div className="max-w-md mx-auto flex items-center">
+          <button className="text-white text-xl mr-4">←</button>
+          <h1 className="text-xl font-bold text-white text-center flex-1">Mood Tracker</h1>
         </div>
       </div>
 
       <div className="px-4 pt-6">
         <div className="max-w-md mx-auto">
-          {!showForm ? (
+          {showForm ? (
+            <div className="dopamind-card p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-bold text-text-dark">How are you feeling?</h2>
+                <Button 
+                  onClick={() => setShowForm(false)}
+                  variant="outline"
+                  size="sm"
+                  className="text-text-light border-gray-200"
+                >
+                  ✕
+                </Button>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between gap-3">
+                    {moods.map((mood, index) => (
+                      <button
+                        key={mood.label}
+                        onClick={() => setSelectedMood(mood.label)}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-all ${
+                          selectedMood === mood.label || (selectedMood === '' && mood.selected)
+                            ? 'bg-teal-primary ring-2 ring-teal-primary ring-offset-2' 
+                            : 'bg-gray-100 hover:bg-gray-200'
+                        }`}
+                      >
+                        {mood.emoji}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-base font-semibold mb-4 block text-text-dark">
+                    Intensity
+                  </Label>
+                  <div className="relative">
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      value={intensity}
+                      onChange={(e) => setIntensity(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
+                      style={{
+                        background: `linear-gradient(to right, #38b2ac 0%, #38b2ac ${(intensity - 1) * 25}%, #e2e8f0 ${(intensity - 1) * 25}%, #e2e8f0 100%)`
+                      }}
+                    />
+                    <div 
+                      className="absolute top-1/2 w-6 h-6 bg-navy-blue rounded-full transform -translate-y-1/2 -translate-x-3 pointer-events-none"
+                      style={{ left: `${(intensity - 1) * 25}%` }}
+                    ></div>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="note" className="text-base font-semibold mb-3 block text-text-dark">
+                    Notes
+                  </Label>
+                  <Textarea
+                    id="note"
+                    value={note}
+                    onChange={(e) => setNote(e.target.value)}
+                    placeholder=""
+                    rows={3}
+                    className="border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-gray-50"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-base font-semibold mb-3 block text-text-dark">
+                    Activity
+                  </Label>
+                  <div className="flex flex-wrap gap-2">
+                    {activities.slice(0, 3).map((activity) => (
+                      <button
+                        key={activity}
+                        onClick={() => handleActivityToggle(activity)}
+                        className={`px-4 py-2 text-sm rounded-full transition-colors ${
+                          selectedActivities.includes(activity)
+                            ? 'bg-button-teal text-white'
+                            : activity === 'Exercise' 
+                              ? 'bg-button-teal text-white'
+                              : 'bg-gray-200 text-text-dark hover:bg-gray-300'
+                        }`}
+                      >
+                        {activity}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={!selectedMood}
+                  className="w-full bg-button-teal hover:bg-teal-primary text-white h-12 rounded-xl font-semibold"
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
+          ) : (
             <>
               <div className="dopamind-card p-6 mb-6">
-                <h2 className="text-lg font-semibold text-deep-blue mb-4 text-center">Track Your Mood</h2>
+                <h2 className="text-lg font-semibold text-text-dark mb-4 text-center">Track Your Mood</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="bg-mint-green hover:bg-emerald-600 text-white w-full h-12 rounded-xl font-semibold"
+                  className="bg-button-teal hover:bg-teal-primary text-white w-full h-12 rounded-xl font-semibold"
                 >
                   How are you feeling?
                 </Button>
               </div>
 
               <div className="dopamind-card p-6 mb-6">
-                <h3 className="font-semibold text-deep-blue mb-4">This Month</h3>
+                <h3 className="font-semibold text-text-dark mb-4">This Month</h3>
                 <div className="grid grid-cols-7 gap-2">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                    <div key={day} className="text-center text-xs text-gray-500 font-medium p-2">
+                    <div key={day} className="text-center text-xs text-text-light font-medium p-2">
                       {day}
                     </div>
                   ))}
@@ -142,7 +244,7 @@ const Mood: React.FC = () => {
                     <div 
                       key={day} 
                       className={`aspect-square flex items-center justify-center text-sm rounded-lg ${
-                        hasEntry ? 'bg-mint-green/20' : 'bg-gray-50'
+                        hasEntry ? 'bg-teal-primary/20' : 'bg-gray-50'
                       }`}
                     >
                       {mood ? (
@@ -156,12 +258,12 @@ const Mood: React.FC = () => {
               </div>
 
               <div className="dopamind-card p-6 mb-6">
-                <h3 className="font-semibold text-deep-blue mb-4">Wellness Suggestion</h3>
-                <p className="text-gray-600">{getMoodSuggestion()}</p>
+                <h3 className="font-semibold text-text-dark mb-4">Wellness Suggestion</h3>
+                <p className="text-text-light">{getMoodSuggestion()}</p>
               </div>
 
               <div className="dopamind-card p-4">
-                <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
+                <h3 className="font-semibold text-text-dark mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {
                     const moodData = moods.find(m => m.label === entry.mood);
@@ -170,14 +272,14 @@ const Mood: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
                             <span className="text-lg">{moodData?.emoji}</span>
-                            <span className="font-medium text-deep-blue">{entry.mood}</span>
+                            <span className="font-medium text-text-dark">{entry.mood}</span>
                           </div>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-text-light">
                             {new Date(entry.date).toLocaleDateString()}
                           </span>
                         </div>
                         {entry.note && (
-                          <p className="text-sm text-gray-600 mb-1">{entry.note}</p>
+                          <p className="text-sm text-text-light mb-1">{entry.note}</p>
                         )}
                         {entry.activities.length > 0 && (
                           <div className="flex flex-wrap gap-1">
@@ -192,109 +294,35 @@ const Mood: React.FC = () => {
                     );
                   })}
                   {moodEntries.length === 0 && (
-                    <div className="text-center text-gray-500 py-4">
+                    <div className="text-center text-text-light py-4">
                       No mood entries yet. Start tracking your mood!
                     </div>
                   )}
                 </div>
               </div>
             </>
-          ) : (
-            <div className="dopamind-card p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-semibold text-deep-blue">How are you feeling?</h2>
-                <Button 
-                  onClick={() => setShowForm(false)}
-                  variant="outline"
-                  size="sm"
-                  className="text-gray-500 border-gray-200"
-                >
-                  Cancel
-                </Button>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <div className="grid grid-cols-5 gap-3">
-                    {moods.map((mood) => (
-                      <button
-                        key={mood.label}
-                        onClick={() => setSelectedMood(mood.label)}
-                        className={`p-3 rounded-xl text-center transition-all ${
-                          selectedMood === mood.label 
-                            ? 'bg-mint-green ring-2 ring-deep-blue' 
-                            : 'bg-light-mint hover:bg-mint-green/20'
-                        }`}
-                      >
-                        <div className="text-2xl mb-1">{mood.emoji}</div>
-                        <div className="text-xs font-medium text-deep-blue">{mood.label}</div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label className="text-base font-medium mb-3 block text-deep-blue">
-                    Intensity (1-5): {intensity}
-                  </Label>
-                  <div className="flex justify-between">
-                    {[1, 2, 3, 4, 5].map((val) => (
-                      <button
-                        key={val}
-                        onClick={() => setIntensity(val)}
-                        className={`w-6 h-6 rounded-full border-2 border-mint-green transition-colors ${
-                          intensity === val ? 'bg-mint-green' : 'bg-gray-100'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="note" className="text-base font-medium mb-3 block text-deep-blue">
-                    What's on your mind? (optional)
-                  </Label>
-                  <Textarea
-                    id="note"
-                    value={note}
-                    onChange={(e) => setNote(e.target.value)}
-                    placeholder="Describe your feelings or what influenced your mood"
-                    rows={3}
-                    className="border-mint-green focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-gray-50"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-base font-medium mb-3 block text-deep-blue">
-                    Activities today (select all that apply)
-                  </Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    {activities.map((activity) => (
-                      <button
-                        key={activity}
-                        onClick={() => handleActivityToggle(activity)}
-                        className={`p-3 text-sm rounded-xl text-center transition-colors ${
-                          selectedActivities.includes(activity)
-                            ? 'bg-mint-green text-white'
-                            : 'bg-light-mint hover:bg-mint-green/20 text-deep-blue'
-                        }`}
-                      >
-                        {activity}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <Button 
-                  onClick={handleSubmit}
-                  disabled={!selectedMood}
-                  className="w-full bg-mint-green hover:bg-emerald-600 text-white h-12 rounded-xl font-semibold"
-                >
-                  Save Mood Entry
-                </Button>
-              </div>
-            </div>
           )}
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-navy-blue px-6 py-4">
+        <div className="flex justify-around items-center max-w-md mx-auto">
+          <div className="flex flex-col items-center">
+            <div className="text-white text-xl mb-1">🏠</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="text-white text-xl mb-1">📊</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 bg-orange-accent rounded-full flex items-center justify-center text-white text-xl">+</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="text-white text-xl mb-1">🔔</div>
+          </div>
+          <div className="flex flex-col items-center">
+            <div className="text-white text-xl mb-1">👤</div>
+          </div>
         </div>
       </div>
     </div>
@@ -302,4 +330,3 @@ const Mood: React.FC = () => {
 };
 
 export default Mood;
-

@@ -56,13 +56,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Dopamind New Color Palette
-				'deep-blue': '#1E3A8A',
-				'mint-green': '#10B981', 
-				'warm-orange': '#F59E0B',
-				'pure-white': '#FFFFFF',
-				'light-gray': '#9CA3AF',
-				'light-mint': '#F0FDF4',
+				// New Dopamind Colors from the image
+				'navy-blue': '#1a365d',
+				'teal-primary': '#38b2ac',
+				'orange-accent': '#ed8936',
+				'card-white': '#f7fafc',
+				'text-dark': '#2d3748',
+				'text-light': '#718096',
+				'button-teal': '#319795',
+				'background-dark': '#1a202c',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -108,12 +110,12 @@ export default {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.7' }
 				},
-				'mint-glow': {
+				'teal-glow': {
 					'0%, 100%': { 
-						boxShadow: '0 0 20px rgba(16, 185, 129, 0.3)'
+						boxShadow: '0 0 20px rgba(56, 178, 172, 0.3)'
 					},
 					'50%': { 
-						boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)'
+						boxShadow: '0 0 30px rgba(56, 178, 172, 0.6)'
 					}
 				}
 			},
@@ -124,10 +126,9 @@ export default {
 				float: 'float 3s ease-in-out infinite',
 				'fade-in-up': 'fade-in-up 0.6s ease-out',
 				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite',
-				'mint-glow': 'mint-glow 3s ease-in-out infinite'
+				'teal-glow': 'teal-glow 3s ease-in-out infinite'
 			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

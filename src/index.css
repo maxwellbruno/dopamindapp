@@ -5,77 +5,78 @@
 
 @layer base {
   :root {
-    --background: 249 250 251;
-    --foreground: 55 65 81;
+    --background: 247 250 252;
+    --foreground: 45 55 72;
 
     --card: 255 255 255;
-    --card-foreground: 55 65 81;
+    --card-foreground: 45 55 72;
 
     --popover: 255 255 255;
-    --popover-foreground: 55 65 81;
+    --popover-foreground: 45 55 72;
 
-    --primary: 16 185 129;
+    --primary: 56 178 172;
     --primary-foreground: 255 255 255;
 
-    --secondary: 245 158 11;
+    --secondary: 237 137 54;
     --secondary-foreground: 255 255 255;
 
-    --muted: 209 213 219;
-    --muted-foreground: 107 114 128;
+    --muted: 226 232 240;
+    --muted-foreground: 113 128 150;
 
-    --accent: 30 58 138;
+    --accent: 26 54 93;
     --accent-foreground: 255 255 255;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
-    --border: 229 231 235;
-    --input: 209 213 219;
-    --ring: 16 185 129;
+    --border: 226 232 240;
+    --input: 226 232 240;
+    --ring: 56 178 172;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --success: 16 185 129;
-    --warning: 245 158 11;
+    --success: 56 178 172;
+    --warning: 237 137 54;
     
-    /* Dopamind New Color Palette */
-    --deep-blue: 30 58 138;
-    --mint-green: 16 185 129;
-    --warm-orange: 245 158 11;
-    --pure-white: 255 255 255;
-    --light-gray: 156 163 175;
-    --light-mint: 240 253 244;
-    --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    /* New Dopamind Color Palette */
+    --navy-blue: 26 54 93;
+    --teal-primary: 56 178 172;
+    --orange-accent: 237 137 54;
+    --card-white: 247 250 252;
+    --text-dark: 45 55 72;
+    --text-light: 113 128 150;
+    --button-teal: 49 151 149;
+    --background-dark: 26 32 44;
   }
 
   .dark {
-    --background: 30 58 138;
+    --background: 26 32 44;
     --foreground: 248 250 252;
 
-    --card: 39 41 53;
+    --card: 45 55 72;
     --card-foreground: 248 250 252;
 
-    --popover: 39 41 53;
+    --popover: 45 55 72;
     --popover-foreground: 248 250 252;
 
-    --primary: 16 185 129;
+    --primary: 56 178 172;
     --primary-foreground: 255 255 255;
 
-    --secondary: 245 158 11;
+    --secondary: 237 137 54;
     --secondary-foreground: 255 255 255;
 
-    --muted: 75 85 99;
+    --muted: 74 85 104;
     --muted-foreground: 156 163 175;
 
-    --accent: 30 58 138;
+    --accent: 26 54 93;
     --accent-foreground: 248 250 252;
 
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
-    --border: 75 85 99;
-    --input: 75 85 99;
-    --ring: 16 185 129;
+    --border: 74 85 104;
+    --input: 74 85 104;
+    --ring: 56 178 172;
   }
 }
 
@@ -85,7 +86,7 @@
   }
 
   body {
-    @apply bg-light-mint text-foreground font-inter antialiased;
+    @apply bg-card-white text-foreground font-inter antialiased;
   }
 }
 
@@ -121,12 +122,12 @@
   100% { background-position: 200% 0; }
 }
 
-@keyframes mint-glow {
+@keyframes teal-glow {
   0%, 100% { 
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+    box-shadow: 0 0 20px rgba(56, 178, 172, 0.3);
   }
   50% { 
-    box-shadow: 0 0 30px rgba(16, 185, 129, 0.6);
+    box-shadow: 0 0 30px rgba(56, 178, 172, 0.6);
   }
 }
 
@@ -147,31 +148,31 @@
   animation: gentle-pulse 2s ease-in-out infinite;
 }
 
-.animate-mint-glow {
-  animation: mint-glow 3s ease-in-out infinite;
+.animate-teal-glow {
+  animation: teal-glow 3s ease-in-out infinite;
 }
 
 .gradient-shimmer {
-  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.3), transparent);
+  background: linear-gradient(90deg, transparent, rgba(56, 178, 172, 0.3), transparent);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
 }
 
-/* Modern Card Styles - Updated */
+/* Modern Card Styles - Updated to match image */
 .dopamind-card {
   background: white;
-  border-radius: 1.125rem; /* 18px */
-  box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.08), 0 2px 4px -1px rgba(30, 58, 138, 0.06);
+  border-radius: 1.5rem; /* 24px */
+  box-shadow: 0 4px 20px rgba(26, 54, 93, 0.1);
   transition: all 0.3s ease;
 }
 
 .dopamind-card:hover {
-  box-shadow: 0 10px 15px -3px rgba(30, 58, 138, 0.1), 0 4px 6px -2px rgba(30, 58, 138, 0.08);
+  box-shadow: 0 8px 25px rgba(26, 54, 93, 0.15);
 }
 
-/* Mint Green Glow Effect */
-.mint-glow {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+/* Teal Glow Effect */
+.teal-glow {
+  box-shadow: 0 0 20px rgba(56, 178, 172, 0.4);
 }
 
 /* Custom Scrollbar */
@@ -180,15 +181,36 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: rgb(var(--light-gray));
+  background: rgb(var(--text-light));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgb(var(--mint-green));
+  background: rgb(var(--teal-primary));
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgb(var(--deep-blue));
+  background: rgb(var(--navy-blue));
 }
 
+/* Brain Icon Styling */
+.brain-icon {
+  background: linear-gradient(135deg, #4fd1c7, #38b2ac);
+  border-radius: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.brain-icon::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2px;
+  height: 60%;
+  background: #2d3748;
+  transform: translate(-50%, -50%);
+  border-radius: 1px;
+}
