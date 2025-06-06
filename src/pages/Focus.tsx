@@ -161,7 +161,7 @@ const Focus: React.FC = () => {
   const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
 
   return (
-    <div className="min-h-screen bg-light-gray pb-20">
+    <div className="min-h-screen bg-light-bg pb-20">
       <div className="px-4 pt-8">
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
@@ -172,26 +172,26 @@ const Focus: React.FC = () => {
               placeholder="Name your focus session"
               value={sessionName}
               onChange={(e) => setSessionName(e.target.value)}
-              className="w-full bg-white border-gray-300 text-text-dark placeholder:text-text-light rounded-2xl h-12 focus:border-teal-primary focus:ring-teal-primary/20"
+              className="w-full bg-pure-white border-light-gray text-text-dark placeholder:text-light-gray rounded-2xl h-12 focus:border-mint-green focus:ring-mint-green/20"
             />
           </div>
 
           {/* Timer Display */}
           <div className="dopamind-card p-8 mb-6 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="text-6xl font-bold bg-gradient-to-r from-teal-primary to-mint-green bg-clip-text text-transparent mb-4">
+            <div className="text-6xl font-bold bg-gradient-to-r from-mint-green to-mint-green/80 bg-clip-text text-transparent mb-4">
               {formatTime(timeLeft)}
             </div>
-            <p className="text-text-light mb-6">
+            <p className="text-light-gray mb-6">
               {isBreak ? 'Break Time' : 'Focus Time'} • {isBreak ? breakDuration : sessionDuration} min
             </p>
 
             <div className="flex gap-3 justify-center">
               {!canStartSession ? (
                 <div className="text-center">
-                  <p className="text-sm text-text-light mb-3">Free users: {todaySessions}/{maxFreeSessions} sessions today</p>
+                  <p className="text-sm text-light-gray mb-3">Free users: {todaySessions}/{maxFreeSessions} sessions today</p>
                   <Button 
                     disabled
-                    className="bg-gray-300 text-gray-500 rounded-2xl px-8 h-12"
+                    className="bg-light-gray text-text-dark/50 rounded-2xl px-8 h-12"
                   >
                     Daily Limit Reached
                   </Button>
@@ -200,14 +200,14 @@ const Focus: React.FC = () => {
                 <>
                   <Button 
                     onClick={isRunning ? pauseTimer : startTimer}
-                    className="bg-gradient-to-r from-teal-primary to-mint-green text-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
+                    className="bg-gradient-to-r from-mint-green to-mint-green/80 text-pure-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
                   >
                     {isRunning ? 'Pause' : 'Start'}
                   </Button>
                   <Button 
                     onClick={resetTimer}
                     variant="outline"
-                    className="rounded-2xl px-8 h-12 border-gray-300"
+                    className="rounded-2xl px-8 h-12 border-light-gray text-text-dark"
                   >
                     Reset
                   </Button>
@@ -224,9 +224,9 @@ const Focus: React.FC = () => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-text-dark font-medium">Session Duration</span>
-                  <span className="text-text-light">{sessionDuration} min</span>
+                  <span className="text-light-gray">{sessionDuration} min</span>
                   {!canCustomizeDuration && sessionDuration >= maxFreeSessionDuration && (
-                    <span className="text-xs text-orange-accent bg-orange-accent/10 px-2 py-1 rounded-full">Free Limit</span>
+                    <span className="text-xs text-warm-orange bg-warm-orange/10 px-2 py-1 rounded-full">Free Limit</span>
                   )}
                 </div>
                 <input
@@ -235,20 +235,20 @@ const Focus: React.FC = () => {
                   max={canCustomizeDuration ? "240" : maxFreeSessionDuration.toString()}
                   value={sessionDuration}
                   onChange={(e) => handleSessionDurationChange(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-light-gray rounded-lg appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb 100%)`
+                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #D1D5DB ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #D1D5DB 100%)`
                   }}
                 />
                 {!canCustomizeDuration && (
-                  <p className="text-xs text-text-light mt-1">Upgrade to Pro for custom durations up to 4 hours</p>
+                  <p className="text-xs text-light-gray mt-1">Upgrade to Pro for custom durations up to 4 hours</p>
                 )}
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-text-dark font-medium">Break Duration</span>
-                  <span className="text-text-light">{breakDuration} min</span>
+                  <span className="text-light-gray">{breakDuration} min</span>
                 </div>
                 <input
                   type="range"
@@ -256,9 +256,9 @@ const Focus: React.FC = () => {
                   max="30"
                   value={breakDuration}
                   onChange={(e) => setBreakDuration(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  className="w-full h-2 bg-light-gray rounded-lg appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${((breakDuration - 5) / 25) * 100}%, #e5e7eb ${((breakDuration - 5) / 25) * 100}%, #e5e7eb 100%)`
+                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((breakDuration - 5) / 25) * 100}%, #D1D5DB ${((breakDuration - 5) / 25) * 100}%, #D1D5DB 100%)`
                   }}
                 />
               </div>
@@ -270,12 +270,12 @@ const Focus: React.FC = () => {
             <h3 className="text-lg font-semibold text-text-dark mb-4">Session Stats</h3>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
                   <span className="text-lg">📊</span>
                 </div>
                 <div>
                   <div className="text-lg font-bold text-text-dark">Total Sessions: {totalSessions}</div>
-                  <div className="text-sm text-text-light">Current Streak: {currentStreak} days</div>
+                  <div className="text-sm text-light-gray">Current Streak: {currentStreak} days</div>
                 </div>
               </div>
             </div>
@@ -287,20 +287,20 @@ const Focus: React.FC = () => {
             
             {!isBreathing ? (
               <div className="text-center">
-                <p className="text-text-light mb-4">Practice mindful breathing to center yourself</p>
+                <p className="text-light-gray mb-4">Practice mindful breathing to center yourself</p>
                 <Button 
                   onClick={startBreathingExercise}
-                  className="bg-gradient-to-r from-teal-primary to-mint-green text-white font-semibold rounded-2xl px-6 h-10 shadow-lg"
+                  className="bg-gradient-to-r from-mint-green to-mint-green/80 text-pure-white font-semibold rounded-2xl px-6 h-10 shadow-lg"
                 >
                   Start Breathing
                 </Button>
               </div>
             ) : (
               <div className="text-center">
-                <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-lg transition-all duration-1000 ${
-                  breathPhase === 'in' ? 'bg-teal-primary scale-110' :
-                  breathPhase === 'hold' ? 'bg-orange-accent scale-110' :
-                  'bg-mint-green scale-90'
+                <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-pure-white font-bold text-lg transition-all duration-1000 ${
+                  breathPhase === 'in' ? 'bg-mint-green scale-110' :
+                  breathPhase === 'hold' ? 'bg-warm-orange scale-110' :
+                  'bg-mint-green/80 scale-90'
                 }`}>
                   {breathTimer}
                 </div>
@@ -310,7 +310,7 @@ const Focus: React.FC = () => {
                 <Button 
                   onClick={stopBreathingExercise}
                   variant="outline"
-                  className="rounded-2xl border-gray-300"
+                  className="rounded-2xl border-light-gray text-text-dark"
                 >
                   Stop
                 </Button>
@@ -333,19 +333,19 @@ const Focus: React.FC = () => {
                       value={sound.id}
                       checked={selectedSound === sound.id}
                       onChange={(e) => setSelectedSound(e.target.value)}
-                      className="text-teal-primary"
+                      className="text-mint-green"
                     />
                   </div>
                 </div>
               ))}
               
               {!isPremium && (
-                <div className="pt-2 border-t border-gray-200">
-                  <p className="text-xs text-text-light mb-2">Premium sounds available with Pro</p>
+                <div className="pt-2 border-t border-light-gray">
+                  <p className="text-xs text-light-gray mb-2">Premium sounds available with Pro</p>
                   <div className="space-y-2">
                     {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
                       <div key={sound.id} className="flex items-center justify-between opacity-50">
-                        <span className="text-gray-400">{sound.name} 🔒</span>
+                        <span className="text-light-gray">{sound.name} 🔒</span>
                       </div>
                     ))}
                   </div>
