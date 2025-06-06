@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -75,8 +74,8 @@ const Profile: React.FC = () => {
 
   const getTierColor = () => {
     switch (subscription.tier) {
-      case 'pro': return 'from-teal-primary to-mint-green';
-      case 'elite': return 'from-orange-accent to-teal-primary';
+      case 'pro': return 'from-mint-green to-mint-green';
+      case 'elite': return 'from-warm-orange to-mint-green';
       default: return 'from-gray-400 to-gray-500';
     }
   };
@@ -98,7 +97,7 @@ const Profile: React.FC = () => {
           {/* User Info */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up">
             <div className="text-center mb-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-teal-primary to-mint-green rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
+              <div className="w-20 h-20 bg-gradient-to-br from-mint-green to-mint-green rounded-full flex items-center justify-center mx-auto mb-3 shadow-lg">
                 <span className="text-2xl text-white font-bold">
                   {user?.name?.charAt(0).toUpperCase()}
                 </span>
@@ -123,24 +122,24 @@ const Profile: React.FC = () => {
                 <p className="text-text-light mb-4">Unlock premium features to enhance your wellness journey</p>
                 <Dialog open={showPricing} onOpenChange={setShowPricing}>
                   <DialogTrigger asChild>
-                    <Button className="w-full bg-gradient-to-r from-teal-primary to-mint-green text-white font-semibold rounded-2xl shadow-lg hover:scale-[1.02] transition-transform">
+                    <Button className="w-full bg-gradient-to-r from-mint-green to-mint-green text-white font-semibold rounded-2xl shadow-lg hover:scale-[1.02] transition-transform">
                       Upgrade to Pro
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-white border-0 rounded-3xl max-w-md">
+                  <DialogContent className="bg-light-gray border-0 rounded-3xl max-w-md max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle className="text-center text-text-dark text-xl font-bold">Choose Your Plan</DialogTitle>
+                      <DialogTitle className="text-center text-deep-blue text-xl font-bold">Choose Your Plan</DialogTitle>
                     </DialogHeader>
                     
                     <div className="space-y-4 mt-6">
                       {/* Pro Plan */}
-                      <div className="border-2 border-teal-primary rounded-2xl p-6 relative">
+                      <div className="border-2 border-mint-green rounded-2xl p-6 relative bg-white">
                         <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <span className="bg-teal-primary text-white px-3 py-1 rounded-full text-sm font-semibold">Most Popular</span>
+                          <span className="bg-mint-green text-white px-3 py-1 rounded-full text-sm font-semibold">Most Popular</span>
                         </div>
-                        <h4 className="text-lg font-bold text-text-dark mb-2">Dopamind Pro</h4>
+                        <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
                         <div className="flex items-baseline mb-4">
-                          <span className="text-3xl font-bold text-text-dark">$4.99</span>
+                          <span className="text-3xl font-bold text-deep-blue">$4.99</span>
                           <span className="text-text-light ml-1">/month</span>
                         </div>
                         <ul className="space-y-2 text-sm text-text-light mb-6">
@@ -154,17 +153,17 @@ const Profile: React.FC = () => {
                         </ul>
                         <Button 
                           onClick={() => handleUpgrade('pro')}
-                          className="w-full bg-teal-primary text-white font-semibold rounded-xl"
+                          className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90"
                         >
                           Start Free Trial
                         </Button>
                       </div>
 
                       {/* Elite Plan */}
-                      <div className="border border-orange-accent rounded-2xl p-6">
-                        <h4 className="text-lg font-bold text-text-dark mb-2">Dopamind Elite</h4>
+                      <div className="border border-warm-orange rounded-2xl p-6 bg-white">
+                        <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
                         <div className="flex items-baseline mb-4">
-                          <span className="text-3xl font-bold text-text-dark">$9.99</span>
+                          <span className="text-3xl font-bold text-deep-blue">$9.99</span>
                           <span className="text-text-light ml-1">/month</span>
                         </div>
                         <ul className="space-y-2 text-sm text-text-light mb-6">
@@ -177,7 +176,7 @@ const Profile: React.FC = () => {
                         </ul>
                         <Button 
                           onClick={() => handleUpgrade('elite')}
-                          className="w-full bg-orange-accent text-white font-semibold rounded-xl"
+                          className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90"
                         >
                           Start Free Trial
                         </Button>
@@ -215,24 +214,24 @@ const Profile: React.FC = () => {
             
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-teal-primary to-mint-green bg-clip-text text-transparent">
+                <div className="text-2xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent">
                   {totalHours}h {totalMinutes}m
                 </div>
                 <div className="text-sm text-text-light">Total Focus Time</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-orange-accent to-teal-primary bg-clip-text text-transparent">{stats.currentStreak}</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-warm-orange to-mint-green bg-clip-text text-transparent">{stats.currentStreak}</div>
                 <div className="text-sm text-text-light">Current Streak</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-mint-green to-teal-primary bg-clip-text text-transparent">{sessions.length}</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent">{sessions.length}</div>
                 <div className="text-sm text-text-light">Sessions Completed</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-orange-accent to-teal-primary bg-clip-text text-transparent">{averageSessionLength}m</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-warm-orange to-mint-green bg-clip-text text-transparent">{averageSessionLength}m</div>
                 <div className="text-sm text-text-light">Avg Session</div>
               </div>
             </div>
@@ -243,7 +242,7 @@ const Profile: React.FC = () => {
               </div>
               <div className="w-full bg-gray-200 rounded-full h-3">
                 <div 
-                  className="bg-gradient-to-r from-teal-primary to-mint-green h-3 rounded-full transition-all duration-300"
+                  className="bg-gradient-to-r from-mint-green to-mint-green h-3 rounded-full transition-all duration-300"
                   style={{ 
                     width: `${Math.min(100, (stats.totalFocusMinutes / settings.dailyFocusGoal) * 100)}%` 
                   }}
@@ -259,9 +258,8 @@ const Profile: React.FC = () => {
               {!isEditing ? (
                 <Button 
                   onClick={() => setIsEditing(true)}
-                  variant="outline"
+                  className="bg-mint-green text-white rounded-xl hover:bg-mint-green/90"
                   size="sm"
-                  className="rounded-xl border-gray-300"
                 >
                   Edit
                 </Button>
@@ -270,7 +268,7 @@ const Profile: React.FC = () => {
                   <Button 
                     onClick={handleSaveSettings}
                     size="sm"
-                    className="bg-teal-primary hover:bg-mint-green rounded-xl"
+                    className="bg-mint-green hover:bg-mint-green/90 rounded-xl"
                   >
                     Save
                   </Button>
@@ -300,10 +298,10 @@ const Profile: React.FC = () => {
                     }))}
                     min="30"
                     max="480"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-teal-primary"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
                   />
                 ) : (
-                  <div className="mt-1 text-text-dark bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
+                  <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
                 )}
               </div>
 
@@ -318,10 +316,10 @@ const Profile: React.FC = () => {
                       ...prev,
                       reminderTime: e.target.value
                     }))}
-                    className="mt-1 rounded-xl border-gray-300 focus:border-teal-primary"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
                   />
                 ) : (
-                  <div className="mt-1 text-text-dark bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
+                  <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
                 )}
               </div>
 
@@ -336,10 +334,10 @@ const Profile: React.FC = () => {
                       customAffirmation: e.target.value
                     }))}
                     placeholder="Enter your personal affirmation"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-teal-primary"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
                   />
                 ) : (
-                  <div className="mt-1 text-text-dark bg-gray-100 rounded-xl p-3 italic">"{settings.customAffirmation}"</div>
+                  <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3 italic">"{settings.customAffirmation}"</div>
                 )}
               </div>
             </div>
@@ -349,8 +347,7 @@ const Profile: React.FC = () => {
           <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button 
               onClick={logout}
-              variant="outline"
-              className="w-full text-red-600 border-red-600 hover:bg-red-50 rounded-xl"
+              className="w-full bg-warm-orange text-white hover:bg-warm-orange/90 rounded-xl"
             >
               Sign Out
             </Button>

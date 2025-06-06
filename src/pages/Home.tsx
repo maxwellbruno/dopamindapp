@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -22,6 +21,7 @@ const Home: React.FC = () => {
   });
 
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showChatPrompt, setShowChatPrompt] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -73,6 +73,15 @@ const Home: React.FC = () => {
 
   const isPremium = subscription.isPro || subscription.isElite;
 
+  const handleChatClick = () => {
+    if (!isPremium) {
+      setShowChatPrompt(true);
+    } else {
+      // Navigate to chat - for now just show alert
+      alert('Welcome to Mindfulnest! AI chat feature coming soon.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
@@ -98,8 +107,8 @@ const Home: React.FC = () => {
                 <div className="flex items-center space-x-2">
                   <div className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
                     subscription.isElite 
-                      ? 'bg-gradient-to-r from-orange-accent to-teal-primary' 
-                      : 'bg-gradient-to-r from-teal-primary to-mint-green'
+                      ? 'bg-gradient-to-r from-warm-orange to-mint-green' 
+                      : 'bg-gradient-to-r from-mint-green to-mint-green'
                   }`}>
                     {subscription.isElite ? '👑 Elite' : '🧠 Pro'}
                   </div>
@@ -112,7 +121,7 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <div className="dopamind-card p-4 animate-fade-in-up">
               <h3 className="text-sm font-semibold text-text-light mb-2">Daily Focus</h3>
-              <div className="text-2xl font-bold text-teal-primary">
+              <div className="text-2xl font-bold text-mint-green">
                 {totalHours}h {totalMinutes}m
               </div>
               <div className="text-xs text-text-light mt-1">{todaySessions} sessions today</div>
@@ -120,7 +129,7 @@ const Home: React.FC = () => {
 
             <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
               <h3 className="text-sm font-semibold text-text-light mb-2">Mood Summary</h3>
-              <div className="text-2xl font-bold text-orange-accent">
+              <div className="text-2xl font-bold text-warm-orange">
                 {getMoodLabel(averageMood)}
               </div>
               <div className="text-xs text-text-light mt-1">{moods.length} entries</div>
@@ -132,7 +141,7 @@ const Home: React.FC = () => {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-text-dark mb-1">Current Streak</h3>
-                <div className="text-3xl font-bold text-orange-accent">
+                <div className="text-3xl font-bold text-warm-orange">
                   {stats.currentStreak} days
                 </div>
                 <p className="text-sm text-text-light mt-1">Keep up the momentum!</p>
@@ -141,10 +150,34 @@ const Home: React.FC = () => {
             </div>
           </div>
 
+          {/* AI Chat Button */}
+          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.25s' }}>
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center flex-shrink-0">
+                <span className="text-xl">🤖</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-text-dark mb-1">Mindfulnest AI</h3>
+                <p className="text-text-light text-sm">Chat with your personal wellness assistant</p>
+              </div>
+              <button 
+                onClick={handleChatClick}
+                className={`px-4 py-2 rounded-2xl font-semibold text-sm transition-all ${
+                  isPremium 
+                    ? 'bg-mint-green text-white hover:scale-105' 
+                    : 'bg-gray-200 text-gray-500'
+                }`}
+                disabled={!isPremium}
+              >
+                {isPremium ? 'Chat' : '🔒 Pro'}
+              </button>
+            </div>
+          </div>
+
           {/* Productivity Insight */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <div className="flex items-start space-x-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-teal-primary to-mint-green rounded-2xl flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center flex-shrink-0">
                 <span className="text-xl">💡</span>
               </div>
               <div>
@@ -158,7 +191,7 @@ const Home: React.FC = () => {
           <div className="grid grid-cols-2 gap-4 mb-6">
             <Link to="/focus">
               <div className="dopamind-card p-6 hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-teal-primary to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl text-white">🎯</span>
                 </div>
                 <h3 className="text-center font-semibold text-text-dark">Focus</h3>
@@ -168,7 +201,7 @@ const Home: React.FC = () => {
 
             <Link to="/mood">
               <div className="dopamind-card p-6 hover:scale-[1.02] transition-transform duration-300 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                <div className="w-12 h-12 bg-gradient-to-br from-orange-accent to-teal-primary rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <div className="w-12 h-12 bg-gradient-to-br from-warm-orange to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-3">
                   <span className="text-xl text-white">😊</span>
                 </div>
                 <h3 className="text-center font-semibold text-text-dark">Mood</h3>
@@ -191,7 +224,7 @@ const Home: React.FC = () => {
               <h3 className="text-lg font-semibold text-text-dark mb-4">Premium Features</h3>
               <div className="space-y-3">
                 <div className="flex items-center space-x-3 p-3 bg-light-gray rounded-2xl">
-                  <div className="w-8 h-8 bg-gradient-to-br from-teal-primary to-mint-green rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-mint-green to-mint-green rounded-full flex items-center justify-center">
                     <span className="text-sm text-white">📊</span>
                   </div>
                   <div>
@@ -201,7 +234,7 @@ const Home: React.FC = () => {
                 </div>
                 
                 <div className="flex items-center space-x-3 p-3 bg-light-gray rounded-2xl">
-                  <div className="w-8 h-8 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
+                  <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
                     <span className="text-sm text-white">🎵</span>
                   </div>
                   <div>
@@ -211,8 +244,8 @@ const Home: React.FC = () => {
                 </div>
 
                 {subscription.isElite && (
-                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-orange-accent/10 to-teal-primary/10 rounded-2xl border border-orange-accent/20">
-                    <div className="w-8 h-8 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
+                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
+                    <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
                       <span className="text-sm text-white">👑</span>
                     </div>
                     <div>
@@ -221,6 +254,32 @@ const Home: React.FC = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Chat Upgrade Prompt Modal */}
+          {showChatPrompt && (
+            <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-3xl p-6 max-w-sm w-full">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">🤖</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-text-dark mb-2">Mindfulnest AI Chat</h3>
+                  <p className="text-text-light text-sm mb-4">Access your personal wellness AI assistant with Dopamind Pro</p>
+                  <div className="space-y-3">
+                    <button className="w-full bg-mint-green text-white font-semibold rounded-2xl py-3 hover:scale-[1.02] transition-transform">
+                      Upgrade to Pro
+                    </button>
+                    <button 
+                      onClick={() => setShowChatPrompt(false)}
+                      className="w-full text-text-light font-medium"
+                    >
+                      Maybe later
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           )}

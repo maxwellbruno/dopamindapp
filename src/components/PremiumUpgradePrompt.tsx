@@ -47,24 +47,24 @@ const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({
 
   return (
     <>
-      <div className={`glass-card rounded-3xl p-6 neuro-shadow text-center ${className}`}>
+      <div className={`dopamind-card p-6 text-center ${className}`}>
         <div className="mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-serenity-blue to-lavender-haze rounded-2xl flex items-center justify-center mx-auto mb-3">
+          <div className="w-16 h-16 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center mx-auto mb-3">
             <span className="text-2xl">{tier === 'elite' ? '👑' : '🧠'}</span>
           </div>
-          <h3 className="text-lg font-bold text-midnight-slate mb-2">{feature}</h3>
-          <p className="text-slate-600 text-sm mb-4">{description}</p>
+          <h3 className="text-lg font-bold text-deep-blue mb-2">{feature}</h3>
+          <p className="text-text-light text-sm mb-4">{description}</p>
         </div>
         
         <div className="space-y-3">
           <Button 
             onClick={() => setShowPricing(true)}
-            className="w-full bg-gradient-to-r from-serenity-blue to-mindful-mint text-white font-semibold rounded-2xl h-12 neuro-shadow hover:scale-[1.02] transition-transform"
+            className="w-full bg-mint-green hover:bg-mint-green/90 text-white font-semibold rounded-2xl h-12 shadow-lg hover:scale-[1.02] transition-transform"
           >
-            Unlock {tier === 'elite' ? 'Elite' : 'Pro'} Features
+            Unlock Pro Features
           </Button>
           
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-text-light">
             7-day free trial • Cancel anytime
           </p>
         </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,6 +29,7 @@ const Focus: React.FC = () => {
   const [breathPhase, setBreathePhase] = useState<'in' | 'hold' | 'out'>('in');
   const [breathTimer, setBreatheTimer] = useState(4);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [selectedBreathingExercise, setSelectedBreathingExercise] = useState<string | null>(null);
 
   const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
   const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0}');
@@ -139,7 +139,8 @@ const Focus: React.FC = () => {
     }
   };
 
-  const startBreathingExercise = () => {
+  const startBreathingExercise = (exerciseType?: string) => {
+    setSelectedBreathingExercise(exerciseType || 'basic');
     setIsBreathing(true);
     setBreathePhase('in');
     setBreatheTimer(4);
@@ -147,6 +148,7 @@ const Focus: React.FC = () => {
 
   const stopBreathingExercise = () => {
     setIsBreathing(false);
+    setSelectedBreathingExercise(null);
   };
 
   const soundOptions = [
@@ -158,7 +160,16 @@ const Focus: React.FC = () => {
     { id: 'rain', name: 'Gentle Rain', premium: true },
   ];
 
+  const breathingExercises = [
+    { id: 'basic', name: '4-7-8 Breathing', description: 'Classic relaxation technique', premium: false },
+    { id: 'box', name: 'Box Breathing', description: 'Navy SEAL technique for focus', premium: true },
+    { id: 'coherent', name: 'Coherent Breathing', description: 'Heart rate variability training', premium: true },
+    { id: 'wim', name: 'Wim Hof Method', description: 'Energizing breath work', premium: true },
+    { id: 'alternate', name: 'Alternate Nostril', description: 'Balancing technique', premium: true },
+  ];
+
   const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
+  const availableBreathingExercises = breathingExercises.filter(exercise => !exercise.premium || isPremium);
 
   return (
     <div className="min-h-screen bg-light-gray pb-20">
@@ -172,13 +183,13 @@ const Focus: React.FC = () => {
               placeholder="Name your focus session"
               value={sessionName}
               onChange={(e) => setSessionName(e.target.value)}
-              className="w-full bg-white border-gray-300 text-text-dark placeholder:text-text-light rounded-2xl h-12 focus:border-teal-primary focus:ring-teal-primary/20"
+              className="w-full bg-white border-gray-300 text-deep-blue placeholder:text-text-light rounded-2xl h-12 focus:border-mint-green focus:ring-mint-green/20"
             />
           </div>
 
           {/* Timer Display */}
           <div className="dopamind-card p-8 mb-6 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="text-6xl font-bold bg-gradient-to-r from-teal-primary to-mint-green bg-clip-text text-transparent mb-4">
+            <div className="text-6xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent mb-4">
               {formatTime(timeLeft)}
             </div>
             <p className="text-text-light mb-6">
@@ -200,14 +211,13 @@ const Focus: React.FC = () => {
                 <>
                   <Button 
                     onClick={isRunning ? pauseTimer : startTimer}
-                    className="bg-gradient-to-r from-teal-primary to-mint-green text-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
+                    className="bg-gradient-to-r from-mint-green to-mint-green text-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
                   >
                     {isRunning ? 'Pause' : 'Start'}
                   </Button>
                   <Button 
                     onClick={resetTimer}
-                    variant="outline"
-                    className="rounded-2xl px-8 h-12 border-gray-300"
+                    className="bg-deep-blue text-white rounded-2xl px-8 h-12 hover:bg-deep-blue/90"
                   >
                     Reset
                   </Button>
@@ -226,7 +236,7 @@ const Focus: React.FC = () => {
                   <span className="text-text-dark font-medium">Session Duration</span>
                   <span className="text-text-light">{sessionDuration} min</span>
                   {!canCustomizeDuration && sessionDuration >= maxFreeSessionDuration && (
-                    <span className="text-xs text-orange-accent bg-orange-accent/10 px-2 py-1 rounded-full">Free Limit</span>
+                    <span className="text-xs text-warm-orange bg-warm-orange/10 px-2 py-1 rounded-full">Free Limit</span>
                   )}
                 </div>
                 <input
@@ -237,7 +247,7 @@ const Focus: React.FC = () => {
                   onChange={(e) => handleSessionDurationChange(Number(e.target.value))}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb 100%)`
+                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb 100%)`
                   }}
                 />
                 {!canCustomizeDuration && (
@@ -258,7 +268,7 @@ const Focus: React.FC = () => {
                   onChange={(e) => setBreakDuration(Number(e.target.value))}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                   style={{
-                    background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${((breakDuration - 5) / 25) * 100}%, #e5e7eb ${((breakDuration - 5) / 25) * 100}%, #e5e7eb 100%)`
+                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((breakDuration - 5) / 25) * 100}%, #e5e7eb ${((breakDuration - 5) / 25) * 100}%, #e5e7eb 100%)`
                   }}
                 />
               </div>
@@ -270,7 +280,7 @@ const Focus: React.FC = () => {
             <h3 className="text-lg font-semibold text-text-dark mb-4">Session Stats</h3>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-orange-accent to-teal-primary rounded-full flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
                   <span className="text-lg">📊</span>
                 </div>
                 <div>
@@ -283,23 +293,49 @@ const Focus: React.FC = () => {
 
           {/* Breathing Exercise */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <h3 className="text-lg font-semibold text-text-dark mb-4">Breathing Exercise</h3>
+            <h3 className="text-lg font-semibold text-text-dark mb-4">Breathing Exercises</h3>
             
             {!isBreathing ? (
-              <div className="text-center">
-                <p className="text-text-light mb-4">Practice mindful breathing to center yourself</p>
-                <Button 
-                  onClick={startBreathingExercise}
-                  className="bg-gradient-to-r from-teal-primary to-mint-green text-white font-semibold rounded-2xl px-6 h-10 shadow-lg"
-                >
-                  Start Breathing
-                </Button>
+              <div>
+                <div className="space-y-3 mb-4">
+                  {availableBreathingExercises.map((exercise) => (
+                    <div key={exercise.id} className="flex items-center justify-between p-3 bg-light-gray rounded-2xl">
+                      <div>
+                        <p className="font-medium text-text-dark">{exercise.name}</p>
+                        <p className="text-xs text-text-light">{exercise.description}</p>
+                      </div>
+                      <Button 
+                        onClick={() => startBreathingExercise(exercise.id)}
+                        size="sm"
+                        className="bg-mint-green text-white rounded-xl hover:bg-mint-green/90"
+                      >
+                        Start
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+                
+                {!isPremium && (
+                  <div className="pt-2 border-t border-gray-200">
+                    <p className="text-xs text-text-light mb-2">Premium breathing exercises with Pro</p>
+                    <div className="space-y-2">
+                      {breathingExercises.filter(e => e.premium).slice(0, 2).map((exercise) => (
+                        <div key={exercise.id} className="flex items-center justify-between p-3 bg-gray-100 rounded-2xl opacity-50">
+                          <div>
+                            <p className="font-medium text-gray-400">{exercise.name} 🔒</p>
+                            <p className="text-xs text-gray-400">{exercise.description}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="text-center">
                 <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-lg transition-all duration-1000 ${
-                  breathPhase === 'in' ? 'bg-teal-primary scale-110' :
-                  breathPhase === 'hold' ? 'bg-orange-accent scale-110' :
+                  breathPhase === 'in' ? 'bg-mint-green scale-110' :
+                  breathPhase === 'hold' ? 'bg-warm-orange scale-110' :
                   'bg-mint-green scale-90'
                 }`}>
                   {breathTimer}
@@ -307,6 +343,7 @@ const Focus: React.FC = () => {
                 <p className="text-lg font-semibold text-text-dark mb-2">
                   {breathPhase === 'in' ? 'Breathe In' : breathPhase === 'hold' ? 'Hold' : 'Breathe Out'}
                 </p>
+                <p className="text-sm text-text-light mb-4">{selectedBreathingExercise}</p>
                 <Button 
                   onClick={stopBreathingExercise}
                   variant="outline"
@@ -333,7 +370,7 @@ const Focus: React.FC = () => {
                       value={sound.id}
                       checked={selectedSound === sound.id}
                       onChange={(e) => setSelectedSound(e.target.value)}
-                      className="text-teal-primary"
+                      className="text-mint-green"
                     />
                   </div>
                 </div>

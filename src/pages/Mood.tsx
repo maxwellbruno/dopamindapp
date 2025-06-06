@@ -1,10 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import BottomNav from '../components/BottomNav';
 
 interface MoodEntry {
   id: string;
@@ -22,12 +23,14 @@ const Mood: React.FC = () => {
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [moodEntries, setMoodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', []);
   const [showForm, setShowForm] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollTimer, setScrollTimer] = useState<NodeJS.Timeout | null>(null);
 
   const moods = [
     { emoji: '😡', label: 'Angry', color: 'bg-red-100' },
     { emoji: '😞', label: 'Sad', color: 'bg-blue-100' },
     { emoji: '😐', label: 'Neutral', color: 'bg-gray-100' },
-    { emoji: '😊', label: 'Happy', color: 'bg-teal-primary/20', selected: true },
+    { emoji: '😊', label: 'Happy', color: 'bg-mint-green/20', selected: true },
     { emoji: '😄', label: 'Great', color: 'bg-green-100' },
   ];
 
@@ -35,6 +38,31 @@ const Mood: React.FC = () => {
     'Exercise', 'Work', 'Reading', 'Social', 
     'Sleep', 'Meditation', 'Hobbies', 'Travel'
   ];
+
+  // Handle scroll for bottom nav auto-hide
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
+      
+      const newTimer = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+      
+      setScrollTimer(newTimer);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
+    };
+  }, [scrollTimer]);
 
   const handleActivityToggle = (activity: string) => {
     setSelectedActivities(prev => 
@@ -110,10 +138,9 @@ const Mood: React.FC = () => {
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       {/* Header */}
-      <div className="bg-dark-navy px-4 py-6 shadow-sm">
+      <div className="bg-deep-blue px-4 py-6 shadow-sm">
         <div className="max-w-md mx-auto flex items-center">
-          <button className="text-white text-xl mr-4">←</button>
-          <h1 className="text-xl font-bold text-white text-center flex-1">Mood Tracker</h1>
+          <h1 className="text-xl font-bold text-pure-white text-center flex-1">Mood Tracker</h1>
         </div>
       </div>
 
@@ -142,8 +169,8 @@ const Mood: React.FC = () => {
                         onClick={() => setSelectedMood(mood.label)}
                         className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all border-2 ${
                           selectedMood === mood.label || (selectedMood === '' && mood.selected)
-                            ? 'bg-teal-primary border-teal-primary shadow-lg transform scale-110' 
-                            : 'bg-white border-gray-200 hover:border-teal-primary'
+                            ? 'bg-mint-green border-mint-green shadow-lg transform scale-110' 
+                            : 'bg-white border-gray-200 hover:border-mint-green'
                         }`}
                       >
                         {mood.emoji}
@@ -165,11 +192,11 @@ const Mood: React.FC = () => {
                       onChange={(e) => setIntensity(Number(e.target.value))}
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
                       style={{
-                        background: `linear-gradient(to right, #4ade80 0%, #4ade80 ${(intensity - 1) * 25}%, #e5e7eb ${(intensity - 1) * 25}%, #e5e7eb 100%)`
+                        background: `linear-gradient(to right, #10B981 0%, #10B981 ${(intensity - 1) * 25}%, #e5e7eb ${(intensity - 1) * 25}%, #e5e7eb 100%)`
                       }}
                     />
                     <div 
-                      className="absolute top-1/2 w-6 h-6 bg-teal-primary rounded-full transform -translate-y-1/2 -translate-x-3 pointer-events-none border-2 border-white shadow-lg"
+                      className="absolute top-1/2 w-6 h-6 bg-mint-green rounded-full transform -translate-y-1/2 -translate-x-3 pointer-events-none border-2 border-white shadow-lg"
                       style={{ left: `${(intensity - 1) * 25}%` }}
                     ></div>
                   </div>
@@ -185,7 +212,7 @@ const Mood: React.FC = () => {
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Describe your feelings or what influenced your mood"
                     rows={3}
-                    className="border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
+                    className="border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-white text-deep-blue"
                   />
                 </div>
 
@@ -200,9 +227,9 @@ const Mood: React.FC = () => {
                         onClick={() => handleActivityToggle(activity)}
                         className={`px-4 py-2 text-sm rounded-full transition-colors ${
                           selectedActivities.includes(activity)
-                            ? 'bg-teal-primary text-white'
+                            ? 'bg-mint-green text-white'
                             : activity === 'Exercise' 
-                              ? 'bg-teal-primary text-white'
+                              ? 'bg-mint-green text-white'
                               : 'bg-light-gray text-text-dark hover:bg-gray-300 border border-gray-200'
                         }`}
                       >
@@ -215,7 +242,7 @@ const Mood: React.FC = () => {
                 <Button 
                   onClick={handleSubmit}
                   disabled={!selectedMood}
-                  className="w-full bg-teal-primary hover:bg-mint-green text-white h-12 rounded-xl font-semibold"
+                  className="w-full bg-mint-green hover:bg-mint-green/90 text-white h-12 rounded-xl font-semibold"
                 >
                   Submit
                 </Button>
@@ -227,7 +254,7 @@ const Mood: React.FC = () => {
                 <h2 className="text-lg font-semibold text-text-dark mb-4 text-center">How are you feeling today?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
-                  className="bg-teal-primary hover:bg-mint-green text-white w-full h-12 rounded-xl font-semibold"
+                  className="bg-mint-green hover:bg-mint-green/90 text-white w-full h-12 rounded-xl font-semibold"
                 >
                   Track Your Mood
                 </Button>
@@ -245,7 +272,7 @@ const Mood: React.FC = () => {
                     <div 
                       key={day} 
                       className={`aspect-square flex items-center justify-center text-sm rounded-lg ${
-                        hasEntry ? 'bg-teal-primary/20' : 'bg-light-gray'
+                        hasEntry ? 'bg-mint-green/20' : 'bg-light-gray'
                       }`}
                     >
                       {mood ? (
@@ -306,25 +333,9 @@ const Mood: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-dark-navy px-6 py-4">
-        <div className="flex justify-around items-center max-w-md mx-auto">
-          <div className="flex flex-col items-center">
-            <div className="text-white text-xl mb-1">🏠</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="text-white text-xl mb-1">🎯</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="w-12 h-12 bg-orange-accent rounded-full flex items-center justify-center text-white text-xl">+</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="text-white text-xl mb-1">🔔</div>
-          </div>
-          <div className="flex flex-col items-center">
-            <div className="text-white text-xl mb-1">👤</div>
-          </div>
-        </div>
+      {/* Bottom Navigation with auto-hide */}
+      <div className={`${isScrolling ? 'hide-nav' : 'show-nav'}`}>
+        <BottomNav />
       </div>
     </div>
   );

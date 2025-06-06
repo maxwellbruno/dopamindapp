@@ -56,16 +56,15 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Updated Dopamind Colors from the final image
-				'dark-navy': '#1a2332',
-				'teal-primary': '#4ade80',
-				'mint-green': '#4ade80',
-				'orange-accent': '#f59e0b',
+				// Dopamind Color Palette
+				'deep-blue': '#1E3A8A',
+				'mint-green': '#10B981',
+				'warm-orange': '#F59E0B',
+				'pure-white': '#FFFFFF',
+				'light-gray': '#D1D5DB',
 				'card-white': '#ffffff',
-				'text-dark': '#1f2937',
-				'text-light': '#6b7280',
-				'light-gray': '#f3f4f6',
-				'darker-navy': '#0f172a',
+				'text-dark': '#1E3A8A',
+				'text-light': '#D1D5DB',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -111,12 +110,12 @@ export default {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0.7' }
 				},
-				'teal-glow': {
+				'mint-glow': {
 					'0%, 100%': { 
-						boxShadow: '0 0 20px rgba(74, 222, 128, 0.3)'
+						boxShadow: '0 0 20px rgba(16, 185, 129, 0.3)'
 					},
 					'50%': { 
-						boxShadow: '0 0 30px rgba(74, 222, 128, 0.6)'
+						boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)'
 					}
 				}
 			},
@@ -127,7 +126,7 @@ export default {
 				float: 'float 3s ease-in-out infinite',
 				'fade-in-up': 'fade-in-up 0.6s ease-out',
 				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite',
-				'teal-glow': 'teal-glow 3s ease-in-out infinite'
+				'mint-glow': 'mint-glow 3s ease-in-out infinite'
 			}
 		}
 	},
