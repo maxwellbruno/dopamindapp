@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -119,7 +120,7 @@
   }
 }
 
-// ... keep existing code (Custom Dopamind Animations) the same ...
+/* Custom Dopamind Animations */
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.15); }
@@ -160,7 +161,7 @@
   }
 }
 
-// ... keep existing code (Custom Utility Classes) the same ...
+/* Custom Utility Classes */
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
 }
