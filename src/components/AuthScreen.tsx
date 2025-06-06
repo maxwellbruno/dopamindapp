@@ -26,34 +26,34 @@ const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-dark-navy flex items-center justify-center px-4">
+    <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header with app icon */}
         <div className="text-center mb-8">
           <div className="mb-6 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-teal-primary/20 rounded-3xl blur-xl"></div>
-              <div className="relative w-16 h-16 bg-gradient-to-br from-teal-primary to-mint-green rounded-3xl flex items-center justify-center">
+              <div className="absolute inset-0 bg-mint-green/20 rounded-3xl blur-xl"></div>
+              <div className="relative w-16 h-16 bg-gradient-to-br from-mint-green to-mint-green rounded-3xl flex items-center justify-center">
                 {/* Brain icon using rounded rectangles to match the design */}
                 <div className="w-10 h-8 relative">
                   <div className="absolute left-0 top-0 w-4 h-6 bg-white rounded-l-full"></div>
                   <div className="absolute right-0 top-0 w-4 h-6 bg-white rounded-r-full"></div>
-                  <div className="absolute left-1.5 top-0.5 w-0.5 h-5 bg-teal-primary rounded-full"></div>
-                  <div className="absolute right-1.5 top-0.5 w-0.5 h-5 bg-teal-primary rounded-full"></div>
+                  <div className="absolute left-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
+                  <div className="absolute right-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
                 </div>
               </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-white mb-1 tracking-wide">Dopamind</h1>
+          <h1 className="text-3xl font-bold text-pure-white mb-1 tracking-wide">Dopamind</h1>
         </div>
 
         {/* Auth Card */}
-        <div className="dopamind-card p-8">
+        <div className="bg-pure-white rounded-3xl p-8 shadow-2xl">
           <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-text-dark mb-2">
+            <h2 className="text-2xl font-bold text-deep-blue mb-2">
               {isLogin ? 'Welcome back' : 'Create account'}
             </h2>
-            <p className="text-text-light text-sm">
+            <p className="text-deep-blue/70 text-sm">
               {isLogin ? 'Sign in to continue your progress' : 'Join thousands improving their digital wellness'}
             </p>
           </div>
@@ -61,7 +61,7 @@ const AuthScreen: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div>
-                <Label htmlFor="name" className="text-text-dark font-medium text-sm">
+                <Label htmlFor="name" className="text-deep-blue font-medium text-sm">
                   Full Name
                 </Label>
                 <Input
@@ -70,14 +70,14 @@ const AuthScreen: React.FC = () => {
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
+                  className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
                   required={!isLogin}
                 />
               </div>
             )}
             
             <div>
-              <Label htmlFor="email" className="text-text-dark font-medium text-sm">
+              <Label htmlFor="email" className="text-deep-blue font-medium text-sm">
                 Email
               </Label>
               <Input
@@ -86,13 +86,13 @@ const AuthScreen: React.FC = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
+                className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>
             
             <div>
-              <Label htmlFor="password" className="text-text-dark font-medium text-sm">
+              <Label htmlFor="password" className="text-deep-blue font-medium text-sm">
                 Password
               </Label>
               <Input
@@ -101,14 +101,14 @@ const AuthScreen: React.FC = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
+                className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>
             
             <Button 
               type="submit"
-              className="w-full bg-teal-primary hover:bg-mint-green text-white h-12 rounded-xl font-semibold mt-6"
+              className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold mt-6"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </Button>
@@ -117,14 +117,14 @@ const AuthScreen: React.FC = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-orange-accent text-sm font-medium"
+              className="text-warm-orange text-sm font-medium hover:text-warm-orange/80"
             >
               {isLogin ? 'Create an account' : 'Sign in'}
             </button>
           </div>
 
           <div className="mt-4 text-center">
-            <button className="text-text-light text-sm">
+            <button className="text-deep-blue/70 text-sm hover:text-deep-blue">
               Terms and conditions
             </button>
           </div>
