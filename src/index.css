@@ -1,11 +1,10 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 243 244 246;
+    --background: 209 213 219;
     --foreground: 30 58 138;
 
     --card: 255 255 255;
@@ -20,7 +19,7 @@
     --secondary: 245 158 11;
     --secondary-foreground: 255 255 255;
 
-    --muted: 243 244 246;
+    --muted: 209 213 219;
     --muted-foreground: 30 58 138;
 
     --accent: 30 58 138;
@@ -29,8 +28,8 @@
     --destructive: 239 68 68;
     --destructive-foreground: 248 250 252;
 
-    --border: 229 231 235;
-    --input: 229 231 235;
+    --border: 209 213 219;
+    --input: 255 255 255;
     --ring: 16 185 129;
 
     --radius: 1.5rem;
@@ -46,7 +45,7 @@
     --light-gray: 209 213 219;
     --card-white: 255 255 255;
     --text-dark: 30 58 138;
-    --text-light: 30 58 138;
+    --text-light: 107 114 128;
   }
 
   .dark {
@@ -96,7 +95,7 @@
   input[type="number"],
   input[type="time"],
   textarea {
-    @apply text-deep-blue;
+    @apply text-deep-blue bg-white;
   }
 
   input:focus,
@@ -106,15 +105,21 @@
 
   /* Ensure proper text contrast on different backgrounds */
   .text-light-gray {
-    @apply text-deep-blue;
+    @apply text-gray-600;
   }
   
   .text-text-light {
-    @apply text-deep-blue;
+    @apply text-gray-600;
+  }
+
+  /* Override any gray text that's too light */
+  .text-gray-400,
+  .text-gray-300 {
+    @apply text-gray-600;
   }
 }
 
-/* ... keep existing code (Custom Dopamind Animations) the same ... */
+// ... keep existing code (Custom Dopamind Animations) the same ...
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.15); }
@@ -155,7 +160,7 @@
   }
 }
 
-/* ... keep existing code (Custom Utility Classes) the same ... */
+// ... keep existing code (Custom Utility Classes) the same ...
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
 }

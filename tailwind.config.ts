@@ -64,7 +64,7 @@ export default {
 				'light-gray': '#D1D5DB',
 				'card-white': '#ffffff',
 				'text-dark': '#1E3A8A',
-				'text-light': '#D1D5DB',
+				'text-light': '#6B7280',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

@@ -78,10 +78,10 @@ const PricingModal: React.FC<PricingModalProps> = ({
           {tiers.map((tier) => (
             <div 
               key={tier.id}
-              className={`relative overflow-hidden rounded-2xl border-2 transition-all ${
+              className={`relative overflow-hidden rounded-2xl border-2 transition-all bg-white ${
                 tier.popular 
                   ? 'border-mint-green bg-mint-green/5' 
-                  : 'border-gray-200 bg-white'
+                  : 'border-gray-200'
               }`}
             >
               {tier.popular && (
