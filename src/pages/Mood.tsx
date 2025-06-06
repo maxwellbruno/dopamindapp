@@ -136,7 +136,7 @@ const Mood: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray pb-20">
+    <div className="min-h-screen bg-light-gray">
       {/* Header */}
       <div className="bg-deep-blue px-4 py-6 shadow-sm">
         <div className="max-w-md mx-auto flex items-center">
@@ -144,17 +144,17 @@ const Mood: React.FC = () => {
         </div>
       </div>
 
-      <div className="px-4 pt-6">
+      <div className="px-4 pt-6 pb-20">
         <div className="max-w-md mx-auto">
           {showForm ? (
             <div className="dopamind-card p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-text-dark">How are you feeling?</h2>
+                <h2 className="text-xl font-bold text-deep-blue">How are you feeling?</h2>
                 <Button 
                   onClick={() => setShowForm(false)}
                   variant="outline"
                   size="sm"
-                  className="text-text-light border-gray-200"
+                  className="text-deep-blue border-gray-200"
                 >
                   ✕
                 </Button>
@@ -180,7 +180,7 @@ const Mood: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-4 block text-text-dark">
+                  <Label className="text-base font-semibold mb-4 block text-deep-blue">
                     Intensity
                   </Label>
                   <div className="relative">
@@ -203,7 +203,7 @@ const Mood: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label htmlFor="note" className="text-base font-semibold mb-3 block text-text-dark">
+                  <Label htmlFor="note" className="text-base font-semibold mb-3 block text-deep-blue">
                     Notes
                   </Label>
                   <Textarea
@@ -217,7 +217,7 @@ const Mood: React.FC = () => {
                 </div>
 
                 <div>
-                  <Label className="text-base font-semibold mb-3 block text-text-dark">
+                  <Label className="text-base font-semibold mb-3 block text-deep-blue">
                     Activity
                   </Label>
                   <div className="flex flex-wrap gap-2">
@@ -230,7 +230,7 @@ const Mood: React.FC = () => {
                             ? 'bg-mint-green text-white'
                             : activity === 'Exercise' 
                               ? 'bg-mint-green text-white'
-                              : 'bg-light-gray text-text-dark hover:bg-gray-300 border border-gray-200'
+                              : 'bg-light-gray text-deep-blue hover:bg-gray-300 border border-gray-200'
                         }`}
                       >
                         {activity}
@@ -251,7 +251,7 @@ const Mood: React.FC = () => {
           ) : (
             <>
               <div className="dopamind-card p-6 mb-6">
-                <h2 className="text-lg font-semibold text-text-dark mb-4 text-center">How are you feeling today?</h2>
+                <h2 className="text-lg font-semibold text-deep-blue mb-4 text-center">How are you feeling today?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
                   className="bg-mint-green hover:bg-mint-green/90 text-white w-full h-12 rounded-xl font-semibold"
@@ -261,10 +261,10 @@ const Mood: React.FC = () => {
               </div>
 
               <div className="dopamind-card p-6 mb-6">
-                <h3 className="font-semibold text-text-dark mb-4">This Month</h3>
+                <h3 className="font-semibold text-deep-blue mb-4">This Month</h3>
                 <div className="grid grid-cols-7 gap-2">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                    <div key={day} className="text-center text-xs text-text-light font-medium p-2">
+                    <div key={day} className="text-center text-xs text-deep-blue font-medium p-2">
                       {day}
                     </div>
                   ))}
@@ -278,7 +278,7 @@ const Mood: React.FC = () => {
                       {mood ? (
                         <span className="text-lg">{mood}</span>
                       ) : (
-                        <span className="text-gray-400">{day}</span>
+                        <span className="text-deep-blue">{day}</span>
                       )}
                     </div>
                   ))}
@@ -286,12 +286,12 @@ const Mood: React.FC = () => {
               </div>
 
               <div className="dopamind-card p-6 mb-6">
-                <h3 className="font-semibold text-text-dark mb-4">Wellness Suggestion</h3>
-                <p className="text-text-light">{getMoodSuggestion()}</p>
+                <h3 className="font-semibold text-deep-blue mb-4">Wellness Suggestion</h3>
+                <p className="text-deep-blue">{getMoodSuggestion()}</p>
               </div>
 
               <div className="dopamind-card p-4">
-                <h3 className="font-semibold text-text-dark mb-3">Recent Entries</h3>
+                <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {
                     const moodData = moods.find(m => m.label === entry.mood);
@@ -300,19 +300,19 @@ const Mood: React.FC = () => {
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center space-x-2">
                             <span className="text-lg">{moodData?.emoji}</span>
-                            <span className="font-medium text-text-dark">{entry.mood}</span>
+                            <span className="font-medium text-deep-blue">{entry.mood}</span>
                           </div>
-                          <span className="text-xs text-text-light">
+                          <span className="text-xs text-deep-blue">
                             {new Date(entry.date).toLocaleDateString()}
                           </span>
                         </div>
                         {entry.note && (
-                          <p className="text-sm text-text-light mb-1">{entry.note}</p>
+                          <p className="text-sm text-deep-blue mb-1">{entry.note}</p>
                         )}
                         {entry.activities.length > 0 && (
                           <div className="flex flex-wrap gap-1">
                             {entry.activities.map((activity, idx) => (
-                              <span key={idx} className="text-xs bg-light-gray px-2 py-1 rounded border">
+                              <span key={idx} className="text-xs bg-light-gray text-deep-blue px-2 py-1 rounded border">
                                 {activity}
                               </span>
                             ))}
@@ -322,7 +322,7 @@ const Mood: React.FC = () => {
                     );
                   })}
                   {moodEntries.length === 0 && (
-                    <div className="text-center text-text-light py-4">
+                    <div className="text-center text-deep-blue py-4">
                       No mood entries yet. Start tracking your mood!
                     </div>
                   )}

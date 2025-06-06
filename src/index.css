@@ -21,7 +21,7 @@
     --secondary-foreground: 255 255 255;
 
     --muted: 243 244 246;
-    --muted-foreground: 209 213 219;
+    --muted-foreground: 30 58 138;
 
     --accent: 30 58 138;
     --accent-foreground: 255 255 255;
@@ -46,7 +46,7 @@
     --light-gray: 209 213 219;
     --card-white: 255 255 255;
     --text-dark: 30 58 138;
-    --text-light: 209 213 219;
+    --text-light: 30 58 138;
   }
 
   .dark {
@@ -86,7 +86,7 @@
   }
 
   body {
-    @apply bg-light-gray text-foreground font-inter antialiased;
+    @apply bg-light-gray text-deep-blue font-inter antialiased;
   }
 
   /* Input styling with mint green focus and deep blue text */
@@ -103,9 +103,18 @@
   textarea:focus {
     @apply border-mint-green ring-mint-green/20;
   }
+
+  /* Ensure proper text contrast on different backgrounds */
+  .text-light-gray {
+    @apply text-deep-blue;
+  }
+  
+  .text-text-light {
+    @apply text-deep-blue;
+  }
 }
 
-/* Custom Dopamind Animations */
+/* ... keep existing code (Custom Dopamind Animations) the same ... */
 @keyframes breathe {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.15); }
@@ -146,7 +155,7 @@
   }
 }
 
-/* Custom Utility Classes */
+/* ... keep existing code (Custom Utility Classes) the same ... */
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
 }
