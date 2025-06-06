@@ -26,25 +26,25 @@ const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
+    <div className="min-h-screen bg-dark-navy flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header with app icon */}
         <div className="text-center mb-8">
           <div className="mb-6 flex justify-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-mint-green/20 rounded-3xl blur-xl"></div>
-              <div className="relative w-16 h-16 bg-gradient-to-br from-mint-green to-mint-green/80 rounded-3xl flex items-center justify-center">
+              <div className="absolute inset-0 bg-teal-primary/20 rounded-3xl blur-xl"></div>
+              <div className="relative w-16 h-16 bg-gradient-to-br from-teal-primary to-mint-green rounded-3xl flex items-center justify-center">
                 {/* Brain icon using rounded rectangles to match the design */}
                 <div className="w-10 h-8 relative">
-                  <div className="absolute left-0 top-0 w-4 h-6 bg-pure-white rounded-l-full"></div>
-                  <div className="absolute right-0 top-0 w-4 h-6 bg-pure-white rounded-r-full"></div>
-                  <div className="absolute left-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
-                  <div className="absolute right-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
+                  <div className="absolute left-0 top-0 w-4 h-6 bg-white rounded-l-full"></div>
+                  <div className="absolute right-0 top-0 w-4 h-6 bg-white rounded-r-full"></div>
+                  <div className="absolute left-1.5 top-0.5 w-0.5 h-5 bg-teal-primary rounded-full"></div>
+                  <div className="absolute right-1.5 top-0.5 w-0.5 h-5 bg-teal-primary rounded-full"></div>
                 </div>
               </div>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-pure-white mb-1 tracking-wide">Dopamind</h1>
+          <h1 className="text-3xl font-bold text-white mb-1 tracking-wide">Dopamind</h1>
         </div>
 
         {/* Auth Card */}
@@ -53,7 +53,7 @@ const AuthScreen: React.FC = () => {
             <h2 className="text-2xl font-bold text-text-dark mb-2">
               {isLogin ? 'Welcome back' : 'Create account'}
             </h2>
-            <p className="text-light-gray text-sm">
+            <p className="text-text-light text-sm">
               {isLogin ? 'Sign in to continue your progress' : 'Join thousands improving their digital wellness'}
             </p>
           </div>
@@ -70,7 +70,7 @@ const AuthScreen: React.FC = () => {
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1 border-light-gray focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-bg"
+                  className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
                   required={!isLogin}
                 />
               </div>
@@ -86,7 +86,7 @@ const AuthScreen: React.FC = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 border-light-gray focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-bg"
+                className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
                 required
               />
             </div>
@@ -101,14 +101,14 @@ const AuthScreen: React.FC = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 border-light-gray focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-bg"
+                className="mt-1 border-gray-300 focus:border-teal-primary focus:ring-teal-primary/20 rounded-xl bg-light-gray"
                 required
               />
             </div>
             
             <Button 
               type="submit"
-              className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold mt-6"
+              className="w-full bg-teal-primary hover:bg-mint-green text-white h-12 rounded-xl font-semibold mt-6"
             >
               {isLogin ? 'Sign In' : 'Create Account'}
             </Button>
@@ -117,14 +117,14 @@ const AuthScreen: React.FC = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-warm-orange text-sm font-medium"
+              className="text-orange-accent text-sm font-medium"
             >
               {isLogin ? 'Create an account' : 'Sign in'}
             </button>
           </div>
 
           <div className="mt-4 text-center">
-            <button className="text-light-gray text-sm">
+            <button className="text-text-light text-sm">
               Terms and conditions
             </button>
           </div>

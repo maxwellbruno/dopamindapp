@@ -15,7 +15,7 @@ const BottomNav: React.FC = () => {
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50">
       <div className="mx-4 mb-4">
-        <div className="bg-deep-blue rounded-3xl px-4 py-3 shadow-lg">
+        <div className="bg-dark-navy rounded-3xl px-4 py-3 shadow-lg">
           <div className="flex justify-around items-center max-w-md mx-auto">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -31,7 +31,7 @@ const BottomNav: React.FC = () => {
                   }`}
                 >
                   {isActive && (
-                    <div className="absolute inset-0 bg-mint-green/20 rounded-2xl"></div>
+                    <div className="absolute inset-0 bg-teal-primary/20 rounded-2xl"></div>
                   )}
                   
                   <div className={`relative z-10 text-xl mb-1 transition-all duration-300 ${
@@ -42,14 +42,14 @@ const BottomNav: React.FC = () => {
                   
                   <span className={`relative z-10 text-xs font-semibold transition-all duration-300 ${
                     isActive 
-                      ? 'text-mint-green' 
-                      : 'text-pure-white'
+                      ? 'text-teal-primary' 
+                      : 'text-white'
                   }`}>
                     {item.label}
                   </span>
                   
                   {isActive && (
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-mint-green rounded-full"></div>
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-teal-primary rounded-full"></div>
                   )}
                 </Link>
               );
