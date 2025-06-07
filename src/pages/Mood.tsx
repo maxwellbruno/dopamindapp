@@ -58,6 +58,10 @@ const Mood: React.FC = () => {
     { emoji: '😤', label: 'Frustrated', color: 'bg-orange-100' },
     { emoji: '🤔', label: 'Thoughtful', color: 'bg-indigo-100' },
     { emoji: '😇', label: 'Peaceful', color: 'bg-green-100' },
+    { emoji: '😵‍💫', label: 'Confused', color: 'bg-purple-100' },
+    { emoji: '🤗', label: 'Grateful', color: 'bg-yellow-100' },
+    { emoji: '😎', label: 'Confident', color: 'bg-blue-100' },
+    { emoji: '🙃', label: 'Silly', color: 'bg-green-100' },
   ];
 
   const allMoods = isPremium ? [...basicMoods, ...premiumMoods] : basicMoods;
@@ -178,17 +182,12 @@ const Mood: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light-gray">
-      {/* Header */}
-      <div className="bg-deep-blue px-4 py-6 shadow-sm">
-        <div className="max-w-md mx-auto flex items-center">
-          <h1 className="text-2xl font-bold text-pure-white text-center flex-1">Mood Tracker</h1>
-        </div>
-      </div>
-
       <div className="px-4 pt-6 pb-20">
         <div className="max-w-md mx-auto">
+          <h1 className="text-2xl font-bold text-deep-blue text-center mb-6">Mood Tracker</h1>
+          
           {showForm ? (
-            <div className="dopamind-card p-6">
+            <div className="dopamind-card p-6 animate-slide-up">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-deep-blue">How are you feeling?</h2>
                 <Button 
@@ -338,7 +337,7 @@ const Mood: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="dopamind-card p-6 mb-6">
+              <div className="dopamind-card p-6 mb-6 animate-slide-up">
                 <h2 className="text-lg font-semibold text-deep-blue mb-4 text-center">How are you feeling today?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
@@ -348,7 +347,7 @@ const Mood: React.FC = () => {
                 </Button>
               </div>
 
-              <div className="dopamind-card p-6 mb-6">
+              <div className="dopamind-card p-6 mb-6 animate-slide-up">
                 <h3 className="font-semibold text-deep-blue mb-4">This Month</h3>
                 <div className="grid grid-cols-7 gap-2">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
@@ -373,12 +372,12 @@ const Mood: React.FC = () => {
                 </div>
               </div>
 
-              <div className="dopamind-card p-6 mb-6">
+              <div className="dopamind-card p-6 mb-6 animate-slide-up">
                 <h3 className="font-semibold text-deep-blue mb-4">Wellness Suggestion</h3>
                 <p className="text-deep-blue">{getMoodSuggestion()}</p>
               </div>
 
-              <div className="dopamind-card p-4">
+              <div className="dopamind-card p-4 animate-slide-up">
                 <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {

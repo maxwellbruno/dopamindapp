@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -65,6 +64,7 @@ export default {
 				'card-white': '#ffffff',
 				'text-dark': '#1E3A8A',
 				'text-light': '#6B7280',
+				'cool-gray': '#6B7280',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -117,6 +117,10 @@ export default {
 					'50%': { 
 						boxShadow: '0 0 30px rgba(16, 185, 129, 0.6)'
 					}
+				},
+				'slide-up': {
+					'0%, 100%': { transform: 'translateY(0px)' },
+					'50%': { transform: 'translateY(-10px)' }
 				}
 			},
 			animation: {
@@ -126,7 +130,8 @@ export default {
 				float: 'float 3s ease-in-out infinite',
 				'fade-in-up': 'fade-in-up 0.6s ease-out',
 				'gentle-pulse': 'gentle-pulse 2s ease-in-out infinite',
-				'mint-glow': 'mint-glow 3s ease-in-out infinite'
+				'mint-glow': 'mint-glow 3s ease-in-out infinite',
+				'slide-up': 'slide-up 0.6s ease-out'
 			}
 		}
 	},

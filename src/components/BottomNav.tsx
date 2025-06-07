@@ -1,9 +1,11 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
 const BottomNav: React.FC = () => {
   const location = useLocation();
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [scrollTimer, setScrollTimer] = useState<NodeJS.Timeout | null>(null);
 
   const navItems = [
     { path: '/home', icon: '🏠', label: 'Home' },
@@ -12,8 +14,35 @@ const BottomNav: React.FC = () => {
     { path: '/profile', icon: '👤', label: 'Profile' },
   ];
 
+  // Handle scroll for bottom nav auto-hide
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolling(true);
+      
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
+      
+      const newTimer = setTimeout(() => {
+        setIsScrolling(false);
+      }, 150);
+      
+      setScrollTimer(newTimer);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimer) {
+        clearTimeout(scrollTimer);
+      }
+    };
+  }, [scrollTimer]);
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
+    <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ${
+      isScrolling ? 'transform translate-y-full' : 'transform translate-y-0'
+    }`}>
       <div className="mx-4 mb-4">
         <div className="bg-deep-blue rounded-3xl px-4 py-3 shadow-lg">
           <div className="flex justify-around items-center max-w-md mx-auto">

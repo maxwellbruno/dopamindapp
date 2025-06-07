@@ -47,6 +47,7 @@
     --card-white: 255 255 255;
     --text-dark: 30 58 138;
     --text-light: 107 114 128;
+    --cool-gray: 107 114 128;
   }
 
   .dark {
@@ -89,14 +90,15 @@
     @apply bg-light-gray text-deep-blue font-inter antialiased;
   }
 
-  /* Input styling with mint green focus and deep blue text */
+  /* Input styling with deep blue text and cool gray placeholders */
   input[type="text"],
   input[type="email"],
   input[type="password"],
   input[type="number"],
   input[type="time"],
   textarea {
-    @apply text-deep-blue bg-white;
+    @apply text-deep-blue bg-white placeholder:text-cool-gray;
+    border: 1px solid rgb(var(--cool-gray));
   }
 
   input:focus,
@@ -161,6 +163,17 @@
   }
 }
 
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Custom Utility Classes */
 .animate-breathe {
   animation: breathe 4s ease-in-out infinite;
@@ -180,6 +193,10 @@
 
 .animate-mint-glow {
   animation: mint-glow 3s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.6s ease-out;
 }
 
 .gradient-shimmer {
