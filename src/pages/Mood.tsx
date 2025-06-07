@@ -45,7 +45,7 @@ const Mood: React.FC = () => {
     { emoji: '😡', label: 'Angry', color: 'bg-red-100' },
     { emoji: '😞', label: 'Sad', color: 'bg-blue-100' },
     { emoji: '😐', label: 'Neutral', color: 'bg-gray-100' },
-    { emoji: '😊', label: 'Happy', color: 'bg-mint-green/20', selected: true },
+    { emoji: '😊', label: 'Happy', color: 'bg-mint-green/20' },
     { emoji: '😄', label: 'Great', color: 'bg-green-100' },
   ];
 
@@ -209,7 +209,7 @@ const Mood: React.FC = () => {
                         key={mood.label}
                         onClick={() => setSelectedMood(mood.label)}
                         className={`w-14 h-14 rounded-full flex items-center justify-center text-xl transition-all border-2 ${
-                          selectedMood === mood.label || (selectedMood === '' && mood.selected)
+                          selectedMood === mood.label || (selectedMood === '' && mood.label === 'Happy')
                             ? 'bg-mint-green border-mint-green shadow-lg transform scale-110' 
                             : 'bg-white border-gray-200 hover:border-mint-green'
                         }`}

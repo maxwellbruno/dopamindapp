@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpgrade: (tier: 'pro' | 'elite') => void;
+  onUpgrade: (tier: 'free' | 'pro' | 'elite') => void;
   currentTier: 'free' | 'pro' | 'elite';
 }
 

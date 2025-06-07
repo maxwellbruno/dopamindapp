@@ -32,16 +32,25 @@ const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({
     tier: 'free'
   });
 
-  const handleUpgrade = (selectedTier: 'pro' | 'elite') => {
-    const endDate = new Date();
-    endDate.setMonth(endDate.getMonth() + 1);
-    
-    setSubscription({
-      isPro: selectedTier === 'pro' || selectedTier === 'elite',
-      isElite: selectedTier === 'elite',
-      subscriptionEnd: endDate.toISOString(),
-      tier: selectedTier
-    });
+  const handleUpgrade = (selectedTier: 'free' | 'pro' | 'elite') => {
+    if (selectedTier === 'free') {
+      setSubscription({
+        isPro: false,
+        isElite: false,
+        subscriptionEnd: null,
+        tier: 'free'
+      });
+    } else {
+      const endDate = new Date();
+      endDate.setMonth(endDate.getMonth() + 1);
+      
+      setSubscription({
+        isPro: selectedTier === 'pro' || selectedTier === 'elite',
+        isElite: selectedTier === 'elite',
+        subscriptionEnd: endDate.toISOString(),
+        tier: selectedTier
+      });
+    }
     setShowPricing(false);
   };
 
