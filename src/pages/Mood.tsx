@@ -1,10 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import BottomNav from '../components/BottomNav';
 
 interface MoodEntry {
   id: string;
@@ -36,8 +36,6 @@ const Mood: React.FC = () => {
     tier: 'free'
   });
   const [showForm, setShowForm] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [scrollTimer, setScrollTimer] = useState<NodeJS.Timeout | null>(null);
 
   const isPremium = subscription.isPro || subscription.isElite;
 
@@ -62,6 +60,10 @@ const Mood: React.FC = () => {
     { emoji: '🤗', label: 'Grateful', color: 'bg-yellow-100' },
     { emoji: '😎', label: 'Confident', color: 'bg-blue-100' },
     { emoji: '🙃', label: 'Silly', color: 'bg-green-100' },
+    { emoji: '😖', label: 'Stressed', color: 'bg-red-100' },
+    { emoji: '🥺', label: 'Vulnerable', color: 'bg-pink-100' },
+    { emoji: '😤', label: 'Determined', color: 'bg-orange-100' },
+    { emoji: '🤯', label: 'Overwhelmed', color: 'bg-purple-100' },
   ];
 
   const allMoods = isPremium ? [...basicMoods, ...premiumMoods] : basicMoods;
@@ -71,35 +73,10 @@ const Mood: React.FC = () => {
   ];
 
   const premiumActivities = [
-    'Social', 'Sleep', 'Meditation', 'Hobbies', 'Travel', 'Cooking', 'Music', 'Gaming', 'Art', 'Nature'
+    'Social', 'Sleep', 'Meditation', 'Hobbies', 'Travel', 'Cooking', 'Music', 'Gaming', 'Art', 'Nature', 'Study', 'Family Time', 'Self-Care', 'Outdoor Activities', 'Shopping'
   ];
 
   const allActivities = isPremium ? [...basicActivities, ...premiumActivities] : basicActivities;
-
-  // Handle scroll for bottom nav auto-hide
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolling(true);
-      
-      if (scrollTimer) {
-        clearTimeout(scrollTimer);
-      }
-      
-      const newTimer = setTimeout(() => {
-        setIsScrolling(false);
-      }, 150);
-      
-      setScrollTimer(newTimer);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      if (scrollTimer) {
-        clearTimeout(scrollTimer);
-      }
-    };
-  }, [scrollTimer]);
 
   const handleActivityToggle = (activity: string) => {
     setSelectedActivities(prev => 
@@ -181,10 +158,10 @@ const Mood: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray">
-      <div className="px-4 pt-6 pb-20">
+    <div className="min-h-screen bg-light-gray pb-20">
+      <div className="px-4 pt-6">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-deep-blue text-center mb-6">Mood Tracker</h1>
+          <h1 className="text-2xl font-bold text-deep-blue text-center mb-6 animate-fade-in-up">Mood Tracker</h1>
           
           {showForm ? (
             <div className="dopamind-card p-6 animate-slide-up">
@@ -276,7 +253,7 @@ const Mood: React.FC = () => {
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Describe your feelings or what influenced your mood"
                     rows={3}
-                    className="border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-white text-deep-blue"
+                    className="border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-white text-deep-blue placeholder-cool-gray"
                   />
                 </div>
 
@@ -308,7 +285,7 @@ const Mood: React.FC = () => {
                         value={customActivity}
                         onChange={(e) => setCustomActivity(e.target.value)}
                         placeholder="Add custom activity"
-                        className="flex-1 bg-white border-gray-300 text-deep-blue rounded-xl"
+                        className="flex-1 bg-white border-gray-300 text-deep-blue placeholder-cool-gray rounded-xl"
                         onKeyPress={(e) => e.key === 'Enter' && handleCustomActivityAdd()}
                       />
                       <Button
@@ -418,11 +395,6 @@ const Mood: React.FC = () => {
             </>
           )}
         </div>
-      </div>
-
-      {/* Bottom Navigation with auto-hide */}
-      <div className={`${isScrolling ? 'hide-nav' : 'show-nav'}`}>
-        <BottomNav />
       </div>
     </div>
   );

