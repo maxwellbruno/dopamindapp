@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
                 <p className="text-text-light mb-4">Unlock premium features to enhance your wellness journey</p>
                 <Dialog open={showPricing} onOpenChange={setShowPricing}>
                   <DialogTrigger asChild>
-                    <Button className="w-full bg-gradient-to-r from-mint-green to-mint-green text-white font-semibold rounded-2xl shadow-lg hover:scale-[1.02] transition-transform">
+                    <Button className="w-full bg-mint-green hover:bg-mint-green/90 text-white font-semibold rounded-2xl shadow-lg hover:scale-[1.02] transition-transform">
                       Upgrade to Pro
                     </Button>
                   </DialogTrigger>
@@ -143,13 +143,12 @@ const Profile: React.FC = () => {
                           <span className="text-text-light ml-1">/month</span>
                         </div>
                         <ul className="space-y-2 text-sm text-text-light mb-6">
-                          <li>✓ Unlimited focus sessions</li>
                           <li>✓ Advanced mood analytics</li>
-                          <li>✓ Premium soundscapes (50+ tracks)</li>
-                          <li>✓ Custom session durations</li>
-                          <li>✓ 365-day streak tracking</li>
-                          <li>✓ Dark mode themes</li>
-                          <li>✓ Offline mode</li>
+                          <li>✓ Custom focus sessions</li>
+                          <li>✓ Progress tracking</li>
+                          <li>✓ Breathing exercises</li>
+                          <li>✓ Dopamind AI Chat Assistant</li>
+                          <li>✓ Priority support</li>
                         </ul>
                         <Button 
                           onClick={() => handleUpgrade('pro')}
@@ -168,11 +167,10 @@ const Profile: React.FC = () => {
                         </div>
                         <ul className="space-y-2 text-sm text-text-light mb-6">
                           <li>✓ Everything in Pro</li>
-                          <li>✓ 1-on-1 Virtual Coaching</li>
-                          <li>✓ Custom Program Creation</li>
-                          <li>✓ Family Sharing (6 accounts)</li>
-                          <li>✓ Priority Feature Requests</li>
-                          <li>✓ Integration Hub</li>
+                          <li>✓ Personalized recommendations</li>
+                          <li>✓ Advanced meditation guides</li>
+                          <li>✓ Weekly wellness reports</li>
+                          <li>✓ Premium content library</li>
                         </ul>
                         <Button 
                           onClick={() => handleUpgrade('elite')}
@@ -199,7 +197,7 @@ const Profile: React.FC = () => {
                 )}
                 <Button 
                   variant="outline" 
-                  className="w-full rounded-xl border-gray-300"
+                  className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
                   onClick={() => setShowPricing(true)}
                 >
                   {subscription.tier === 'pro' ? 'Upgrade to Elite' : 'Manage Subscription'}
@@ -276,7 +274,7 @@ const Profile: React.FC = () => {
                     onClick={handleCancelEdit}
                     variant="outline"
                     size="sm"
-                    className="rounded-xl border-gray-300"
+                    className="rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
                   >
                     Cancel
                   </Button>
@@ -298,7 +296,7 @@ const Profile: React.FC = () => {
                     }))}
                     min="30"
                     max="480"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
@@ -316,7 +314,7 @@ const Profile: React.FC = () => {
                       ...prev,
                       reminderTime: e.target.value
                     }))}
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
@@ -334,10 +332,10 @@ const Profile: React.FC = () => {
                       customAffirmation: e.target.value
                     }))}
                     placeholder="Enter your personal affirmation"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
                   />
                 ) : (
-                  <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3 italic">"{settings.customAffirmation}"</div>
+                  <div className="mt-1 text-deep-blue bg-white rounded-xl p-3 italic border border-gray-200">"{settings.customAffirmation}"</div>
                 )}
               </div>
             </div>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
+import BreathingExercise from '../components/BreathingExercise';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -26,8 +27,6 @@ const Focus: React.FC = () => {
   const [breakDuration, setBreakDuration] = useState(5);
   const [isBreak, setIsBreak] = useState(false);
   const [isBreathing, setIsBreathing] = useState(false);
-  const [breathPhase, setBreathePhase] = useState<'in' | 'hold' | 'out'>('in');
-  const [breathTimer, setBreatheTimer] = useState(4);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [selectedBreathingExercise, setSelectedBreathingExercise] = useState<string | null>(null);
 
@@ -40,8 +39,8 @@ const Focus: React.FC = () => {
   const isPremium = subscription.isPro || subscription.isElite;
 
   // Free tier limitations
-  const maxFreeSessionDuration = 25; // minutes
-  const maxFreeSessions = 3; // per day
+  const maxFreeSessionDuration = 25;
+  const maxFreeSessions = 3;
   const todaySessions = sessions.filter((session: any) => {
     const sessionDate = new Date(session.date);
     const today = new Date();
@@ -62,26 +61,6 @@ const Focus: React.FC = () => {
     }
     return () => clearInterval(interval);
   }, [isRunning, timeLeft]);
-
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (isBreathing) {
-      interval = setInterval(() => {
-        setBreatheTimer(prev => {
-          if (prev <= 1) {
-            setBreathePhase(currentPhase => {
-              if (currentPhase === 'in') return 'hold';
-              if (currentPhase === 'hold') return 'out';
-              return 'in';
-            });
-            return breathPhase === 'hold' ? 2 : 4;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [isBreathing, breathPhase]);
 
   const handleTimerComplete = () => {
     setIsRunning(false);
@@ -142,8 +121,6 @@ const Focus: React.FC = () => {
   const startBreathingExercise = (exerciseType?: string) => {
     setSelectedBreathingExercise(exerciseType || 'basic');
     setIsBreathing(true);
-    setBreathePhase('in');
-    setBreatheTimer(4);
   };
 
   const stopBreathingExercise = () => {
@@ -177,7 +154,6 @@ const Focus: React.FC = () => {
         <div className="max-w-md mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
 
-          {/* Session Input */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up">
             <Input
               placeholder="Name your focus session"
@@ -187,7 +163,6 @@ const Focus: React.FC = () => {
             />
           </div>
 
-          {/* Timer Display */}
           <div className="dopamind-card p-8 mb-6 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
             <div className="text-6xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent mb-4">
               {formatTime(timeLeft)}
@@ -226,7 +201,6 @@ const Focus: React.FC = () => {
             </div>
           </div>
 
-          {/* Session Settings */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
             <h3 className="text-lg font-semibold text-text-dark mb-4">Session Settings</h3>
             
@@ -275,7 +249,6 @@ const Focus: React.FC = () => {
             </div>
           </div>
 
-          {/* Session Stats */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <h3 className="text-lg font-semibold text-text-dark mb-4">Session Stats</h3>
             <div className="flex items-center space-x-4">
@@ -291,7 +264,6 @@ const Focus: React.FC = () => {
             </div>
           </div>
 
-          {/* Breathing Exercise */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <h3 className="text-lg font-semibold text-text-dark mb-4">Breathing Exercises</h3>
             
@@ -332,30 +304,13 @@ const Focus: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="text-center">
-                <div className={`w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-white font-bold text-lg transition-all duration-1000 ${
-                  breathPhase === 'in' ? 'bg-mint-green scale-110' :
-                  breathPhase === 'hold' ? 'bg-warm-orange scale-110' :
-                  'bg-mint-green scale-90'
-                }`}>
-                  {breathTimer}
-                </div>
-                <p className="text-lg font-semibold text-text-dark mb-2">
-                  {breathPhase === 'in' ? 'Breathe In' : breathPhase === 'hold' ? 'Hold' : 'Breathe Out'}
-                </p>
-                <p className="text-sm text-text-light mb-4">{selectedBreathingExercise}</p>
-                <Button 
-                  onClick={stopBreathingExercise}
-                  variant="outline"
-                  className="rounded-2xl border-gray-300"
-                >
-                  Stop
-                </Button>
-              </div>
+              <BreathingExercise 
+                exerciseType={selectedBreathingExercise!}
+                onStop={stopBreathingExercise}
+              />
             )}
           </div>
 
-          {/* Ambient Sounds */}
           <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
             <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
             
@@ -391,7 +346,6 @@ const Focus: React.FC = () => {
             </div>
           </div>
 
-          {/* Free User Upgrade Prompt */}
           {!canStartSession && (
             <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
               <PremiumUpgradePrompt 

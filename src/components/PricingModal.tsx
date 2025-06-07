@@ -19,9 +19,26 @@ const PricingModal: React.FC<PricingModalProps> = ({
 
   const tiers = [
     {
+      id: 'free' as const,
+      name: 'Free',
+      price: '$0',
+      period: '/month',
+      description: 'Get started with basic wellness features',
+      features: [
+        'Basic mood tracking',
+        'Limited focus sessions (3 per day)',
+        'Basic breathing exercises',
+        'Progress tracking (7 days)',
+        'Community support'
+      ],
+      popular: false,
+      gradient: 'from-gray-400 to-gray-500',
+      isFree: true
+    },
+    {
       id: 'pro' as const,
       name: 'Pro',
-      price: '$9.99',
+      price: '$4.99',
       period: '/month',
       description: 'Perfect for building healthy habits',
       features: [
@@ -38,7 +55,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'elite' as const,
       name: 'Elite',
-      price: '$19.99',
+      price: '$9.99',
       period: '/month',
       description: 'For serious wellness enthusiasts',
       features: [
@@ -46,8 +63,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
         'Personalized recommendations',
         'Advanced meditation guides',
         'Weekly wellness reports',
-        'Premium content library',
-        '1-on-1 coaching sessions'
+        'Premium content library'
       ],
       popular: false,
       gradient: 'from-mint-green to-deep-blue'
@@ -111,17 +127,25 @@ const PricingModal: React.FC<PricingModalProps> = ({
                   ))}
                 </ul>
                 
-                <Button 
-                  onClick={() => onUpgrade(tier.id)}
-                  disabled={currentTier === tier.id}
-                  className={`w-full h-12 rounded-2xl font-semibold text-white transition-all ${
-                    currentTier === tier.id
-                      ? 'bg-gray-300 cursor-not-allowed'
-                      : 'bg-mint-green hover:bg-mint-green/90 hover:scale-[1.02]'
-                  }`}
-                >
-                  {currentTier === tier.id ? 'Current Plan' : `Upgrade to ${tier.name}`}
-                </Button>
+                {!tier.isFree && (
+                  <Button 
+                    onClick={() => onUpgrade(tier.id)}
+                    disabled={currentTier === tier.id}
+                    className={`w-full h-12 rounded-2xl font-semibold text-white transition-all ${
+                      currentTier === tier.id
+                        ? 'bg-gray-300 cursor-not-allowed'
+                        : 'bg-mint-green hover:bg-mint-green/90 hover:scale-[1.02]'
+                    }`}
+                  >
+                    {currentTier === tier.id ? 'Current Plan' : `Upgrade to ${tier.name}`}
+                  </Button>
+                )}
+                
+                {tier.isFree && (
+                  <div className="w-full h-12 rounded-2xl font-semibold text-deep-blue bg-gray-100 flex items-center justify-center">
+                    {currentTier === 'free' ? 'Current Plan' : 'Downgrade to Free'}
+                  </div>
+                )}
               </div>
             </div>
           ))}

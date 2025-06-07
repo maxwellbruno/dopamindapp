@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,17 +15,33 @@ interface MoodEntry {
   date: string;
 }
 
+interface SubscriptionData {
+  isPro: boolean;
+  isElite: boolean;
+  subscriptionEnd: string | null;
+  tier: 'free' | 'pro' | 'elite';
+}
+
 const Mood: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string>('');
   const [intensity, setIntensity] = useState<number>(3);
   const [note, setNote] = useState<string>('');
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
+  const [customActivity, setCustomActivity] = useState<string>('');
   const [moodEntries, setMoodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', []);
+  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
+    isPro: false,
+    isElite: false,
+    subscriptionEnd: null,
+    tier: 'free'
+  });
   const [showForm, setShowForm] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimer, setScrollTimer] = useState<NodeJS.Timeout | null>(null);
 
-  const moods = [
+  const isPremium = subscription.isPro || subscription.isElite;
+
+  const basicMoods = [
     { emoji: '😡', label: 'Angry', color: 'bg-red-100' },
     { emoji: '😞', label: 'Sad', color: 'bg-blue-100' },
     { emoji: '😐', label: 'Neutral', color: 'bg-gray-100' },
@@ -34,10 +49,28 @@ const Mood: React.FC = () => {
     { emoji: '😄', label: 'Great', color: 'bg-green-100' },
   ];
 
-  const activities = [
-    'Exercise', 'Work', 'Reading', 'Social', 
-    'Sleep', 'Meditation', 'Hobbies', 'Travel'
+  const premiumMoods = [
+    { emoji: '😰', label: 'Anxious', color: 'bg-yellow-100' },
+    { emoji: '😌', label: 'Calm', color: 'bg-blue-100' },
+    { emoji: '🤩', label: 'Excited', color: 'bg-purple-100' },
+    { emoji: '😴', label: 'Tired', color: 'bg-gray-100' },
+    { emoji: '🥰', label: 'Loved', color: 'bg-pink-100' },
+    { emoji: '😤', label: 'Frustrated', color: 'bg-orange-100' },
+    { emoji: '🤔', label: 'Thoughtful', color: 'bg-indigo-100' },
+    { emoji: '😇', label: 'Peaceful', color: 'bg-green-100' },
   ];
+
+  const allMoods = isPremium ? [...basicMoods, ...premiumMoods] : basicMoods;
+
+  const basicActivities = [
+    'Exercise', 'Work', 'Reading'
+  ];
+
+  const premiumActivities = [
+    'Social', 'Sleep', 'Meditation', 'Hobbies', 'Travel', 'Cooking', 'Music', 'Gaming', 'Art', 'Nature'
+  ];
+
+  const allActivities = isPremium ? [...basicActivities, ...premiumActivities] : basicActivities;
 
   // Handle scroll for bottom nav auto-hide
   useEffect(() => {
@@ -72,6 +105,13 @@ const Mood: React.FC = () => {
     );
   };
 
+  const handleCustomActivityAdd = () => {
+    if (customActivity.trim() && !selectedActivities.includes(customActivity.trim())) {
+      setSelectedActivities(prev => [...prev, customActivity.trim()]);
+      setCustomActivity('');
+    }
+  };
+
   const handleSubmit = () => {
     if (!selectedMood) return;
 
@@ -96,6 +136,7 @@ const Mood: React.FC = () => {
     setIntensity(3);
     setNote('');
     setSelectedActivities([]);
+    setCustomActivity('');
     setShowForm(false);
   };
 
@@ -122,7 +163,7 @@ const Mood: React.FC = () => {
       
       let dayMood = '';
       if (dayEntries.length > 0) {
-        dayMood = moods.find(m => m.label === dayEntries[0].mood)?.emoji || '';
+        dayMood = allMoods.find(m => m.label === dayEntries[0].mood)?.emoji || '';
       }
 
       calendar.push({
@@ -140,7 +181,7 @@ const Mood: React.FC = () => {
       {/* Header */}
       <div className="bg-deep-blue px-4 py-6 shadow-sm">
         <div className="max-w-md mx-auto flex items-center">
-          <h1 className="text-xl font-bold text-pure-white text-center flex-1">Mood Tracker</h1>
+          <h1 className="text-2xl font-bold text-pure-white text-center flex-1">Mood Tracker</h1>
         </div>
       </div>
 
@@ -154,7 +195,7 @@ const Mood: React.FC = () => {
                   onClick={() => setShowForm(false)}
                   variant="outline"
                   size="sm"
-                  className="text-deep-blue border-gray-200"
+                  className="text-mint-green border-mint-green hover:bg-mint-green hover:text-white"
                 >
                   ✕
                 </Button>
@@ -162,12 +203,12 @@ const Mood: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <div className="flex justify-between gap-3">
-                    {moods.map((mood, index) => (
+                  <div className="grid grid-cols-5 gap-3 mb-4">
+                    {allMoods.slice(0, 10).map((mood, index) => (
                       <button
                         key={mood.label}
                         onClick={() => setSelectedMood(mood.label)}
-                        className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all border-2 ${
+                        className={`w-14 h-14 rounded-full flex items-center justify-center text-xl transition-all border-2 ${
                           selectedMood === mood.label || (selectedMood === '' && mood.selected)
                             ? 'bg-mint-green border-mint-green shadow-lg transform scale-110' 
                             : 'bg-white border-gray-200 hover:border-mint-green'
@@ -177,6 +218,30 @@ const Mood: React.FC = () => {
                       </button>
                     ))}
                   </div>
+                  
+                  {isPremium && allMoods.length > 10 && (
+                    <div className="grid grid-cols-5 gap-3">
+                      {allMoods.slice(10).map((mood) => (
+                        <button
+                          key={mood.label}
+                          onClick={() => setSelectedMood(mood.label)}
+                          className={`w-14 h-14 rounded-full flex items-center justify-center text-xl transition-all border-2 ${
+                            selectedMood === mood.label
+                              ? 'bg-mint-green border-mint-green shadow-lg transform scale-110' 
+                              : 'bg-white border-gray-200 hover:border-mint-green'
+                          }`}
+                        >
+                          {mood.emoji}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {!isPremium && (
+                    <div className="text-center mt-3">
+                      <p className="text-xs text-text-light">🔒 More emotions available with Pro</p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -220,12 +285,12 @@ const Mood: React.FC = () => {
                   <Label className="text-base font-semibold mb-3 block text-deep-blue">
                     Activity
                   </Label>
-                  <div className="flex flex-wrap gap-2">
-                    {activities.slice(0, 3).map((activity) => (
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {allActivities.map((activity) => (
                       <button
                         key={activity}
                         onClick={() => handleActivityToggle(activity)}
-                        className={`px-4 py-2 text-sm rounded-full transition-colors ${
+                        className={`px-3 py-2 text-sm rounded-full transition-colors ${
                           selectedActivities.includes(activity)
                             ? 'bg-mint-green text-white'
                             : activity === 'Exercise' 
@@ -237,6 +302,29 @@ const Mood: React.FC = () => {
                       </button>
                     ))}
                   </div>
+
+                  {isPremium && (
+                    <div className="flex gap-2">
+                      <Input
+                        value={customActivity}
+                        onChange={(e) => setCustomActivity(e.target.value)}
+                        placeholder="Add custom activity"
+                        className="flex-1 bg-white border-gray-300 text-deep-blue rounded-xl"
+                        onKeyPress={(e) => e.key === 'Enter' && handleCustomActivityAdd()}
+                      />
+                      <Button
+                        onClick={handleCustomActivityAdd}
+                        size="sm"
+                        className="bg-mint-green text-white rounded-xl hover:bg-mint-green/90"
+                      >
+                        Add
+                      </Button>
+                    </div>
+                  )}
+
+                  {!isPremium && (
+                    <p className="text-xs text-text-light mt-2">🔒 More activities and custom activities with Pro</p>
+                  )}
                 </div>
 
                 <Button 
@@ -294,7 +382,7 @@ const Mood: React.FC = () => {
                 <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {
-                    const moodData = moods.find(m => m.label === entry.mood);
+                    const moodData = allMoods.find(m => m.label === entry.mood);
                     return (
                       <div key={entry.id} className="border-b border-gray-100 pb-3 last:border-b-0">
                         <div className="flex items-center justify-between mb-2">
