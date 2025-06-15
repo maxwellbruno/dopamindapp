@@ -12,7 +12,12 @@ interface SubscriptionData {
 }
 
 const SubscriptionManager: React.FC = () => {
-  const [subscription, setSubscription] = useLocalStorage<SubscriptionData>('dopamind_subscription');
+  const [subscription, setSubscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
+    isPro: false,
+    isElite: false,
+    subscriptionEnd: null,
+    tier: 'free',
+  });
   const navigate = useNavigate();
 
   const handleCancelSubscription = () => {

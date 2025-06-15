@@ -25,7 +25,7 @@ const BottomNav: React.FC = () => {
       
       const newTimer = setTimeout(() => {
         setIsScrolling(false);
-      }, 150);
+      }, 500);
       
       setScrollTimer(newTimer);
     };

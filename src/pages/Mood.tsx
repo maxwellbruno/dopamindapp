@@ -4,7 +4,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import BottomNav from '../components/BottomNav';
 
 interface MoodEntry {
   id: string;
@@ -62,6 +61,8 @@ const Mood: React.FC = () => {
     { emoji: '🤗', label: 'Grateful', color: 'bg-yellow-100' },
     { emoji: '😎', label: 'Confident', color: 'bg-blue-100' },
     { emoji: '🙃', label: 'Silly', color: 'bg-green-100' },
+    { emoji: '😥', label: 'Stressed', color: 'bg-red-100' },
+    { emoji: '🥳', label: 'Proud', color: 'bg-yellow-100' },
   ];
 
   const allMoods = isPremium ? [...basicMoods, ...premiumMoods] : basicMoods;
@@ -187,7 +188,7 @@ const Mood: React.FC = () => {
           <h1 className="text-2xl font-bold text-deep-blue text-center mb-6">Mood Tracker</h1>
           
           {showForm ? (
-            <div className="dopamind-card p-6 animate-slide-up">
+            <div className="dopamind-card p-6 animate-fade-in-up">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-bold text-deep-blue">How are you feeling?</h2>
                 <Button 

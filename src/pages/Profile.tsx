@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -208,6 +207,16 @@ const Profile: React.FC = () => {
                   </Button>
                 }
                 {subscription.tier === 'elite' &&
+                  <Link to="/profile/subscription" className="block w-full">
+                    <Button 
+                      variant="outline" 
+                      className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
+                    >
+                      Manage Subscription
+                    </Button>
+                  </Link>
+                }
+                 {subscription.tier === 'pro' &&
                   <Link to="/profile/subscription" className="block w-full">
                     <Button 
                       variant="outline" 

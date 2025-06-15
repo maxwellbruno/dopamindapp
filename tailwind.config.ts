@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -60,7 +61,7 @@ export default {
 				'mint-green': '#10B981',
 				'warm-orange': '#F59E0B',
 				'pure-white': '#FFFFFF',
-				'light-gray': '#D1D5DB',
+				'light-gray': '#F3F4F6',
 				'card-white': '#ffffff',
 				'text-dark': '#1E3A8A',
 				'text-light': '#6B7280',
@@ -119,8 +120,14 @@ export default {
 					}
 				},
 				'slide-up': {
-					'0%, 100%': { transform: 'translateY(0px)' },
-					'50%': { transform: 'translateY(-10px)' }
+					'0%': {
+						opacity: '0',
+						transform: 'translateY(30px)'
+					},
+					'100%': {
+						opacity: '1',
+						transform: 'translateY(0)'
+					}
 				}
 			},
 			animation: {
