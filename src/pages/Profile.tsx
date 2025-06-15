@@ -200,7 +200,7 @@ const Profile: React.FC = () => {
                 {subscription.tier === 'pro' &&
                   <Button 
                     variant="outline" 
-                    className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-none focus:ring-2 focus:ring-deep-blue"
+                    className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
                     onClick={() => setShowPricing(true)}
                   >
                     Upgrade to Elite
@@ -210,7 +210,7 @@ const Profile: React.FC = () => {
                   <Link to="/profile/subscription" className="block w-full">
                     <Button 
                       variant="outline" 
-                      className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-none focus:ring-2 focus:ring-deep-blue"
+                      className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
                     >
                       Manage Subscription
                     </Button>
@@ -220,7 +220,7 @@ const Profile: React.FC = () => {
                   <Link to="/profile/subscription" className="block w-full">
                     <Button 
                       variant="outline" 
-                      className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-none focus:ring-2 focus:ring-deep-blue"
+                      className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
                     >
                       Manage Subscription
                     </Button>
@@ -298,7 +298,7 @@ const Profile: React.FC = () => {
                     onClick={handleCancelEdit}
                     variant="outline"
                     size="sm"
-                    className="rounded-xl bg-white hover:bg-deep-blue text-deep-blue hover:text-white border-deep-blue focus:ring-2 focus:ring-deep-blue"
+                    className="rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
                   >
                     Cancel
                   </Button>

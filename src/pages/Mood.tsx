@@ -195,7 +195,12 @@ const Mood: React.FC = () => {
                   onClick={() => setShowForm(false)}
                   variant="outline"
                   size="sm"
-                  className="text-mint-green border-mint-green hover:bg-mint-green hover:text-white"
+                  className="dopamind-modal-close !bg-deep-blue !text-white !border-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white rounded-full w-10 h-10 flex items-center justify-center"
+                  style={{
+                    backgroundColor: "#1E3A8A",
+                    color: "#fff",
+                    borderColor: "#1E3A8A",
+                  }}
                 >
                   ✕
                 </Button>

@@ -162,7 +162,17 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
         <Button 
           onClick={onStop}
           variant="outline"
-          className="rounded-2xl border-deep-blue text-deep-blue hover:bg-deep-blue hover:text-white px-6 py-2"
+          className="rounded-2xl border-deep-blue text-deep-blue bg-white hover:bg-deep-blue hover:text-white px-6 py-2 
+            focus:bg-deep-blue focus:text-white
+            active:bg-deep-blue active:text-white
+            !border-deep-blue !text-deep-blue
+            !outline-none !ring-0
+            "
+          style={{
+            backgroundColor: "white",
+            borderColor: "#1E3A8A",
+            color: "#1E3A8A"
+          }}
         >
           Stop
         </Button>

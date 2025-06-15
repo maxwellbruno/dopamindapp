@@ -89,6 +89,63 @@
     @apply bg-light-gray text-deep-blue font-inter antialiased;
   }
 
+  /* Strongest nuclear override for any yellow at any final fallback */
+  button,
+  .button,
+  button:focus,
+  .button:focus,
+  button:active,
+  .button:active,
+  button:hover,
+  .button:hover {
+    background-color: unset !important;
+    border-color: #1E3A8A !important;
+    color: #1E3A8A !important;
+    outline: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+  button.bg-mint-green,
+  .button.bg-mint-green {
+    background-color: #10B981 !important;
+    color: #fff !important;
+    border-color: #10B981 !important;
+  }
+  button.bg-deep-blue,
+  .button.bg-deep-blue {
+    background-color: #1E3A8A !important;
+    color: #fff !important;
+    border-color: #1E3A8A !important;
+  }
+  /* Utility classes to explicitly re-enable colors for custom button text etc. */
+  .!text-deep-blue { color: #1E3A8A !important; }
+  .!bg-mint-green { background-color: #10B981 !important; }
+  .!bg-deep-blue { background-color: #1E3A8A !important; }
+  .!text-white { color: #fff !important; }
+  .!border-deep-blue { border-color: #1E3A8A !important; }
+
+  /* Also obliterate any yellow circle "stop" backgrounds used anywhere */
+  .bg-yellow-100,
+  .bg-yellow-200,
+  .bg-yellow-300,
+  .bg-yellow-400,
+  .bg-yellow-500,
+  .bg-yellow-600,
+  .bg-yellow-700,
+  .bg-yellow-800,
+  .bg-yellow-900 {
+    background-color: #fff !important;
+  }
+  .text-yellow-400,
+  .text-yellow-500,
+  .text-yellow-600,
+  .text-yellow-700,
+  .text-yellow-800,
+  .text-yellow-900 {
+    color: #1E3A8A !important;
+  }
+
   /* Remove yellow border and use only brand colors for input and button focus */
   input[type="text"],
   input[type="email"],
