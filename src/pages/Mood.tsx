@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { MoodEntry, SubscriptionData } from '@/types/mood';
@@ -23,7 +24,6 @@ const Mood: React.FC = () => {
     tier: 'free'
   });
   const [showForm, setShowForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const isPremium = subscription.isPro || subscription.isElite;
 
@@ -73,10 +73,6 @@ const Mood: React.FC = () => {
     setShowForm(false);
   };
 
-  if (isLoading) {
-    return <MinimalSpinner />;
-  }
-
   return (
     <div className="min-h-screen bg-light-gray">
       <div className="px-4 pt-6 md:pt-0">
@@ -117,3 +113,4 @@ const Mood: React.FC = () => {
 };
 
 export default Mood;
+
