@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -94,6 +95,10 @@
     @apply bg-light-gray text-deep-blue font-inter antialiased;
   }
 
+  .dark body {
+    color: hsl(var(--foreground));
+  }
+
   button,
   .button,
   button:focus,
@@ -109,6 +114,12 @@
     box-shadow: none !important;
     text-shadow: none !important;
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .dark button:not(.bg-mint-green):not(.bg-deep-blue):not(.dopamind-modal-close),
+  .dark .button:not(.bg-mint-green):not(.bg-deep-blue):not(.dopamind-modal-close) {
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--foreground)) !important;
   }
 
   button.bg-mint-green,

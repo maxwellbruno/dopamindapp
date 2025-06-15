@@ -26,7 +26,7 @@ const HomeHeader: React.FC<HomeHeaderProps> = ({ greeting, userName, currentDate
           <div className="flex items-center space-x-2">
             <div className={`px-3 py-1 rounded-full text-xs font-semibold text-white ${
               tier === 'elite'
-                ? 'bg-gradient-to-r from-warm-orange to-mint-green' 
+                ? 'bg-gradient-to-r from-deep-blue to-mint-green' 
                 : 'bg-gradient-to-r from-mint-green to-mint-green'
             }`}>
               {tier === 'elite' ? '👑 Elite' : '🧠 Pro'}
