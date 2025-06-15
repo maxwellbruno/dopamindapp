@@ -38,24 +38,27 @@ const Profile: React.FC = () => {
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Profile</h1>
 
-          <UserInfo subscriptionTier={subscription.tier} />
-
-          <SubscriptionCard subscription={subscription} setSubscription={setSubscription} />
-          
-          <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
-
-          <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={subscription.tier} />
-
-          <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <Button 
-              onClick={logout}
-              className="w-full bg-mint-green text-white hover:bg-mint-green/90 rounded-xl"
-            >
-              Sign Out
-            </Button>
+          {/* Desktop layout: User/Subscription > Stats/Settings */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-8">
+            <div className="flex flex-col gap-6">
+              <UserInfo subscriptionTier={subscription.tier} />
+              <SubscriptionCard subscription={subscription} setSubscription={setSubscription} />
+            </div>
+            <div className="flex flex-col gap-6">
+              <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
+              <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={subscription.tier} />
+              <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <Button 
+                  onClick={logout}
+                  className="w-full bg-mint-green text-white hover:bg-mint-green/90 rounded-xl"
+                >
+                  Sign Out
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>

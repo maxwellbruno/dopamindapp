@@ -151,124 +151,111 @@ const Focus: React.FC = () => {
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
-        <div className="max-w-md mx-auto">
+        <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
+          
+          {/* Desktop grid for main focus content */}
+          <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-8 mb-6">
+            {/* Left column: Session name, timer, session settings */}
+            <div className="flex flex-col gap-6 md:col-span-2">
+              <div className="dopamind-card p-6 animate-fade-in-up">
+                <Input
+                  placeholder="Name your focus session"
+                  value={sessionName}
+                  onChange={(e) => setSessionName(e.target.value)}
+                  className="w-full bg-white border-gray-300 text-deep-blue placeholder:text-text-light rounded-2xl h-12 focus:border-mint-green focus:ring-mint-green/20"
+                />
+              </div>
 
-          <div className="dopamind-card p-6 mb-6 animate-fade-in-up">
-            <Input
-              placeholder="Name your focus session"
-              value={sessionName}
-              onChange={(e) => setSessionName(e.target.value)}
-              className="w-full bg-white border-gray-300 text-deep-blue placeholder:text-text-light rounded-2xl h-12 focus:border-mint-green focus:ring-mint-green/20"
-            />
-          </div>
-
-          <div className="dopamind-card p-8 mb-6 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-            <div className="text-6xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent mb-4">
-              {formatTime(timeLeft)}
-            </div>
-            <p className="text-text-light mb-6">
-              {isBreak ? 'Break Time' : 'Focus Time'} • {isBreak ? breakDuration : sessionDuration} min
-            </p>
-
-            <div className="flex gap-3 justify-center">
-              {!canStartSession ? (
-                <div className="text-center">
-                  <p className="text-sm text-text-light mb-3">Free users: {todaySessions}/{maxFreeSessions} sessions today</p>
-                  <Button 
-                    disabled
-                    className="bg-gray-300 text-gray-500 rounded-2xl px-8 h-12"
-                  >
-                    Daily Limit Reached
-                  </Button>
+              <div className="dopamind-card p-8 text-center animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <div className="text-6xl font-bold bg-gradient-to-r from-mint-green to-mint-green bg-clip-text text-transparent mb-4">
+                  {formatTime(timeLeft)}
                 </div>
-              ) : (
-                <>
-                  <Button 
-                    onClick={isRunning ? pauseTimer : startTimer}
-                    className="bg-gradient-to-r from-mint-green to-mint-green text-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
-                  >
-                    {isRunning ? 'Pause' : 'Start'}
-                  </Button>
-                  <Button 
-                    onClick={resetTimer}
-                    className="bg-deep-blue text-white rounded-2xl px-8 h-12 hover:bg-deep-blue/90"
-                  >
-                    Reset
-                  </Button>
-                </>
-              )}
-            </div>
-          </div>
-
-          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <h3 className="text-lg font-semibold text-text-dark mb-4">Session Settings</h3>
-            
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-text-dark font-medium">Session Duration</span>
-                  <span className="text-text-light">{sessionDuration} min</span>
-                  {!canCustomizeDuration && sessionDuration >= maxFreeSessionDuration && (
-                    <span className="text-xs text-warm-orange bg-warm-orange/10 px-2 py-1 rounded-full">Free Limit</span>
+                <p className="text-text-light mb-6">
+                  {isBreak ? 'Break Time' : 'Focus Time'} • {isBreak ? breakDuration : sessionDuration} min
+                </p>
+                <div className="flex gap-3 justify-center">
+                  {!canStartSession ? (
+                    <div className="text-center">
+                      <p className="text-sm text-text-light mb-3">Free users: {todaySessions}/{maxFreeSessions} sessions today</p>
+                      <Button 
+                        disabled
+                        className="bg-gray-300 text-gray-500 rounded-2xl px-8 h-12"
+                      >
+                        Daily Limit Reached
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Button 
+                        onClick={isRunning ? pauseTimer : startTimer}
+                        className="bg-gradient-to-r from-mint-green to-mint-green text-white font-semibold rounded-2xl px-8 h-12 shadow-lg hover:scale-[1.02] transition-transform"
+                      >
+                        {isRunning ? 'Pause' : 'Start'}
+                      </Button>
+                      <Button 
+                        onClick={resetTimer}
+                        className="bg-deep-blue text-white rounded-2xl px-8 h-12 hover:bg-deep-blue/90"
+                      >
+                        Reset
+                      </Button>
+                    </>
                   )}
                 </div>
-                <input
-                  type="range"
-                  min="5"
-                  max={canCustomizeDuration ? "240" : maxFreeSessionDuration.toString()}
-                  value={sessionDuration}
-                  onChange={(e) => handleSessionDurationChange(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  style={{
-                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb 100%)`
-                  }}
-                />
-                {!canCustomizeDuration && (
-                  <p className="text-xs text-text-light mt-1">Upgrade to Pro for custom durations up to 4 hours</p>
-                )}
               </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-text-dark font-medium">Break Duration</span>
-                  <span className="text-text-light">{breakDuration} min</span>
+              <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <h3 className="text-lg font-semibold text-text-dark mb-4">Session Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-text-dark font-medium">Session Duration</span>
+                      <span className="text-text-light">{sessionDuration} min</span>
+                      {!canCustomizeDuration && sessionDuration >= maxFreeSessionDuration && (
+                        <span className="text-xs text-warm-orange bg-warm-orange/10 px-2 py-1 rounded-full">Free Limit</span>
+                      )}
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max={canCustomizeDuration ? "240" : maxFreeSessionDuration.toString()}
+                      value={sessionDuration}
+                      onChange={(e) => handleSessionDurationChange(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      style={{
+                        background: `linear-gradient(to right, #10B981 0%, #10B981 ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb ${((sessionDuration - 5) / (canCustomizeDuration ? 235 : 20)) * 100}%, #e5e7eb 100%)`
+                      }}
+                    />
+                    {!canCustomizeDuration && (
+                      <p className="text-xs text-text-light mt-1">Upgrade to Pro for custom durations up to 4 hours</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-text-dark font-medium">Break Duration</span>
+                      <span className="text-text-light">{breakDuration} min</span>
+                    </div>
+                    <input
+                      type="range"
+                      min="5"
+                      max="30"
+                      value={breakDuration}
+                      onChange={(e) => setBreakDuration(Number(e.target.value))}
+                      className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      style={{
+                        background: `linear-gradient(to right, #10B981 0%, #10B981 ${((breakDuration - 5) / 25) * 100}%, #e5e7eb ${((breakDuration - 5) / 25) * 100}%, #e5e7eb 100%)`
+                      }}
+                    />
+                  </div>
                 </div>
-                <input
-                  type="range"
-                  min="5"
-                  max="30"
-                  value={breakDuration}
-                  onChange={(e) => setBreakDuration(Number(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-                  style={{
-                    background: `linear-gradient(to right, #10B981 0%, #10B981 ${((breakDuration - 5) / 25) * 100}%, #e5e7eb ${((breakDuration - 5) / 25) * 100}%, #e5e7eb 100%)`
-                  }}
-                />
               </div>
             </div>
-          </div>
 
-          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <h3 className="text-lg font-semibold text-text-dark mb-4">Session Stats</h3>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
-                  <span className="text-lg">📊</span>
-                </div>
-                <div>
-                  <div className="text-lg font-bold text-text-dark">Total Sessions: {totalSessions}</div>
-                  <div className="text-sm text-text-light">Current Streak: {currentStreak} days</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-            <h3 className="text-lg font-semibold text-text-dark mb-4">Breathing Exercises</h3>
-            
-            {!isBreathing ? (
-              <div>
+            {/* Right sidebar for desktop, collapses below md */}
+            <div className="flex flex-col gap-6">
+              <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.4s' }}>
+                <h3 className="text-lg font-semibold text-text-dark mb-4">Breathing Exercises</h3>
                 <div className="space-y-3 mb-4">
                   {availableBreathingExercises.map((exercise) => (
                     <div key={exercise.id} className="flex items-center justify-between p-3 bg-light-gray rounded-2xl">
@@ -303,51 +290,59 @@ const Focus: React.FC = () => {
                   </div>
                 )}
               </div>
-            ) : (
-              <BreathingExercise 
-                exerciseType={selectedBreathingExercise!}
-                onStop={stopBreathingExercise}
-              />
-            )}
-          </div>
-
-          <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
-            
-            <div className="space-y-3">
-              {availableSounds.map((sound) => (
-                <div key={sound.id} className="flex items-center justify-between">
-                  <span className="text-text-dark">{sound.name}</span>
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      name="sound"
-                      value={sound.id}
-                      checked={selectedSound === sound.id}
-                      onChange={(e) => setSelectedSound(e.target.value)}
-                      className="text-mint-green"
-                    />
-                  </div>
-                </div>
-              ))}
-              
-              {!isPremium && (
-                <div className="pt-2 border-t border-gray-200">
-                  <p className="text-xs text-text-light mb-2">Premium sounds available with Pro</p>
-                  <div className="space-y-2">
-                    {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
-                      <div key={sound.id} className="flex items-center justify-between opacity-50">
-                        <span className="text-gray-400">{sound.name} 🔒</span>
+              <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.5s' }}>
+                <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
+                <div className="space-y-3">
+                  {availableSounds.map((sound) => (
+                    <div key={sound.id} className="flex items-center justify-between">
+                      <span className="text-text-dark">{sound.name}</span>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="sound"
+                          value={sound.id}
+                          checked={selectedSound === sound.id}
+                          onChange={(e) => setSelectedSound(e.target.value)}
+                          className="text-mint-green"
+                        />
                       </div>
-                    ))}
+                    </div>
+                  ))}
+                  
+                  {!isPremium && (
+                    <div className="pt-2 border-t border-gray-200">
+                      <p className="text-xs text-text-light mb-2">Premium sounds available with Pro</p>
+                      <div className="space-y-2">
+                        {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
+                          <div key={sound.id} className="flex items-center justify-between opacity-50">
+                            <span className="text-gray-400">{sound.name} 🔒</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.3s' }}>
+                <h3 className="text-lg font-semibold text-text-dark mb-4">Session Stats</h3>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-10 h-10 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+                      <span className="text-lg">📊</span>
+                    </div>
+                    <div>
+                      <div className="text-lg font-bold text-text-dark">Total Sessions: {totalSessions}</div>
+                      <div className="text-sm text-text-light">Current Streak: {currentStreak} days</div>
+                    </div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
           </div>
 
+          {/* For mobile only, stack the premium prompt and its surrounding spacing */}
           {!canStartSession && (
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <div className="animate-fade-in-up md:max-w-2xl md:mx-auto" style={{ animationDelay: '0.6s' }}>
               <PremiumUpgradePrompt 
                 feature="Unlimited Focus Sessions"
                 description="Remove daily limits and access custom session durations, premium soundscapes, and advanced analytics."
