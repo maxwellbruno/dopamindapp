@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
@@ -8,6 +9,11 @@ import SessionSettings from '../components/focus/SessionSettings';
 import BreathingExercisesSidebar from '../components/focus/BreathingExercisesSidebar';
 import AmbientSoundsSidebar from '../components/focus/AmbientSoundsSidebar';
 import SessionStatsSidebar from '../components/focus/SessionStatsSidebar';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from '@/components/ui/use-toast';
+import LoadingScreen from '@/components/LoadingScreen';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -17,11 +23,24 @@ interface SubscriptionData {
 }
 
 const Focus: React.FC = () => {
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
     isPro: false,
     isElite: false,
     subscriptionEnd: null,
     tier: 'free'
+  });
+
+  const { data: focusStats, isLoading: isLoadingStats } = useQuery({
+      queryKey: ['focusStats', user?.id],
+      queryFn: async () => {
+          if (!user) return null;
+          const { data, error } = await supabase.rpc('get_user_focus_stats');
+          if (error) throw new Error(error.message);
+          return data;
+      },
+      enabled: !!user,
   });
 
   const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -34,25 +53,45 @@ const Focus: React.FC = () => {
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const [selectedBreathingExercise, setSelectedBreathingExercise] = useState<string | null>(null);
 
-  const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
-  const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0}');
-
-  const totalSessions = sessions.length;
-  const currentStreak = stats.currentStreak || 0;
+  const totalSessions = focusStats?.total_sessions || 0;
+  const currentStreak = focusStats?.current_streak || 0;
+  const todaySessions = focusStats?.today_sessions_count || 0;
 
   const isPremium = subscription.isPro || subscription.isElite;
 
   // Free tier limitations
   const maxFreeSessionDuration = 25;
   const maxFreeSessions = 3;
-  const todaySessions = sessions.filter((session: any) => {
-    const sessionDate = new Date(session.date);
-    const today = new Date();
-    return sessionDate.toDateString() === today.toDateString();
-  }).length;
 
   const canStartSession = isPremium || todaySessions < maxFreeSessions;
   const canCustomizeDuration = isPremium;
+
+  const saveSessionMutation = useMutation({
+    mutationFn: async (duration: number) => {
+        if (!user) throw new Error("User not authenticated");
+        
+        const { error: sessionError } = await supabase.from('focus_sessions').insert({
+            user_id: user.id,
+            name: sessionName || 'Focus Session',
+            duration: duration,
+        });
+        if (sessionError) throw new Error(sessionError.message);
+
+        const { error: statsError } = await supabase.rpc('update_user_stats_on_session_complete', {
+            session_duration: duration
+        });
+        if (statsError) throw new Error(statsError.message);
+    },
+    onSuccess: () => {
+        toast({ title: "Session saved!", description: "Your progress has been updated." });
+        queryClient.invalidateQueries({ queryKey: ['focusStats'] });
+        queryClient.invalidateQueries({ queryKey: ['focusSessions'] });
+        queryClient.invalidateQueries({ queryKey: ['profileStats'] });
+    },
+    onError: (error: Error) => {
+        toast({ title: "Error saving session", description: error.message, variant: 'destructive' });
+    }
+  });
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -70,23 +109,7 @@ const Focus: React.FC = () => {
     setIsRunning(false);
     
     if (!isBreak) {
-      const newSession = {
-        id: Date.now(),
-        name: sessionName || 'Focus Session',
-        duration: sessionDuration,
-        date: new Date().toISOString(),
-      };
-      
-      const updatedSessions = [...sessions, newSession];
-      localStorage.setItem('dopamind_sessions', JSON.stringify(updatedSessions));
-      
-      const updatedStats = {
-        ...stats,
-        totalFocusMinutes: stats.totalFocusMinutes + sessionDuration,
-        currentStreak: stats.currentStreak + 1,
-      };
-      localStorage.setItem('dopamind_stats', JSON.stringify(updatedStats));
-      
+      saveSessionMutation.mutate(sessionDuration);
       setIsBreak(true);
       setTimeLeft(breakDuration * 60);
     } else {
@@ -152,6 +175,10 @@ const Focus: React.FC = () => {
   const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
   const availableBreathingExercises = breathingExercises.filter(exercise => !exercise.premium || isPremium);
 
+  if (isLoadingStats) {
+    return <LoadingScreen />;
+  }
+
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
@@ -205,6 +232,7 @@ const Focus: React.FC = () => {
               <SessionStatsSidebar
                 totalSessions={totalSessions}
                 currentStreak={currentStreak}
+                isPremium={isPremium}
               />
             </div>
           </div>

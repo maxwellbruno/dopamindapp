@@ -8,6 +8,8 @@ import UserInfo from '../components/profile/UserInfo';
 import SubscriptionCard from '../components/profile/SubscriptionCard';
 import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -17,7 +19,7 @@ interface SubscriptionData {
 }
 
 const Profile: React.FC = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
@@ -32,8 +34,49 @@ const Profile: React.FC = () => {
     tier: 'free'
   });
   
-  const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
-  const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
+  const { data: profileData } = useQuery({
+    queryKey: ['profileStats', user?.id],
+    queryFn: async () => {
+      if (!user) return null;
+
+      const { data: stats, error: statsError } = await supabase
+        .from('user_stats')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (statsError) {
+        console.error("Error fetching user stats", statsError);
+        throw statsError;
+      }
+
+      const { data: sessions, error: sessionsError } = await supabase
+        .from('focus_sessions')
+        .select('duration')
+        .eq('user_id', user.id);
+      
+      if (sessionsError) {
+        console.error("Error fetching sessions", sessionsError);
+        throw sessionsError;
+      }
+
+      // Mood entries are not part of this task, so we'll leave it as is for now.
+      const moodEntries = JSON.parse(localStorage.getItem('dopamind_mood_entries') || '[]').length;
+
+      return {
+        stats: {
+          totalFocusMinutes: stats?.total_focus_minutes || 0,
+          currentStreak: stats?.current_streak || 0,
+          moodEntries: moodEntries,
+        },
+        sessions: sessions || []
+      };
+    },
+    enabled: !!user,
+  });
+
+  const stats = profileData?.stats || { totalFocusMinutes: 0, currentStreak: 0, moodEntries: 0 };
+  const sessions = profileData?.sessions || [];
 
   return (
     <div className="min-h-screen bg-light-gray pb-20">

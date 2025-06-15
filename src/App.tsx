@@ -20,6 +20,7 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import SubscriptionManager from './pages/SubscriptionManager';
 import AllMoodEntries from './pages/AllMoodEntries';
+import AllFocusSessions from './pages/AllFocusSessions';
 import SoundGenre from './pages/SoundGenre';
 
 const queryClient = new QueryClient();
@@ -85,6 +86,7 @@ const AppContent: React.FC = () => {
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
           <Route path="/focus" element={<Focus />} />
+          <Route path="/focus/all" element={<AllFocusSessions />} />
           <Route path="/mood" element={<Mood />} />
           <Route path="/mood/:id" element={<MoodEntryDetail />} />
           <Route path="/mood/all" element={<AllMoodEntries />} />

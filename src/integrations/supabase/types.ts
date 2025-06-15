@@ -9,19 +9,78 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      focus_sessions: {
+        Row: {
+          created_at: string
+          duration: number
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration: number
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration?: number
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          current_streak: number
+          last_session_date: string | null
+          total_focus_minutes: number
+          total_sessions: number
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          last_session_date?: string | null
+          total_focus_minutes?: number
+          total_sessions?: number
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          last_session_date?: string | null
+          total_focus_minutes?: number
+          total_sessions?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_focus_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Database["public"]["CompositeTypes"]["focus_stats"]
+      }
+      update_user_stats_on_session_complete: {
+        Args: { session_duration: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
     }
     CompositeTypes: {
-      [_ in never]: never
+      focus_stats: {
+        total_sessions: number | null
+        total_focus_minutes: number | null
+        current_streak: number | null
+        today_sessions_count: number | null
+      }
     }
   }
 }
