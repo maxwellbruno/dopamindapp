@@ -1,7 +1,10 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { useMutation } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import MinimalSpinner from './ui/MinimalSpinner';
 
 interface AiChatProps {
   onClose: () => void;
@@ -9,18 +12,55 @@ interface AiChatProps {
 
 const AiChat: React.FC<AiChatProps> = ({ onClose }) => {
   const [messages, setMessages] = useState([
-    { from: 'ai', text: "Hello! I'm Mindfulnest AI. How can I help you be more productive today?" }
+    { from: 'ai', text: "Hello! I'm Mindfulnest AI. How can I help you support your well-being today?" }
   ]);
   const [input, setInput] = useState('');
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const { mutate: sendMessage, isPending: isAiReplying } = useMutation({
+    mutationFn: async (chatHistory: { from: string; text: string }[]) => {
+      const formattedHistory = chatHistory.map(msg => ({
+        role: msg.from === 'ai' ? 'assistant' : 'user',
+        content: msg.text
+      }));
+
+      const { data, error } = await supabase.functions.invoke('mindfulnest-ai-chat', {
+        body: { messages: formattedHistory },
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    onSuccess: (data) => {
+      const aiResponse = { from: 'ai', text: data.response };
+      setMessages(prev => [...prev, aiResponse]);
+    },
+    onError: (error) => {
+      console.error('Error sending message:', error);
+      const errorResponse = { from: 'ai', text: "I'm having trouble connecting right now. Please try again later." };
+      setMessages(prev => [...prev, errorResponse]);
+    },
+  });
 
   const handleSend = () => {
-    if (input.trim() === '') return;
+    if (input.trim() === '' || isAiReplying) return;
 
     const userMessage = { from: 'user', text: input };
-    const aiResponse = { from: 'ai', text: "Thanks for sharing! I'm still in training, but I've noted that down. Keep focusing on your goals!" };
+    const newMessages = [...messages, userMessage];
     
-    setMessages(prev => [...prev, userMessage, aiResponse]);
+    setMessages(newMessages);
     setInput('');
+    sendMessage(newMessages);
   };
 
   return (
@@ -50,6 +90,14 @@ const AiChat: React.FC<AiChatProps> = ({ onClose }) => {
               </div>
             </div>
           ))}
+          {isAiReplying && (
+            <div className="flex justify-start">
+              <div className="p-3 rounded-2xl max-w-[80%] text-sm bg-light-gray text-text-dark rounded-bl-none">
+                <MinimalSpinner />
+              </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
         </div>
 
         <div className="flex gap-2">
@@ -59,10 +107,12 @@ const AiChat: React.FC<AiChatProps> = ({ onClose }) => {
             placeholder="Ask me anything..."
             className="flex-1 bg-light-gray border-none text-deep-blue rounded-xl focus-visible:ring-mint-green"
             onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+            disabled={isAiReplying}
           />
           <Button
             onClick={handleSend}
             className="bg-mint-green text-white rounded-xl hover:bg-mint-green/90"
+            disabled={isAiReplying}
           >
             Send
           </Button>
