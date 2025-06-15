@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Button } from '@/components/ui/button';
+import { toast } from '@/components/ui/use-toast';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -25,6 +27,10 @@ const SubscriptionManager: React.FC = () => {
       isElite: false,
       subscriptionEnd: null,
       tier: 'free',
+    });
+    toast({
+      title: "Subscription Cancelled",
+      description: "Your subscription has been successfully cancelled.",
     });
     navigate('/profile');
   };
