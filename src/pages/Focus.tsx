@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +9,7 @@ import { useBreathingExercise } from '@/hooks/useBreathingExercise';
 import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions } from '@/constants/focusConstants';
 import FocusLayout from '@/components/focus/FocusLayout';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
+import Button from '@/components/Button';
 
 const initialSubscription: SubscriptionData = {
   isPro: false,
@@ -64,6 +64,39 @@ const Focus: React.FC = () => {
       <div className="px-4 pt-8">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
+
+          {/* Meditation Frequencies Elite Exclusive Tile */}
+          {subscription.isElite && (
+            <div className="mb-8 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
+              <div
+                className="dopamind-card bg-gradient-to-r from-mint-green/90 to-warm-orange/80 p-6 rounded-2xl shadow-md flex flex-col md:flex-row items-center justify-between gap-4 hover:scale-[1.03] transition cursor-pointer"
+                onClick={() => window.location.assign("/meditation/frequencies")}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="flex flex-col gap-1 flex-1">
+                  <span className="text-lg font-semibold text-white flex items-center gap-2">
+                    <span className="text-2xl">🧘‍♂️</span>
+                    Meditation Frequencies <span className="ml-2 text-base px-2 py-1 rounded-full bg-warm-orange/90 text-white font-bold">Elite</span>
+                  </span>
+                  <span className="text-xs text-white/80 mt-1">
+                    Brainwaves &amp; Binaural Frequencies for deep meditation &amp; focus.
+                  </span>
+                </div>
+                <div className="flex gap-3 mt-4 md:mt-0">
+                  <Button
+                    className="bg-white text-mint-green font-bold rounded-xl px-6 shadow"
+                    onClick={e => {
+                      e.stopPropagation();
+                      window.location.assign("/meditation/frequencies");
+                    }}
+                  >
+                    Explore
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <FocusLayout
             sessionName={timerLogic.sessionName}

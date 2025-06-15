@@ -22,6 +22,9 @@ import SubscriptionManager from './pages/SubscriptionManager';
 import AllMoodEntries from './pages/AllMoodEntries';
 import AllFocusSessions from './pages/AllFocusSessions';
 import SoundGenre from './pages/SoundGenre';
+import MeditationFrequencies from './pages/MeditationFrequencies';
+import Brainwaves from './pages/Brainwaves';
+import BinauralFrequencies from './pages/BinauralFrequencies';
 
 const queryClient = new QueryClient();
 
@@ -114,6 +117,9 @@ const AppContent: React.FC = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
           <Route path="/sound/:id" element={<SoundGenre />} />
+          <Route path="/meditation/frequencies" element={<React.lazy(() => import('./pages/MeditationFrequencies')) />} />
+          <Route path="/meditation/brainwaves" element={<React.lazy(() => import('./pages/Brainwaves'))} />
+          <Route path="/meditation/binaural" element={<React.lazy(() => import('./pages/BinauralFrequencies'))} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
