@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -197,8 +196,7 @@ const TermsAndConditions: React.FC = () => {
                   If you have any questions about these Terms or our Privacy Policy, please contact us at:
                 </p>
                 <div className="bg-light-gray p-4 rounded-lg">
-                  <p className="text-text-dark"><strong>Email:</strong> support@dopamind.app</p>
-                  <p className="text-text-dark"><strong>Privacy Officer:</strong> privacy@dopamind.app</p>
+                  <p className="text-text-dark"><strong>Email:</strong> dopamindpwa@gmail.com</p>
                 </div>
               </div>
             </section>
