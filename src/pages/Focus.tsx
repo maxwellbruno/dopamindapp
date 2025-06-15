@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
@@ -27,7 +26,7 @@ const Focus: React.FC = () => {
   const queryClient = useQueryClient();
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
 
-  const { data: focusStats } = useQuery({
+  const { data: focusStats, isLoading } = useQuery({
       queryKey: ['focusStats', user?.id],
       queryFn: async () => {
           if (!user) return null;
@@ -170,7 +169,7 @@ const Focus: React.FC = () => {
   const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
   const availableBreathingExercises = breathingExercises.filter(exercise => !exercise.premium || isPremium);
 
-  if (isLoadingStats) {
+  if (isLoading) {
     return <LoadingScreen />;
   }
 
@@ -228,6 +227,7 @@ const Focus: React.FC = () => {
                 totalSessions={totalSessions}
                 currentStreak={currentStreak}
                 isPremium={isPremium}
+                isLoading={isLoading}
               />
             </div>
           </div>
