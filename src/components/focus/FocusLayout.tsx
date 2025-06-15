@@ -1,3 +1,4 @@
+
 import React from 'react';
 import BreathingExercise from '../BreathingExercise';
 import SessionTimer from './SessionTimer';
@@ -115,12 +116,16 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
             handleSessionDurationChange={handleSessionDurationChange}
             setBreakDuration={setBreakDuration}
           />
-          {isElite && (
-            <div className="flex flex-col gap-4">
-              <MeditationCard selectedSound={selectedSound} setSelectedSound={setSelectedSound} />
-              <AISoundscapeCard isElite={isElite} />
-            </div>
-          )}
+          
+          {/* Show meditation and AI soundscape cards to all users */}
+          <div className="flex flex-col gap-4">
+            <MeditationCard 
+              selectedSound={selectedSound} 
+              setSelectedSound={setSelectedSound}
+              isPremium={isPremium}
+            />
+            <AISoundscapeCard isElite={isElite} isPremium={isPremium} />
+          </div>
         </div>
 
         {/* Right sidebar, desktop only */}
