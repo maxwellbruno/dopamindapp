@@ -35,12 +35,39 @@ const TermsSection: React.FC = () => {
       </div>
 
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-deep-blue">4. Health and Medical Disclaimer</h3>
-        <p className="text-text-dark leading-relaxed">
-          Dopamind is designed for general wellness and mindfulness purposes. The content and features provided are not intended to 
-          diagnose, treat, cure, or prevent any medical condition. Always consult with qualified healthcare professionals regarding 
-          any mental health concerns or before making significant changes to your wellness routine.
-        </p>
+        <h3 className="text-lg font-semibold text-deep-blue">4. Important Medical Disclaimer</h3>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+          <p className="text-text-dark leading-relaxed font-semibold mb-3">
+            DOPAMIND IS NOT MEDICATION, MEDICAL TREATMENT, OR THERAPY
+          </p>
+          <div className="space-y-3 text-text-dark leading-relaxed">
+            <p>
+              Dopamind is designed solely as a digital wellness tool to help users with digital detoxing and mindfulness practice. 
+              The App is NOT intended to diagnose, treat, cure, prevent, or replace any medical condition, mental health disorder, 
+              or professional medical treatment.
+            </p>
+            <p>
+              <strong>Dopamind is NOT:</strong>
+            </p>
+            <ul className="list-disc list-inside ml-4 space-y-1">
+              <li>A replacement for professional therapy or counseling</li>
+              <li>A substitute for hospital treatment or medical care</li>
+              <li>Medication or medical treatment of any kind</li>
+              <li>A cure for depression, anxiety, or any mental health condition</li>
+              <li>Professional medical advice or consultation</li>
+            </ul>
+            <p>
+              <strong>If you have health issues, mental health conditions, or any medical concerns, you MUST seek professional help 
+              from qualified healthcare providers, therapists, or medical professionals.</strong> Always consult with your doctor 
+              or mental health professional before making significant changes to your wellness routine or if you are experiencing 
+              any health-related symptoms.
+            </p>
+            <p>
+              Dopamind is simply a tool designed to support digital wellness and mindfulness practices. It should be used as a 
+              complement to, not a replacement for, professional medical care when needed.
+            </p>
+          </div>
+        </div>
       </div>
 
       <div className="space-y-4">
