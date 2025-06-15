@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Mic } from 'lucide-react';
+import { Download } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
 interface SubscriptionData {
@@ -11,6 +11,19 @@ interface SubscriptionData {
   subscriptionEnd: string | null;
   tier: "free" | "pro" | "elite";
 }
+
+const GUIDED_MEDITATIONS = [
+  { name: "Deep Relaxation - Body Scan Meditation", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1d03b8.mp3" },
+  { name: "Mindful Breathing - 10 Minute Focus", url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3" },
+  { name: "Stress Relief - Progressive Muscle Relaxation", url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b898d98.mp3" },
+  { name: "Sleep Meditation - Evening Wind Down", url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3" },
+  { name: "Morning Motivation - Positive Affirmations", url: "https://cdn.pixabay.com/audio/2022/07/26/audio_121b2265a1.mp3" },
+  { name: "Anxiety Relief - Calming the Mind", url: "https://cdn.pixabay.com/audio/2022/08/20/audio_121d6f2717.mp3" },
+  { name: "Self-Love Meditation - Inner Compassion", url: "https://cdn.pixabay.com/audio/2023/04/27/audio_1492a5b94a.mp3" },
+  { name: "Focus Enhancement - Mental Clarity", url: "https://cdn.pixabay.com/audio/2022/02/23/audio_1154ae857c.mp3" },
+  { name: "Gratitude Practice - Heart Opening", url: "https://cdn.pixabay.com/audio/2022/04/27/audio_115f63f3d7.mp3" },
+  { name: "Energy Boost - Midday Revitalization", url: "https://cdn.pixabay.com/audio/2022/12/16/audio_124f6173b1.mp3" },
+];
 
 const GuidedMeditation: React.FC = () => {
   const navigate = useNavigate();
@@ -38,17 +51,51 @@ const GuidedMeditation: React.FC = () => {
     );
   }
 
+  const isElite = subscription.isElite;
+
+  // Download track for offline
+  function handleDownload(url: string, name: string) {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${name}.mp3`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   return (
-    <div className="min-h-screen bg-light-gray py-10 px-4 flex flex-col items-center relative">
+    <div className="min-h-screen bg-light-gray flex flex-col items-center px-4 py-10 relative">
       <Button variant="ghost" className="absolute left-4 top-4" onClick={() => navigate(-1)}>
         ← Back
       </Button>
-      <div className="dopamind-card w-full max-w-md p-8 animate-fade-in-up space-y-8 text-center">
-        <Mic className="mx-auto text-mint-green" size={48} />
-        <h2 className="text-2xl font-bold text-center mb-3">Guided Meditations</h2>
-        <p className="text-text-light">
-          This feature is coming soon! Get ready for a collection of guided meditation sessions to help you with stress, focus, sleep, and more.
-        </p>
+      <div className="dopamind-card w-full max-w-lg p-8 animate-fade-in-up flex flex-col gap-5">
+        <div className="text-center mb-4">
+          <div className="text-3xl mb-2">🧘‍♀️</div>
+          <h2 className="text-2xl font-bold mb-2">Guided Meditations</h2>
+          <p className="text-text-light text-sm mt-2">Transform your mind with expert-guided meditation sessions</p>
+        </div>
+        <div className="space-y-5">
+          {GUIDED_MEDITATIONS.map((meditation) => (
+            <div key={meditation.name} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-b-0">
+              <div>
+                <div className="text-lg font-semibold">{meditation.name}</div>
+              </div>
+              <div className="flex gap-2">
+                <audio controls className="w-36" src={meditation.url} />
+                {isElite && (
+                  <Button size="icon" variant="ghost" title="Download" onClick={() => handleDownload(meditation.url, meditation.name)}>
+                    <Download size={18} />
+                  </Button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+        {!isElite && (
+          <div className="mt-5 text-sm text-red-500 text-center">
+            Upgrade to Elite to download meditation tracks!
+          </div>
+        )}
       </div>
     </div>
   );
