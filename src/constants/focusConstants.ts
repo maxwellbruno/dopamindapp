@@ -1,5 +1,5 @@
 export const soundOptions = [
-  { id: 'lofi', name: 'LoFi Music', premium: false, url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3", type: 'ambient' },
+  { id: 'lofi', name: 'LoFi Music', premium: false, url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3", type: 'ambient' },
   { id: 'whitenoise', name: 'White Noise', premium: false, url: "https://cdn.pixabay.com/audio/2022/07/26/audio_121b2265a1.mp3", type: 'ambient' },
   { id: 'ocean', name: 'Ocean Waves', premium: true, url: "https://cdn.pixabay.com/audio/2023/04/27/audio_1492a5b94a.mp3", type: 'ambient' },
   { id: 'forest', name: 'Forest Sounds', premium: true, url: "https://cdn.pixabay.com/audio/2022/04/27/audio_115f63f3d7.mp3", type: 'ambient' },
