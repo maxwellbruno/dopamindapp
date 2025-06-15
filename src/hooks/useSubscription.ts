@@ -10,6 +10,11 @@ export interface SubscriptionData {
   cancel_at_period_end: boolean | null;
 }
 
+interface CreateSubscriptionResponse {
+  checkout_url: string;
+  reference: string;
+}
+
 export function useSubscription() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
@@ -31,7 +36,7 @@ export function useSubscription() {
     enabled: !!user,
   });
 
-  const createSubscriptionMutation = useMutation({
+  const createSubscriptionMutation = useMutation<CreateSubscriptionResponse, Error, { planId: string }>({
     mutationFn: async ({ planId }: { planId: string }) => {
       if (!user?.email) throw new Error('User email not found');
 
@@ -43,7 +48,7 @@ export function useSubscription() {
       });
 
       if (error) throw error;
-      return data;
+      return data as CreateSubscriptionResponse;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
@@ -89,7 +94,7 @@ export function useSubscription() {
     isElite,
     isPremium,
     tier,
-    createSubscription: createSubscriptionMutation.mutate,
+    createSubscription: createSubscriptionMutation.mutateAsync,
     cancelSubscription: cancelSubscriptionMutation.mutate,
     isCreatingSubscription: createSubscriptionMutation.isPending,
     isCancelling: cancelSubscriptionMutation.isPending,
