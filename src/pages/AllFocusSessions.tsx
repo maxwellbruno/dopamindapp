@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,7 +7,6 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
-import LoadingScreen from '@/components/LoadingScreen';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const AllFocusSessions: React.FC = () => {
@@ -53,20 +53,37 @@ const AllFocusSessions: React.FC = () => {
                   <TableHead>Session Name</TableHead>
                   <TableHead>Duration (min)</TableHead>
                   <TableHead>Date</TableHead>
+                  <TableHead>Time</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sessions && sessions.length > 0 ? (
                   sessions.map((session) => (
                     <TableRow key={session.id}>
-                      <TableCell className="font-medium">{session.name}</TableCell>
-                      <TableCell>{session.duration}</TableCell>
-                      <TableCell>{format(new Date(session.created_at), 'PPP')}</TableCell>
+                      <TableCell className="font-medium">
+                        <div className="flex items-center space-x-2">
+                          <span className="text-lg">🎯</span>
+                          <span>{session.name}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-mint-green/20 text-mint-green">
+                          {session.duration} min
+                        </span>
+                      </TableCell>
+                      <TableCell>{format(new Date(session.created_at), 'MMM dd, yyyy')}</TableCell>
+                      <TableCell className="text-text-light">{format(new Date(session.created_at), 'HH:mm')}</TableCell>
                     </TableRow>
                   ))
                 ) : (
                   <TableRow>
-                    <TableCell colSpan={3} className="text-center">No sessions found.</TableCell>
+                    <TableCell colSpan={4} className="text-center py-8">
+                      <div className="flex flex-col items-center space-y-2">
+                        <span className="text-4xl">🎯</span>
+                        <span className="text-text-light">No focus sessions yet.</span>
+                        <span className="text-sm text-text-light">Complete your first session to see it here!</span>
+                      </div>
+                    </TableCell>
                   </TableRow>
                 )}
               </TableBody>
