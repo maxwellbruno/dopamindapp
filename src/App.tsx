@@ -11,6 +11,7 @@ import LoadingScreen from './components/LoadingScreen';
 import AuthScreen from './components/AuthScreen';
 import BottomNav from './components/BottomNav';
 import TopNav from './components/TopNav';
+import PWAInstallPrompt from './components/PWAInstallPrompt';
 import { useIsMobile } from './hooks/use-mobile';
 import Home from './pages/Home';
 import Focus from './pages/Focus';
@@ -101,7 +102,12 @@ const AppContent: React.FC = () => {
   }
 
   if (!user) {
-    return <AuthScreen />;
+    return (
+      <>
+        <AuthScreen />
+        <PWAInstallPrompt />
+      </>
+    );
   }
 
   return (
@@ -128,6 +134,7 @@ const AppContent: React.FC = () => {
         </Suspense>
       </main>
       <BottomNav />
+      <PWAInstallPrompt />
     </div>
   );
 };

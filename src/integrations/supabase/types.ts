@@ -33,11 +33,45 @@ export type Database = {
         }
         Relationships: []
       }
+      mood_entries: {
+        Row: {
+          activities: Json | null
+          created_at: string
+          date: string
+          id: string
+          intensity: number
+          mood: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          activities?: Json | null
+          created_at?: string
+          date?: string
+          id?: string
+          intensity: number
+          mood: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          activities?: Json | null
+          created_at?: string
+          date?: string
+          id?: string
+          intensity?: number
+          mood?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_stats: {
         Row: {
           current_streak: number
           last_session_date: string | null
           total_focus_minutes: number
+          total_mood_entries: number | null
           total_sessions: number
           user_id: string
         }
@@ -45,6 +79,7 @@ export type Database = {
           current_streak?: number
           last_session_date?: string | null
           total_focus_minutes?: number
+          total_mood_entries?: number | null
           total_sessions?: number
           user_id: string
         }
@@ -52,6 +87,7 @@ export type Database = {
           current_streak?: number
           last_session_date?: string | null
           total_focus_minutes?: number
+          total_mood_entries?: number | null
           total_sessions?: number
           user_id?: string
         }
@@ -65,6 +101,10 @@ export type Database = {
       get_user_focus_stats: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["CompositeTypes"]["focus_stats"]
+      }
+      increment_mood_entries_count: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       update_user_stats_on_session_complete: {
         Args: { session_duration: number }
