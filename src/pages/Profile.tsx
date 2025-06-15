@@ -290,7 +290,7 @@ const Profile: React.FC = () => {
                   <Button 
                     onClick={handleSaveSettings}
                     size="sm"
-                    className="bg-mint-green hover:bg-mint-green/90 rounded-xl"
+                    className="bg-mint-green hover:bg-mint-green/90 text-white rounded-xl"
                   >
                     Save
                   </Button>
@@ -320,7 +320,7 @@ const Profile: React.FC = () => {
                     }))}
                     min="30"
                     max="480"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
@@ -338,7 +338,7 @@ const Profile: React.FC = () => {
                       ...prev,
                       reminderTime: e.target.value
                     }))}
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
@@ -356,7 +356,7 @@ const Profile: React.FC = () => {
                       customAffirmation: e.target.value
                     }))}
                     placeholder="Enter your personal affirmation"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-mint-green text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-white rounded-xl p-3 italic border border-gray-200">"{settings.customAffirmation}"</div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 
@@ -163,7 +162,7 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
         <Button 
           onClick={onStop}
           variant="outline"
-          className="rounded-2xl border-warm-orange text-warm-orange hover:bg-warm-orange hover:text-white px-6 py-2"
+          className="rounded-2xl border-deep-blue text-deep-blue hover:bg-deep-blue hover:text-white px-6 py-2"
         >
           Stop
         </Button>
