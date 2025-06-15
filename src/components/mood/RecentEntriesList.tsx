@@ -21,11 +21,14 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
     }
   };
 
+  // Adjust slice count based on tier
+  const maxEntries = isPremium ? 10 : 3;
+
   return (
     <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
       <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
       <div className="space-y-3 max-h-60 overflow-y-auto">
-        {moodEntries.slice(0, 10).map((entry) => {
+        {moodEntries.slice(0, maxEntries).map((entry) => {
           const moodData = allMoods.find(m => m.label === entry.mood);
           return (
             <div key={entry.id} className="border-b border-gray-100 pb-3 last:border-b-0">
@@ -46,7 +49,10 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
               {entry.activities.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {entry.activities.map((activity, idx) => (
-                    <span key={idx} className="text-xs bg-light-gray text-deep-blue px-2 py-1 rounded border">
+                    <span
+                      key={idx}
+                      className="text-xs px-2 py-1 rounded border bg-mint-green/10 border-mint-green text-deep-blue font-semibold"
+                    >
                       {activity}
                     </span>
                   ))}
@@ -100,3 +106,4 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
 };
 
 export default RecentEntriesList;
+
