@@ -25,16 +25,23 @@ const Focus: React.FC = () => {
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
+  // Initialize audio player
   useEffect(() => {
-    audioPlayerRef.current = new Audio();
-    audioPlayerRef.current.loop = true;
+    if (!audioPlayerRef.current) {
+      audioPlayerRef.current = new Audio();
+      audioPlayerRef.current.loop = true;
+      audioPlayerRef.current.volume = 0.5; // Set a reasonable volume
+    }
     
-    const player = audioPlayerRef.current;
     return () => {
-      player.pause();
+      if (audioPlayerRef.current) {
+        audioPlayerRef.current.pause();
+        audioPlayerRef.current.src = '';
+      }
     };
   }, []);
 
+  // Handle sound selection and playback
   useEffect(() => {
     const audioPlayer = audioPlayerRef.current;
     if (!audioPlayer) return;
@@ -42,18 +49,35 @@ const Focus: React.FC = () => {
     if (selectedSound) {
       const sound = soundOptions.find(s => s.id === selectedSound);
       if (sound?.url) {
-        if (audioPlayer.src !== sound.url) {
-            audioPlayer.src = sound.url;
-            audioPlayer.load();
-        }
+        console.log('Playing sound:', sound.name, sound.url);
         
+        // Stop current audio
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+        
+        // Set new source
+        audioPlayer.src = sound.url;
+        
+        // Play the audio
         const playPromise = audioPlayer.play();
         if (playPromise !== undefined) {
-          playPromise.catch(e => console.error("Error playing audio:", e));
+          playPromise
+            .then(() => {
+              console.log('Audio playing successfully');
+            })
+            .catch(error => {
+              console.error("Error playing audio:", error);
+              // Try to play again after a short delay
+              setTimeout(() => {
+                audioPlayer.play().catch(e => console.error("Retry failed:", e));
+              }, 1000);
+            });
         }
       }
     } else {
+      console.log('Stopping audio playback');
       audioPlayer.pause();
+      audioPlayer.currentTime = 0;
     }
   }, [selectedSound]);
 
