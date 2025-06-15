@@ -10,10 +10,6 @@ export const SOUND_NAMES: Record<string, string> = {
 export const SOUND_TRACKS: Record<string, { name: string; url: string, premium: boolean }[]> = {
   lofi: [
     { name: "Sakura Lofi", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//sakura-lofi-ambient-lofi-music-340018.mp3", premium: false },
-    { name: "Rainy Night", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1d03b8.mp3", premium: false },
-    { name: "LoFi Chill", url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3", premium: false },
-    { name: "Evening Jazz", url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b898d98.mp3", premium: false },
-    { name: "Rainy Lofi City", url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3", premium: false },
     { name: "Coffee Lofi", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//coffee-lofi-lofi-music-340017.mp3", premium: false },
     { name: "Lofi Rain", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//lofi-rain-lofi-music-332732.mp3", premium: false },
     { name: "Rainy Lofi", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//rainy-lofi-city-lofi-music-332746%20(1).mp3", premium: false },
