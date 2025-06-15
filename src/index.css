@@ -16,8 +16,8 @@
     --primary: 16 185 129;
     --primary-foreground: 255 255 255;
 
-    --secondary: 245 158 11;
-    --secondary-foreground: 255 255 255;
+    --secondary: 209 213 219; /* Previously warm-orange, now light-gray */
+    --secondary-foreground: 30 58 138; /* Previously white, now deep-blue */
 
     --muted: 209 213 219;
     --muted-foreground: 30 58 138;
@@ -62,8 +62,8 @@
     --primary: 16 185 129;
     --primary-foreground: 255 255 255;
 
-    --secondary: 245 158 11;
-    --secondary-foreground: 255 255 255;
+    --secondary: 209 213 219; /* Previously warm-orange, now light-gray */
+    --secondary-foreground: 30 58 138; /* Previously white, now deep-blue */
 
     --muted: 71 85 105;
     --muted-foreground: 148 163 184;
@@ -145,6 +145,19 @@
   .text-yellow-800,
   .text-yellow-900 {
     color: #1E3A8A !important;
+  }
+
+  /* Remove yellow border colors */
+  .border-yellow-100,
+  .border-yellow-200,
+  .border-yellow-300,
+  .border-yellow-400,
+  .border-yellow-500,
+  .border-yellow-600,
+  .border-yellow-700,
+  .border-yellow-800,
+  .border-yellow-900 {
+    border-color: #d1d5db !important; /* gray-300 */
   }
 
   /* Remove yellow border and use only brand colors for input and button focus */
