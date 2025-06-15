@@ -8,8 +8,10 @@ interface MoodCalendarProps {
 }
 
 const MoodCalendar: React.FC<MoodCalendarProps> = ({ moodEntries, allMoods }) => {
+  const today = new Date();
+  const monthYearLabel = today.toLocaleString(undefined, { month: 'long', year: 'numeric' });
+
   const getMoodCalendar = () => {
-    const today = new Date();
     const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
     const calendar = [];
 
@@ -36,7 +38,10 @@ const MoodCalendar: React.FC<MoodCalendarProps> = ({ moodEntries, allMoods }) =>
 
   return (
     <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-      <h3 className="font-semibold text-deep-blue mb-4">This Month</h3>
+      <h3 className="font-semibold text-deep-blue mb-1">
+        {monthYearLabel}
+      </h3>
+      <div className="text-sm text-gray-500 mb-3">This Month</div>
       <div className="grid grid-cols-7 gap-2">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
           <div key={day} className="text-center text-xs text-deep-blue font-medium p-2">
