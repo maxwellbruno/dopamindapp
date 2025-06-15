@@ -136,6 +136,13 @@
     border-color: #1E3A8A !important;
   }
 
+  button.bg-deep-blue:hover,
+  .button.bg-deep-blue:hover {
+    background-color: #1c347a !important;
+    border-color: #1c347a !important;
+    color: #fff !important;
+  }
+
   /* Remove yellow backgrounds and text in all states */
   .bg-yellow-100,
   .bg-yellow-200,

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -109,12 +110,13 @@ const AuthScreen: React.FC = () => {
           </form>
           
           <div className="mt-6 text-center">
-            <button
+            <Button
+              type="button"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-mint-green text-sm font-medium hover:text-mint-green/80"
+              className="w-full bg-deep-blue text-pure-white h-12 rounded-xl font-semibold"
             >
               {isLogin ? 'Create an account' : 'Sign in'}
-            </button>
+            </Button>
           </div>
 
           <div className="mt-4 text-center">

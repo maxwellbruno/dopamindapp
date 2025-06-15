@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -33,6 +32,16 @@ const Profile: React.FC = () => {
     subscriptionEnd: null,
     tier: 'free'
   });
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    const canUseDarkMode = subscription.tier === 'pro' || subscription.tier === 'elite';
+    if (settings.theme === 'dark' && canUseDarkMode) {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [settings.theme, subscription.tier]);
   
   const { data: profileData } = useQuery({
     queryKey: ['profileStats', user?.id],
