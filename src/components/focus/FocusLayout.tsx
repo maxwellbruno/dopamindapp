@@ -1,4 +1,3 @@
-
 import React from 'react';
 import BreathingExercise from '../BreathingExercise';
 import SessionTimer from './SessionTimer';
@@ -6,6 +5,7 @@ import SessionSettings from './SessionSettings';
 import BreathingExercisesSidebar from './BreathingExercisesSidebar';
 import AmbientSoundsSidebar from './AmbientSoundsSidebar';
 import SessionStatsSidebar from './SessionStatsSidebar';
+import MeditationCard from './MeditationCard';
 
 interface FocusLayoutProps {
   // Timer props
@@ -42,6 +42,7 @@ interface FocusLayoutProps {
   totalSessions: number;
   currentStreak: number;
   isLoading: boolean;
+  isElite?: boolean;
   
   // Breathing exercise props
   isBreathing: boolean;
@@ -71,6 +72,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
   availableBreathingExercises,
   startBreathingExercise,
   isPremium,
+  isElite,
   breathingExercises,
   availableSounds,
   selectedSound,
@@ -112,6 +114,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
             handleSessionDurationChange={handleSessionDurationChange}
             setBreakDuration={setBreakDuration}
           />
+          {isElite && <MeditationCard />}
         </div>
 
         {/* Right sidebar, desktop only */}

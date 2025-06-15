@@ -26,9 +26,9 @@ import SoundGenre from './pages/SoundGenre';
 const queryClient = new QueryClient();
 
 // Lazy imports for the meditation pages
-const MeditationFrequencies = React.lazy(() => import('./pages/MeditationFrequencies'));
 const Brainwaves = React.lazy(() => import('./pages/Brainwaves'));
 const BinauralFrequencies = React.lazy(() => import('./pages/BinauralFrequencies'));
+const GuidedMeditation = React.lazy(() => import('./pages/GuidedMeditation'));
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
@@ -120,9 +120,9 @@ const AppContent: React.FC = () => {
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/subscription" element={<SubscriptionManager />} />
             <Route path="/sound/:id" element={<SoundGenre />} />
-            <Route path="/meditation/frequencies" element={<MeditationFrequencies />} />
             <Route path="/meditation/brainwaves" element={<Brainwaves />} />
             <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
+            <Route path="/meditation/guided" element={<GuidedMeditation />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
