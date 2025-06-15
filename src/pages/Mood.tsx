@@ -102,7 +102,7 @@ const Mood: React.FC = () => {
               <TrackMoodPrompt onTrackMoodClick={() => setShowForm(true)} />
               <MoodCalendar moodEntries={moodEntries} allMoods={allMoods} />
               <WellnessSuggestion moodEntries={moodEntries} />
-              <RecentEntriesList moodEntries={moodEntries} allMoods={allMoods} />
+              <RecentEntriesList moodEntries={moodEntries} allMoods={allMoods} isPremium={isPremium} />
             </>
           )}
         </div>

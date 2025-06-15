@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 interface RecentEntriesListProps {
   moodEntries: MoodEntry[];
   allMoods: Mood[];
+  isPremium: boolean;
 }
 
-const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allMoods }) => {
+const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allMoods, isPremium }) => {
   return (
     <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
       <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
@@ -27,9 +28,11 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
                   <span className="text-xs text-deep-blue">
                     {new Date(entry.date).toLocaleDateString()}
                   </span>
-                  <Link to={`/mood/${entry.id}`}>
-                    <Button size="sm" variant="outline">View</Button>
-                  </Link>
+                  {isPremium && (
+                    <Link to={`/mood/${entry.id}`}>
+                      <Button size="sm" variant="outline">View</Button>
+                    </Link>
+                  )}
                 </div>
               </div>
               {entry.note && (
