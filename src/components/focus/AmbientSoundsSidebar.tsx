@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface AmbientSoundsSidebarProps {
   availableSounds: any[];
@@ -36,14 +37,14 @@ const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
                 className="text-mint-green"
               />
               {isPremium && (
-                <button
-                  type="button"
-                  className="ml-2 text-mint-green underline hover:scale-105 text-xs transition group-hover:font-bold"
+                <Button
+                  variant="link"
                   onClick={() => navigate(`/sound/${sound.id}`)}
                   aria-label={`Explore ${sound.name}`}
+                  className="ml-2 h-auto p-0 text-xs font-semibold text-mint-green hover:no-underline hover:scale-105 transition-transform"
                 >
                   Explore
-                </button>
+                </Button>
               )}
             </div>
           </div>
