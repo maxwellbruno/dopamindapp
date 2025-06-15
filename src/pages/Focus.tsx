@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,6 +18,53 @@ const Focus: React.FC = () => {
   const playlistRef = useRef<any[]>([]);
   const currentTrackIndexRef = useRef(0);
 
+  const playCurrentTrack = () => {
+    const audioPlayer = audioPlayerRef.current;
+    const playlist = playlistRef.current;
+    if (!audioPlayer || playlist.length === 0) return;
+
+    const trackIndex = currentTrackIndexRef.current;
+    const track = playlist[trackIndex];
+
+    audioPlayer.src = track.url;
+    audioPlayer.play().catch(e => console.error("Audio play failed:", e));
+
+    if ('mediaSession' in navigator) {
+      const soundOption = soundOptions.find(s => s.id === selectedSound);
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: track.name,
+        artist: 'Dopamind',
+        album: soundOption ? soundOption.name : 'Focus Sounds',
+        artwork: [
+          { src: 'pwa-192x192.png', type: 'image/png', sizes: '192x192' },
+          { src: 'pwa-512x512.png', type: 'image/png', sizes: '512x512' }
+        ]
+      });
+      navigator.mediaSession.playbackState = "playing";
+    }
+  };
+
+  const pausePlayback = () => {
+    audioPlayerRef.current?.pause();
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.playbackState = "paused";
+    }
+  };
+
+  const playNextTrack = () => {
+    if (playlistRef.current.length > 1) {
+      currentTrackIndexRef.current = (currentTrackIndexRef.current + 1) % playlistRef.current.length;
+      playCurrentTrack();
+    }
+  };
+
+  const playPreviousTrack = () => {
+    if (playlistRef.current.length > 1) {
+      currentTrackIndexRef.current = (currentTrackIndexRef.current - 1 + playlistRef.current.length) % playlistRef.current.length;
+      playCurrentTrack();
+    }
+  };
+
   // Initialize audio player
   useEffect(() => {
     const audioPlayer = new Audio();
@@ -24,19 +72,28 @@ const Focus: React.FC = () => {
     audioPlayerRef.current = audioPlayer;
 
     const handleTrackEnded = () => {
-      if (playlistRef.current.length > 0) {
-        currentTrackIndexRef.current = (currentTrackIndexRef.current + 1) % playlistRef.current.length;
-        if (audioPlayerRef.current) {
-          audioPlayerRef.current.src = playlistRef.current[currentTrackIndexRef.current].url;
-          audioPlayerRef.current.play().catch(e => console.error("Audio play failed on track end:", e));
-        }
-      }
+      playNextTrack();
     };
     audioPlayer.addEventListener('ended', handleTrackEnded);
+
+    if ('mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('play', () => playCurrentTrack());
+      navigator.mediaSession.setActionHandler('pause', () => pausePlayback());
+      navigator.mediaSession.setActionHandler('nexttrack', playNextTrack);
+      navigator.mediaSession.setActionHandler('previoustrack', playPreviousTrack);
+    }
 
     return () => {
       audioPlayer.removeEventListener('ended', handleTrackEnded);
       audioPlayer.pause();
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = null;
+        navigator.mediaSession.setActionHandler('play', null);
+        navigator.mediaSession.setActionHandler('pause', null);
+        navigator.mediaSession.setActionHandler('nexttrack', null);
+        navigator.mediaSession.setActionHandler('previoustrack', null);
+        navigator.mediaSession.playbackState = "none";
+      }
     };
   }, []);
 
@@ -50,28 +107,31 @@ const Focus: React.FC = () => {
 
       // It's a playlist
       if (sound?.hasGenrePage && SOUND_TRACKS[sound.id]) {
-        const tracks = SOUND_TRACKS[sound.id].filter(t => !t.premium);
+        const tracks = SOUND_TRACKS[sound.id].filter(t => !t.premium || isPremium);
         playlistRef.current = tracks;
         currentTrackIndexRef.current = 0;
 
         if (tracks.length > 0) {
           audioPlayer.loop = false;
-          audioPlayer.src = tracks[0].url;
-          audioPlayer.play().catch(e => console.error("Audio play failed on start:", e));
+          playCurrentTrack();
         }
       }
       // It's a single track
       else if (sound?.url) {
-        playlistRef.current = [];
+        playlistRef.current = [{ name: sound.name, url: sound.url }];
+        currentTrackIndexRef.current = 0;
         audioPlayer.loop = true;
-        audioPlayer.src = sound.url;
-        audioPlayer.play().catch(e => console.error("Audio play failed on start:", e));
+        playCurrentTrack();
       }
     } else {
-      audioPlayer.pause();
+      pausePlayback();
       playlistRef.current = [];
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = null;
+        navigator.mediaSession.playbackState = "none";
+      }
     }
-  }, [selectedSound]);
+  }, [selectedSound, isPremium]);
 
   const { data: focusStats, isLoading } = useQuery({
       queryKey: ['focusStats', user?.id],
