@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,27 +17,17 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
   const [isEditing, setIsEditing] = useState(false);
   const [tempSettings, setTempSettings] = useState(settings);
 
+  // Keep tempSettings in sync with external settings
   useEffect(() => {
     setTempSettings(settings);
   }, [settings]);
 
-  // Instantly update <html> class when user toggles theme (in tempSettings)
-  useEffect(() => {
-    // Only update <html> class if currently editing and theme actually changes
-    if (isEditing && (subscriptionTier === 'pro' || subscriptionTier === 'elite')) {
-      const root = window.document.documentElement;
-      if (tempSettings.theme === 'dark') {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-    }
-  }, [tempSettings.theme, isEditing, subscriptionTier]);
+  // Remove infinite update loop:
+  // Move <html> class toggling into very targeted places only.
 
   const handleSaveSettings = () => {
-    // Update settings and <html> class globally
     setSettings(prev => {
-      // If theme changed, update class on save as well (for any cross-tab sync)
+      // Apply html theme class on save
       const root = window.document.documentElement;
       if (tempSettings.theme === 'dark') {
         root.classList.add('dark');
@@ -61,6 +50,19 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
       root.classList.remove('dark');
     }
   };
+
+  // This useEffect ensures that whenever tempSettings.theme changes and we are in edit mode,
+  // the html class is updated visually for PRO/ELITE only.
+  useEffect(() => {
+    if (isEditing && (subscriptionTier === 'pro' || subscriptionTier === 'elite')) {
+      const root = window.document.documentElement;
+      if (tempSettings.theme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    }
+  }, [tempSettings.theme, isEditing, subscriptionTier]);
 
   return (
     <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
@@ -163,14 +165,18 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
                 <div className="flex items-center space-x-2 mt-1">
                   <Switch
                     id="theme"
-                    checked={tempSettings.theme === 'dark'}
+                    checked={
+                      subscriptionTier === 'free' 
+                        ? false
+                        : tempSettings.theme === 'dark'
+                    }
                     onCheckedChange={(checked) => {
                       if (subscriptionTier !== 'free') {
                         setTempSettings(prev => ({
                           ...prev,
                           theme: checked ? 'dark' : 'light'
                         }));
-                        // Instantly update <html> class for visible theme switch
+                        // Instantly update <html> class for visual feedback
                         const root = window.document.documentElement;
                         if (checked) {
                           root.classList.add('dark');
@@ -181,7 +187,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
                     }}
                     disabled={subscriptionTier === 'free'}
                   />
-                  <span className="text-text-light capitalize">
+                  <span className="text-text-light capitalize select-none">
                     {subscriptionTier !== 'free' ? tempSettings.theme : 'Light'}
                   </span>
                 </div>
@@ -203,4 +209,3 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
 };
 
 export default SettingsCard;
-
