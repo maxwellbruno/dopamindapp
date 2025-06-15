@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -18,6 +17,7 @@ const SOUND_TRACKS: Record<string, { name: string; url: string }[]> = {
     { name: "LoFi Chill", url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3" },
     { name: "Evening Jazz", url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b898d98.mp3" },
     { name: "Rainy Lofi City", url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3" },
+    { name: "Sakura Lofi", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//sakura-lofi-ambient-lofi-music-340018.mp3" },
   ],
   whitenoise: [
     { name: "Pure White Noise", url: "https://cdn.pixabay.com/audio/2022/07/26/audio_121b2265a1.mp3" },
@@ -121,4 +121,3 @@ const SoundGenre: React.FC = () => {
 };
 
 export default SoundGenre;
-

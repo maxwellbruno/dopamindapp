@@ -4,12 +4,20 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Play, Pause } from 'lucide-react';
 
+interface Sound {
+  id: string;
+  name: string;
+  premium: boolean;
+  hasGenrePage?: boolean;
+  url?: string;
+}
+
 interface AmbientSoundsSidebarProps {
-  availableSounds: any[];
+  availableSounds: Sound[];
   selectedSound: string | null;
   setSelectedSound: (id: string | null) => void;
   isPremium: boolean;
-  soundOptions: any[];
+  soundOptions: Sound[];
 }
 
 const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
@@ -40,7 +48,7 @@ const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
               <Button variant="ghost" size="icon" onClick={() => handleSoundSelect(sound.id)} aria-label={`Play ${sound.name}`}>
                 {selectedSound === sound.id ? <Pause size={16} /> : <Play size={16} />}
               </Button>
-              {isPremium && (
+              {sound.hasGenrePage && (
                 <Button
                   variant="link"
                   onClick={() => navigate(`/sound/${sound.id}`)}
