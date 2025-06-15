@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -15,6 +16,7 @@ import { useIsMobile } from './hooks/use-mobile';
 import Home from './pages/Home';
 import Focus from './pages/Focus';
 import Mood from './pages/Mood';
+import MoodEntryDetail from './pages/MoodEntryDetail';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import SubscriptionManager from './pages/SubscriptionManager';
@@ -83,6 +85,7 @@ const AppContent: React.FC = () => {
           <Route path="/home" element={<Home />} />
           <Route path="/focus" element={<Focus />} />
           <Route path="/mood" element={<Mood />} />
+          <Route path="/mood/:id" element={<MoodEntryDetail />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
           <Route path="*" element={<NotFound />} />

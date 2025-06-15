@@ -1,6 +1,8 @@
 
 import React from 'react';
 import { MoodEntry, Mood } from '@/types/mood';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 interface RecentEntriesListProps {
   moodEntries: MoodEntry[];
@@ -21,12 +23,17 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
                   <span className="text-lg">{moodData?.emoji}</span>
                   <span className="font-medium text-deep-blue">{entry.mood}</span>
                 </div>
-                <span className="text-xs text-deep-blue">
-                  {new Date(entry.date).toLocaleDateString()}
-                </span>
+                <div className="flex items-center space-x-3">
+                  <span className="text-xs text-deep-blue">
+                    {new Date(entry.date).toLocaleDateString()}
+                  </span>
+                  <Link to={`/mood/${entry.id}`}>
+                    <Button size="sm" variant="outline">View</Button>
+                  </Link>
+                </div>
               </div>
               {entry.note && (
-                <p className="text-sm text-deep-blue mb-1">{entry.note}</p>
+                <p className="text-sm text-deep-blue mb-1 truncate">{entry.note}</p>
               )}
               {entry.activities.length > 0 && (
                 <div className="flex flex-wrap gap-1">
