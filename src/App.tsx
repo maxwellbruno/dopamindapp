@@ -23,13 +23,11 @@ import SubscriptionManager from './pages/SubscriptionManager';
 import AllMoodEntries from './pages/AllMoodEntries';
 import AllFocusSessions from './pages/AllFocusSessions';
 import SoundGenre from './pages/SoundGenre';
+import Brainwaves from './pages/Brainwaves';
+import BinauralFrequencies from './pages/BinauralFrequencies';
+import GuidedMeditation from './pages/GuidedMeditation';
 
 const queryClient = new QueryClient();
-
-// Lazy imports for the meditation pages
-const Brainwaves = React.lazy(() => import('./pages/Brainwaves'));
-const BinauralFrequencies = React.lazy(() => import('./pages/BinauralFrequencies'));
-const GuidedMeditation = React.lazy(() => import('./pages/GuidedMeditation'));
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
@@ -114,24 +112,22 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen bg-light-gray dark:bg-deep-blue">
       <TopNav />
       <main className={isMobile ? "pb-28" : "py-8"}>
-        <Suspense fallback={<LoadingScreen />}>
-          <Routes>
-            <Route path="/" element={<Navigate to="/home" replace />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/focus" element={<Focus />} />
-            <Route path="/focus/all" element={<AllFocusSessions />} />
-            <Route path="/mood" element={<Mood />} />
-            <Route path="/mood/:id" element={<MoodEntryDetail />} />
-            <Route path="/mood/all" element={<AllMoodEntries />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/subscription" element={<SubscriptionManager />} />
-            <Route path="/sound/:id" element={<SoundGenre />} />
-            <Route path="/meditation/brainwaves" element={<Brainwaves />} />
-            <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
-            <Route path="/meditation/guided" element={<GuidedMeditation />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Suspense>
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/focus" element={<Focus />} />
+          <Route path="/focus/all" element={<AllFocusSessions />} />
+          <Route path="/mood" element={<Mood />} />
+          <Route path="/mood/:id" element={<MoodEntryDetail />} />
+          <Route path="/mood/all" element={<AllMoodEntries />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/subscription" element={<SubscriptionManager />} />
+          <Route path="/sound/:id" element={<SoundGenre />} />
+          <Route path="/meditation/brainwaves" element={<Brainwaves />} />
+          <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
+          <Route path="/meditation/guided" element={<GuidedMeditation />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </main>
       <BottomNav />
       <PWAInstallPrompt />
