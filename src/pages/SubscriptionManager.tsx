@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -79,8 +78,7 @@ const SubscriptionManager: React.FC = () => {
              <h3 className="text-lg font-semibold text-text-dark mb-4">Actions</h3>
             <Button
               onClick={handleCancelSubscription}
-              variant="destructive"
-              className="w-full rounded-xl"
+              className="w-full rounded-xl bg-mint-green text-white hover:bg-mint-green/90"
             >
               Cancel Subscription
             </Button>
