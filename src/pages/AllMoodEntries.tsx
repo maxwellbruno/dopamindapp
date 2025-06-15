@@ -33,7 +33,12 @@ const AllMoodEntries: React.FC = () => {
       if (error) {
         throw new Error(error.message);
       }
-      return data;
+      
+      // Transform the data to match our MoodEntry interface
+      return data.map(entry => ({
+        ...entry,
+        activities: Array.isArray(entry.activities) ? entry.activities as string[] : null
+      }));
     },
     enabled: !!user,
   });

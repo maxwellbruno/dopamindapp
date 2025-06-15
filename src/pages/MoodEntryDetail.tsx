@@ -35,7 +35,14 @@ const MoodEntryDetail: React.FC = () => {
             if (error) {
                 throw new Error(error.message);
             }
-            return data;
+            
+            if (!data) return null;
+            
+            // Transform the data to match our MoodEntry interface
+            return {
+                ...data,
+                activities: Array.isArray(data.activities) ? data.activities as string[] : null
+            };
         },
         enabled: !!id,
     });
