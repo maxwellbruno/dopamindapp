@@ -1,25 +1,21 @@
 
 import React from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { MoodEntry, SubscriptionData, Mood } from '@/types/mood';
+import { useSubscription } from '@/hooks/useSubscription';
+import { MoodEntry, Mood } from '@/types/mood';
 import { basicMoods, premiumMoods } from '@/data/moods';
 import PremiumUpgradePrompt from '@/components/PremiumUpgradePrompt';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const AllMoodEntries: React.FC = () => {
   const { user } = useAuth();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { isPremium } = useSubscription();
+  const navigate = useNavigate();
 
   const { data: moodEntries = [], isLoading } = useQuery<MoodEntry[]>({
     queryKey: ['mood_entries', user?.id],
@@ -43,9 +39,7 @@ const AllMoodEntries: React.FC = () => {
     enabled: !!user,
   });
 
-  const isPremium = subscription.isPro || subscription.isElite;
   const allMoods = [...basicMoods, ...premiumMoods];
-  const navigate = useNavigate();
 
   if (!isPremium) {
     return (
