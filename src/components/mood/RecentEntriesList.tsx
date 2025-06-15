@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { MoodEntry, Mood } from '@/types/mood';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import PremiumUpgradePrompt from '@/components/PremiumUpgradePrompt';
 
 interface RecentEntriesListProps {
   moodEntries: MoodEntry[];
@@ -11,6 +12,15 @@ interface RecentEntriesListProps {
 }
 
 const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allMoods, isPremium }) => {
+  const [showPrompt, setShowPrompt] = useState(false);
+
+  const handleViewClick = (e: React.MouseEvent) => {
+    if (!isPremium) {
+      e.preventDefault();
+      setShowPrompt(true);
+    }
+  };
+
   return (
     <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
       <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
@@ -28,11 +38,6 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
                   <span className="text-xs text-deep-blue">
                     {new Date(entry.date).toLocaleDateString()}
                   </span>
-                  {isPremium && (
-                    <Link to={`/mood/${entry.id}`}>
-                      <Button size="sm" variant="outline">View</Button>
-                    </Link>
-                  )}
                 </div>
               </div>
               {entry.note && (
@@ -56,6 +61,40 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
           </div>
         )}
       </div>
+      <div className="flex justify-end mt-3">
+        {isPremium ? (
+          <Link to="/mood/all">
+            <Button size="sm" variant="outline">
+              View All
+            </Button>
+          </Link>
+        ) : (
+          <Button 
+            size="sm" 
+            variant="outline"
+            onClick={handleViewClick}
+          >
+            View All
+          </Button>
+        )}
+      </div>
+      {showPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div>
+            <PremiumUpgradePrompt
+              feature="View All Mood Entries"
+              description="Upgrade to Pro to access your complete mood entry history and spot emotional patterns."
+              tier="pro"
+              className="max-w-md w-full"
+            />
+            <div className="flex justify-center mt-2">
+              <Button size="sm" variant="ghost" onClick={() => setShowPrompt(false)}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
