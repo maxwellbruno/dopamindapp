@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -38,19 +39,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Use a variable OUTSIDE component scope to track first load
-let hasShownSplashScreen = false;
-
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
-  // Only show splash once on very first app load
-  const [showLoading, setShowLoading] = useState(() => {
-    if (!hasShownSplashScreen) {
-      hasShownSplashScreen = true;
-      return true;
-    }
-    return false;
-  });
   const isMobile = useIsMobile();
   const [settings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
@@ -60,15 +50,6 @@ const AppContent: React.FC = () => {
   });
 
   useEffect(() => {
-    if (showLoading) {
-      const timer = setTimeout(() => {
-        setShowLoading(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showLoading]);
-
-  useEffect(() => {
     const root = window.document.documentElement;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
@@ -76,10 +57,6 @@ const AppContent: React.FC = () => {
       root.classList.remove('dark');
     }
   }, [settings.theme]);
-
-  if (showLoading) {
-    return <LoadingScreen />;
-  }
 
   if (isLoading) {
     return <LoadingScreen />;
