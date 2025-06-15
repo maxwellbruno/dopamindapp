@@ -1,27 +1,18 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery } from '@tanstack/react-query';
-import { SubscriptionData } from '@/types/mood';
 import { useFocusTimer } from '@/hooks/useFocusTimer';
 import { useBreathingExercise } from '@/hooks/useBreathingExercise';
+import { useSubscription } from '@/hooks/useSubscription';
 import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions } from '@/constants/focusConstants';
 import FocusLayout from '@/components/focus/FocusLayout';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
-import { Button } from '@/components/ui/button';
-
-const initialSubscription: SubscriptionData = {
-  isPro: false,
-  isElite: false,
-  subscriptionEnd: null,
-  tier: 'free'
-};
 
 const Focus: React.FC = () => {
   const { user } = useAuth();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
+  const { isPremium, isElite } = useSubscription();
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
@@ -30,7 +21,7 @@ const Focus: React.FC = () => {
     if (!audioPlayerRef.current) {
       audioPlayerRef.current = new Audio();
       audioPlayerRef.current.loop = true;
-      audioPlayerRef.current.volume = 0.5; // Set a reasonable volume
+      audioPlayerRef.current.volume = 0.5;
     }
     
     return () => {
@@ -51,14 +42,10 @@ const Focus: React.FC = () => {
       if (sound?.url) {
         console.log('Playing sound:', sound.name, sound.url);
         
-        // Stop current audio
         audioPlayer.pause();
         audioPlayer.currentTime = 0;
-        
-        // Set new source
         audioPlayer.src = sound.url;
         
-        // Play the audio
         const playPromise = audioPlayer.play();
         if (playPromise !== undefined) {
           playPromise
@@ -67,7 +54,6 @@ const Focus: React.FC = () => {
             })
             .catch(error => {
               console.error("Error playing audio:", error);
-              // Try to play again after a short delay
               setTimeout(() => {
                 audioPlayer.play().catch(e => console.error("Retry failed:", e));
               }, 1000);
@@ -81,7 +67,6 @@ const Focus: React.FC = () => {
     }
   }, [selectedSound]);
 
-  // Don't wait to render whole page; only sidebar stats use isLoading
   const { data: focusStats, isLoading } = useQuery({
       queryKey: ['focusStats', user?.id],
       queryFn: async () => {
@@ -100,7 +85,6 @@ const Focus: React.FC = () => {
   const currentStreak = focusStats?.current_streak || 0;
   const todaySessions = focusStats?.today_sessions_count || 0;
 
-  const isPremium = subscription.isPro || subscription.isElite;
   const canStartSession = isPremium || todaySessions < maxFreeSessions;
   const canCustomizeDuration = isPremium;
 
@@ -124,8 +108,6 @@ const Focus: React.FC = () => {
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
 
-          {/* Meditation Frequencies Elite Exclusive Tile removed */}
-
           <FocusLayout
             sessionName={timerLogic.sessionName}
             setSessionName={timerLogic.setSessionName}
@@ -148,7 +130,7 @@ const Focus: React.FC = () => {
             availableBreathingExercises={availableBreathingExercises}
             startBreathingExercise={breathingLogic.startBreathingExercise}
             isPremium={isPremium}
-            isElite={subscription.isElite}
+            isElite={isElite}
             breathingExercises={breathingExercises}
             availableSounds={availableSounds}
             selectedSound={selectedSound}

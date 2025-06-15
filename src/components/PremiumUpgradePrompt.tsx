@@ -2,20 +2,13 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import PricingModal from './PricingModal';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface PremiumUpgradePromptProps {
   feature: string;
   description: string;
   tier: 'pro' | 'elite';
   className?: string;
-}
-
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: 'free' | 'pro' | 'elite';
 }
 
 const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({ 
@@ -25,31 +18,16 @@ const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({
   className = ""
 }) => {
   const [showPricing, setShowPricing] = useState(false);
-  const [subscription, setSubscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { createSubscription, isCreatingSubscription } = useSubscription();
 
-  const handleUpgrade = (selectedTier: 'free' | 'pro' | 'elite') => {
-    if (selectedTier === 'free') {
-      setSubscription({
-        isPro: false,
-        isElite: false,
-        subscriptionEnd: null,
-        tier: 'free'
-      });
-    } else {
-      const endDate = new Date();
-      endDate.setMonth(endDate.getMonth() + 1);
-      
-      setSubscription({
-        isPro: selectedTier === 'pro' || selectedTier === 'elite',
-        isElite: selectedTier === 'elite',
-        subscriptionEnd: endDate.toISOString(),
-        tier: selectedTier
-      });
+  const handleUpgrade = async (selectedTier: 'pro' | 'elite') => {
+    try {
+      const result = await createSubscription({ planId: selectedTier });
+      if (result?.checkout_url) {
+        window.location.href = result.checkout_url;
+      }
+    } catch (error) {
+      console.error('Failed to create subscription:', error);
     }
     setShowPricing(false);
   };
@@ -68,9 +46,10 @@ const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({
         <div className="space-y-3">
           <Button 
             onClick={() => setShowPricing(true)}
-            className="w-full bg-mint-green hover:bg-mint-green/90 text-white font-semibold rounded-2xl h-12 shadow-lg hover:scale-[1.02] transition-transform"
+            disabled={isCreatingSubscription}
+            className="w-full bg-mint-green hover:bg-mint-green/90 text-white font-semibold rounded-2xl h-12 shadow-lg hover:scale-[1.02] transition-transform disabled:opacity-50"
           >
-            Unlock Pro Features
+            {isCreatingSubscription ? 'Processing...' : 'Unlock Pro Features'}
           </Button>
           
           <p className="text-xs text-text-light">
@@ -83,7 +62,7 @@ const PremiumUpgradePrompt: React.FC<PremiumUpgradePromptProps> = ({
         isOpen={showPricing}
         onClose={() => setShowPricing(false)}
         onUpgrade={handleUpgrade}
-        currentTier={subscription.tier}
+        currentTier="free"
       />
     </>
   );

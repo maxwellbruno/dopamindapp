@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -9,39 +10,27 @@ import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: 'free' | 'pro' | 'elite';
-}
+import { useSubscription } from '@/hooks/useSubscription';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
+  const { tier } = useSubscription();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
     theme: 'light',
     customAffirmation: 'I am focused and productive'
   });
-  
-  const [subscription, setSubscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const canUseDarkMode = subscription.tier === 'pro' || subscription.tier === 'elite';
+    const canUseDarkMode = tier === 'pro' || tier === 'elite';
     if (settings.theme === 'dark' && canUseDarkMode) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [settings.theme, subscription.tier]);
+  }, [settings.theme, tier]);
   
   const { data: profileData } = useQuery({
     queryKey: ['profileStats', user?.id],
@@ -96,12 +85,12 @@ const Profile: React.FC = () => {
           {/* Desktop layout: User/Subscription > Stats/Settings */}
           <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-8">
             <div className="flex flex-col gap-6">
-              <UserInfo subscriptionTier={subscription.tier} />
-              <SubscriptionCard subscription={subscription} setSubscription={setSubscription} />
+              <UserInfo subscriptionTier={tier} />
+              <SubscriptionCard />
             </div>
             <div className="flex flex-col gap-6">
               <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
-              <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={subscription.tier} />
+              <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={tier} />
               <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <Button 
                   onClick={logout}

@@ -1,11 +1,12 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
+import { useSubscription } from '@/hooks/useSubscription';
 
 interface PricingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpgrade: (tier: 'free' | 'pro' | 'elite') => void;
+  onUpgrade: (tier: 'pro' | 'elite') => void;
   currentTier: 'free' | 'pro' | 'elite';
 }
 
@@ -15,30 +16,15 @@ const PricingModal: React.FC<PricingModalProps> = ({
   onUpgrade, 
   currentTier 
 }) => {
+  const { isCreatingSubscription } = useSubscription();
+
   if (!isOpen) return null;
 
   const tiers = [
     {
-      id: 'free' as const,
-      name: 'Free',
-      price: '$0',
-      period: '/month',
-      description: 'Get started with basic wellness features',
-      features: [
-        'Basic mood tracking',
-        'Limited focus sessions (3 per day)',
-        'Basic breathing exercises',
-        'Progress tracking (7 days)',
-        'Community support'
-      ],
-      popular: false,
-      gradient: 'from-gray-400 to-gray-500',
-      isFree: true
-    },
-    {
       id: 'pro' as const,
       name: 'Pro',
-      price: '$4.99',
+      price: '₦1,999',
       period: '/month',
       description: 'Perfect for building healthy habits',
       features: [
@@ -55,7 +41,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'elite' as const,
       name: 'Elite',
-      price: '$9.99',
+      price: '₦3,999',
       period: '/month',
       description: 'For serious wellness enthusiasts',
       features: [
@@ -63,7 +49,8 @@ const PricingModal: React.FC<PricingModalProps> = ({
         'Personalized recommendations',
         'Advanced meditation guides',
         'Weekly wellness reports',
-        'Premium content library'
+        'Premium content library',
+        'AI Soundscape Generation'
       ],
       popular: false,
       gradient: 'from-mint-green to-deep-blue'
@@ -127,25 +114,18 @@ const PricingModal: React.FC<PricingModalProps> = ({
                   ))}
                 </ul>
                 
-                {!tier.isFree && (
-                  <Button 
-                    onClick={() => onUpgrade(tier.id)}
-                    disabled={currentTier === tier.id}
-                    className={`w-full h-12 rounded-2xl font-semibold text-white transition-all ${
-                      currentTier === tier.id
-                        ? 'bg-gray-300 cursor-not-allowed'
-                        : 'bg-mint-green hover:bg-mint-green/90 hover:scale-[1.02]'
-                    }`}
-                  >
-                    {currentTier === tier.id ? 'Current Plan' : `Upgrade to ${tier.name}`}
-                  </Button>
-                )}
-                
-                {tier.isFree && (
-                  <div className="w-full h-12 rounded-2xl font-semibold text-deep-blue bg-gray-100 flex items-center justify-center">
-                    {currentTier === 'free' ? 'Current Plan' : 'Downgrade to Free'}
-                  </div>
-                )}
+                <Button 
+                  onClick={() => onUpgrade(tier.id)}
+                  disabled={currentTier === tier.id || isCreatingSubscription}
+                  className={`w-full h-12 rounded-2xl font-semibold text-white transition-all ${
+                    currentTier === tier.id
+                      ? 'bg-gray-300 cursor-not-allowed'
+                      : 'bg-mint-green hover:bg-mint-green/90 hover:scale-[1.02] disabled:opacity-50'
+                  }`}
+                >
+                  {isCreatingSubscription ? 'Processing...' : 
+                   currentTier === tier.id ? 'Current Plan' : `Upgrade to ${tier.name}`}
+                </Button>
               </div>
             </div>
           ))}
