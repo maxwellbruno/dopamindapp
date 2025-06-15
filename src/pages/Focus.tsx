@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -6,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useFocusTimer } from '@/hooks/useFocusTimer';
 import { useBreathingExercise } from '@/hooks/useBreathingExercise';
 import { useSubscription } from '@/hooks/useSubscription';
-import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions } from '@/constants/focusConstants';
+import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions, SOUND_TRACKS } from '@/constants/focusConstants';
 import FocusLayout from '@/components/focus/FocusLayout';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
 
@@ -15,20 +14,29 @@ const Focus: React.FC = () => {
   const { isPremium, isElite } = useSubscription();
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
   const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
+  const playlistRef = useRef<any[]>([]);
+  const currentTrackIndexRef = useRef(0);
 
   // Initialize audio player
   useEffect(() => {
-    if (!audioPlayerRef.current) {
-      audioPlayerRef.current = new Audio();
-      audioPlayerRef.current.loop = true;
-      audioPlayerRef.current.volume = 0.5;
-    }
-    
-    return () => {
-      if (audioPlayerRef.current) {
-        audioPlayerRef.current.pause();
-        audioPlayerRef.current.src = '';
+    const audioPlayer = new Audio();
+    audioPlayer.volume = 0.5;
+    audioPlayerRef.current = audioPlayer;
+
+    const handleTrackEnded = () => {
+      if (playlistRef.current.length > 0) {
+        currentTrackIndexRef.current = (currentTrackIndexRef.current + 1) % playlistRef.current.length;
+        if (audioPlayerRef.current) {
+          audioPlayerRef.current.src = playlistRef.current[currentTrackIndexRef.current].url;
+          audioPlayerRef.current.play().catch(e => console.error("Audio play failed on track end:", e));
+        }
       }
+    };
+    audioPlayer.addEventListener('ended', handleTrackEnded);
+
+    return () => {
+      audioPlayer.removeEventListener('ended', handleTrackEnded);
+      audioPlayer.pause();
     };
   }, []);
 
@@ -39,31 +47,29 @@ const Focus: React.FC = () => {
 
     if (selectedSound) {
       const sound = soundOptions.find(s => s.id === selectedSound);
-      if (sound?.url) {
-        console.log('Playing sound:', sound.name, sound.url);
-        
-        audioPlayer.pause();
-        audioPlayer.currentTime = 0;
-        audioPlayer.src = sound.url;
-        
-        const playPromise = audioPlayer.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              console.log('Audio playing successfully');
-            })
-            .catch(error => {
-              console.error("Error playing audio:", error);
-              setTimeout(() => {
-                audioPlayer.play().catch(e => console.error("Retry failed:", e));
-              }, 1000);
-            });
+
+      // It's a playlist
+      if (sound?.hasGenrePage && SOUND_TRACKS[sound.id]) {
+        const tracks = SOUND_TRACKS[sound.id].filter(t => !t.premium);
+        playlistRef.current = tracks;
+        currentTrackIndexRef.current = 0;
+
+        if (tracks.length > 0) {
+          audioPlayer.loop = false;
+          audioPlayer.src = tracks[0].url;
+          audioPlayer.play().catch(e => console.error("Audio play failed on start:", e));
         }
       }
+      // It's a single track
+      else if (sound?.url) {
+        playlistRef.current = [];
+        audioPlayer.loop = true;
+        audioPlayer.src = sound.url;
+        audioPlayer.play().catch(e => console.error("Audio play failed on start:", e));
+      }
     } else {
-      console.log('Stopping audio playback');
       audioPlayer.pause();
-      audioPlayer.currentTime = 0;
+      playlistRef.current = [];
     }
   }, [selectedSound]);
 

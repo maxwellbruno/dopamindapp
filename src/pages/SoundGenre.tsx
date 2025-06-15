@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { Download } from "lucide-react";
+import { SOUND_TRACKS, SOUND_NAMES } from "@/constants/focusConstants";
 
 interface SubscriptionData {
   isPro: boolean;
@@ -10,45 +11,6 @@ interface SubscriptionData {
   subscriptionEnd: string | null;
   tier: "free" | "pro" | "elite";
 }
-
-const SOUND_TRACKS: Record<string, { name: string; url: string }[]> = {
-  lofi: [
-    { name: "Rainy Night", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1d03b8.mp3" },
-    { name: "LoFi Chill", url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3" },
-    { name: "Evening Jazz", url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b898d98.mp3" },
-    { name: "Rainy Lofi City", url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3" },
-    { name: "Sakura Lofi", url: "https://brgycopmuuanrrqmrdmf.supabase.co/storage/v1/object/public/audio_files//sakura-lofi-ambient-lofi-music-340018.mp3" },
-  ],
-  whitenoise: [
-    { name: "Pure White Noise", url: "https://cdn.pixabay.com/audio/2022/07/26/audio_121b2265a1.mp3" },
-    { name: "Soft Static", url: "https://cdn.pixabay.com/audio/2022/08/20/audio_121d6f2717.mp3" },
-  ],
-  ocean: [
-    { name: "Waves on Shore", url: "https://cdn.pixabay.com/audio/2023/04/27/audio_1492a5b94a.mp3" },
-    { name: "Calm Ocean", url: "https://cdn.pixabay.com/audio/2022/02/23/audio_1154ae857c.mp3" },
-  ],
-  forest: [
-    { name: "Morning Birds", url: "https://cdn.pixabay.com/audio/2022/04/27/audio_115f63f3d7.mp3" },
-    { name: "Forest Ambience", url: "https://cdn.pixabay.com/audio/2022/12/16/audio_124f6173b1.mp3" },
-  ],
-  cafe: [
-    { name: "Cafe Background", url: "https://cdn.pixabay.com/audio/2023/06/14/audio_128da955b3.mp3" },
-    { name: "Faint Music in Cafe", url: "https://cdn.pixabay.com/audio/2022/10/16/audio_1212628ef1.mp3" },
-  ],
-  rain: [
-    { name: "Gentle Rain", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1e3121.mp3" },
-    { name: "Rain on Window", url: "https://cdn.pixabay.com/audio/2023/07/17/audio_1282f3da13.mp3" },
-  ]
-};
-
-const SOUND_NAMES: Record<string, string> = {
-  lofi: "LoFi Music",
-  whitenoise: "White Noise",
-  ocean: "Ocean Waves",
-  forest: "Forest Sounds",
-  cafe: "Café Ambience",
-  rain: "Gentle Rain",
-};
 
 const SoundGenre: React.FC = () => {
   const { id } = useParams<{ id: string }>();
