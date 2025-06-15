@@ -11,7 +11,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       const item = window.localStorage.getItem(key);
       return item ? (JSON.parse(item) as T) : initialValue;
     } catch (error) {
-      console.warn(`Error reading localStorage key “${key}”:`, error);
+      console.warn(`Error reading localStorage key "${key}":`, error);
       return initialValue;
     }
   }, [initialValue, key]);
@@ -22,21 +22,23 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     (value: T | ((val: T) => T)) => {
       if (typeof window === 'undefined') {
         console.warn(
-          `Tried to set localStorage key “${key}” even though no window was found`,
+          `Tried to set localStorage key "${key}" even though no window was found`,
         );
         return;
       }
 
       try {
-        const newValue = value instanceof Function ? value(storedValue) : value;
-        window.localStorage.setItem(key, JSON.stringify(newValue));
-        setStoredValue(newValue);
-        window.dispatchEvent(new Event('local-storage'));
+        setStoredValue((currentValue) => {
+          const newValue = value instanceof Function ? value(currentValue) : value;
+          window.localStorage.setItem(key, JSON.stringify(newValue));
+          window.dispatchEvent(new Event('local-storage'));
+          return newValue;
+        });
       } catch (error) {
-        console.warn(`Error setting localStorage key “${key}”:`, error);
+        console.warn(`Error setting localStorage key "${key}":`, error);
       }
     },
-    [key, storedValue],
+    [key],
   );
 
   useEffect(() => {
