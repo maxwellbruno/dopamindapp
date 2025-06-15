@@ -85,15 +85,15 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
         )}
       </div>
       {showPrompt && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <div className="w-full max-w-sm mx-auto">
             <PremiumUpgradePrompt
               feature="View All Mood Entries"
               description="Upgrade to Pro to access your complete mood entry history and spot emotional patterns."
               tier="pro"
-              className="max-w-md w-full"
+              className="w-full"
             />
-            <div className="flex justify-center mt-2">
+            <div className="flex justify-center mt-4">
               <Button size="sm" variant="ghost" onClick={() => setShowPrompt(false)}>
                 Close
               </Button>
