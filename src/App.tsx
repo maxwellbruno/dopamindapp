@@ -28,6 +28,7 @@ import BinauralFrequencies from './pages/BinauralFrequencies';
 import GuidedMeditation from './pages/GuidedMeditation';
 import BrainwaveDetail from './pages/BrainwaveDetail';
 import BinauralDetail from './pages/BinauralDetail';
+import AISoundscape from './pages/AISoundscape';
 
 const queryClient = new QueryClient();
 
@@ -130,6 +131,7 @@ const AppContent: React.FC = () => {
           <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
           <Route path="/binaural/:hz" element={<BinauralDetail />} />
           <Route path="/meditation/guided" element={<GuidedMeditation />} />
+          <Route path="/ai-soundscape" element={<AISoundscape />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
