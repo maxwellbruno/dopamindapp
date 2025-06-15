@@ -1,9 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '../contexts/AuthContext';
+import { Brain } from 'lucide-react';
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -33,14 +33,8 @@ const AuthScreen: React.FC = () => {
           <div className="mb-6 flex justify-center">
             <div className="relative">
               <div className="absolute inset-0 bg-mint-green/20 rounded-3xl blur-xl"></div>
-              <div className="relative w-16 h-16 bg-gradient-to-br from-mint-green to-mint-green rounded-3xl flex items-center justify-center">
-                {/* Brain icon using rounded rectangles to match the design */}
-                <div className="w-10 h-8 relative">
-                  <div className="absolute left-0 top-0 w-4 h-6 bg-white rounded-l-full"></div>
-                  <div className="absolute right-0 top-0 w-4 h-6 bg-white rounded-r-full"></div>
-                  <div className="absolute left-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
-                  <div className="absolute right-1.5 top-0.5 w-0.5 h-5 bg-deep-blue rounded-full"></div>
-                </div>
+              <div className="relative w-16 h-16 bg-pure-white rounded-3xl flex items-center justify-center">
+                <Brain className="text-mint-green" size={40} strokeWidth={2} />
               </div>
             </div>
           </div>

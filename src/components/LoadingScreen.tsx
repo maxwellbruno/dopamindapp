@@ -1,5 +1,5 @@
-
 import React, { useState, useEffect } from 'react';
+import { Brain } from 'lucide-react';
 
 const LoadingScreen: React.FC = () => {
   const [progress, setProgress] = useState(0);
@@ -28,18 +28,12 @@ const LoadingScreen: React.FC = () => {
       </div>
 
       <div className="text-center z-10 animate-fade-in-up">
-        {/* Brain Logo with Mint Green Gradient */}
+        {/* Brain Logo */}
         <div className="mb-8 flex items-center justify-center">
           <div className="relative">
             <div className="absolute inset-0 bg-mint-green rounded-2xl blur-xl opacity-60 animate-mint-glow"></div>
-            <div className="relative w-20 h-20 bg-gradient-to-br from-mint-green to-mint-green rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
-              {/* Brain icon using rounded rectangles to match the design */}
-              <div className="w-12 h-10 relative">
-                <div className="absolute left-0 top-0 w-5 h-8 bg-white rounded-l-full"></div>
-                <div className="absolute right-0 top-0 w-5 h-8 bg-white rounded-r-full"></div>
-                <div className="absolute left-2 top-1 w-1 h-6 bg-deep-blue rounded-full"></div>
-                <div className="absolute right-2 top-1 w-1 h-6 bg-deep-blue rounded-full"></div>
-              </div>
+            <div className="relative w-20 h-20 bg-pure-white rounded-2xl flex items-center justify-center shadow-2xl animate-breathe">
+              <Brain className="text-mint-green" size={48} strokeWidth={2} />
             </div>
           </div>
         </div>
