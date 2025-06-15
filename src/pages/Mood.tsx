@@ -50,12 +50,12 @@ const Mood: React.FC = () => {
   ];
 
   const premiumMoods = [
-    { emoji: '😰', label: 'Anxious', color: 'bg-yellow-100' },
+    { emoji: '😰', label: 'Anxious', color: 'bg-warm-orange/20' },
     { emoji: '😌', label: 'Calm', color: 'bg-blue-100' },
     { emoji: '🤩', label: 'Excited', color: 'bg-purple-100' },
     { emoji: '😴', label: 'Tired', color: 'bg-gray-100' },
     { emoji: '🥰', label: 'Loved', color: 'bg-pink-100' },
-    { emoji: '😤', label: 'Frustrated', color: 'bg-orange-100' },
+    { emoji: '😤', label: 'Frustrated', color: 'bg-deep-blue/10' },
     { emoji: '🤔', label: 'Thoughtful', color: 'bg-indigo-100' },
     { emoji: '😇', label: 'Peaceful', color: 'bg-green-100' },
     { emoji: '😵‍💫', label: 'Confused', color: 'bg-purple-100' },
@@ -337,7 +337,7 @@ const Mood: React.FC = () => {
             </div>
           ) : (
             <>
-              <div className="dopamind-card p-6 mb-6 animate-slide-up">
+              <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 <h2 className="text-lg font-semibold text-deep-blue mb-4 text-center">How are you feeling today?</h2>
                 <Button 
                   onClick={() => setShowForm(true)}
@@ -347,7 +347,7 @@ const Mood: React.FC = () => {
                 </Button>
               </div>
 
-              <div className="dopamind-card p-6 mb-6 animate-slide-up">
+              <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                 <h3 className="font-semibold text-deep-blue mb-4">This Month</h3>
                 <div className="grid grid-cols-7 gap-2">
                   {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
@@ -372,12 +372,12 @@ const Mood: React.FC = () => {
                 </div>
               </div>
 
-              <div className="dopamind-card p-6 mb-6 animate-slide-up">
+              <div className="dopamind-card p-6 mb-6 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
                 <h3 className="font-semibold text-deep-blue mb-4">Wellness Suggestion</h3>
                 <p className="text-deep-blue">{getMoodSuggestion()}</p>
               </div>
 
-              <div className="dopamind-card p-4 animate-slide-up">
+              <div className="dopamind-card p-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                 <h3 className="font-semibold text-deep-blue mb-3">Recent Entries</h3>
                 <div className="space-y-3 max-h-60 overflow-y-auto">
                   {moodEntries.slice(0, 10).map((entry) => {
@@ -418,11 +418,6 @@ const Mood: React.FC = () => {
             </>
           )}
         </div>
-      </div>
-
-      {/* Bottom Navigation with auto-hide */}
-      <div className={`${isScrolling ? 'hide-nav' : 'show-nav'}`}>
-        <BottomNav />
       </div>
     </div>
   );

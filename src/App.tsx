@@ -14,6 +14,7 @@ import Focus from './pages/Focus';
 import Mood from './pages/Mood';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
+import SubscriptionManager from './pages/SubscriptionManager';
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const AppContent: React.FC = () => {
         <Route path="/focus" element={<Focus />} />
         <Route path="/mood" element={<Mood />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/subscription" element={<SubscriptionManager />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />

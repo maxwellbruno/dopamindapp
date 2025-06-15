@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -5,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Link } from 'react-router-dom';
 
 interface UserSettings {
   dailyFocusGoal: number;
@@ -195,13 +197,26 @@ const Profile: React.FC = () => {
                     <span className="text-text-light">{new Date(subscription.subscriptionEnd).toLocaleDateString()}</span>
                   </div>
                 )}
-                <Button 
-                  variant="outline" 
-                  className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
-                  onClick={() => setShowPricing(true)}
-                >
-                  {subscription.tier === 'pro' ? 'Upgrade to Elite' : 'Manage Subscription'}
-                </Button>
+                
+                {subscription.tier === 'pro' &&
+                  <Button 
+                    variant="outline" 
+                    className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
+                    onClick={() => setShowPricing(true)}
+                  >
+                    Upgrade to Elite
+                  </Button>
+                }
+                {subscription.tier === 'elite' &&
+                  <Link to="/profile/subscription" className="block w-full">
+                    <Button 
+                      variant="outline" 
+                      className="w-full rounded-xl bg-mint-green hover:bg-mint-green/90 text-white border-mint-green"
+                    >
+                      Manage Subscription
+                    </Button>
+                  </Link>
+                }
               </div>
             )}
           </div>
@@ -345,7 +360,7 @@ const Profile: React.FC = () => {
           <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
             <Button 
               onClick={logout}
-              className="w-full bg-warm-orange text-white hover:bg-warm-orange/90 rounded-xl"
+              className="w-full bg-mint-green text-white hover:bg-mint-green/90 rounded-xl"
             >
               Sign Out
             </Button>

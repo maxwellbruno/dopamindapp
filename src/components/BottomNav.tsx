@@ -71,7 +71,7 @@ const BottomNav: React.FC = () => {
                   
                   <span className={`relative z-10 text-xs font-semibold transition-all duration-300 ${
                     isActive 
-                      ? 'text-mint-green' 
+                      ? 'text-warm-orange' 
                       : 'text-pure-white'
                   }`}>
                     {item.label}

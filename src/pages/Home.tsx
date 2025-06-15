@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
+import AiChat from '../components/AiChat';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -22,6 +23,7 @@ const Home: React.FC = () => {
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showChatPrompt, setShowChatPrompt] = useState(false);
+  const [showAiChat, setShowAiChat] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -77,8 +79,7 @@ const Home: React.FC = () => {
     if (!isPremium) {
       setShowChatPrompt(true);
     } else {
-      // Navigate to chat - for now just show alert
-      alert('Welcome to Mindfulnest! AI chat feature coming soon.');
+      setShowAiChat(true);
     }
   };
 
@@ -167,7 +168,6 @@ const Home: React.FC = () => {
                     ? 'bg-mint-green text-white hover:scale-105' 
                     : 'bg-gray-200 text-gray-500'
                 }`}
-                disabled={!isPremium}
               >
                 {isPremium ? 'Chat' : '🔒 Pro'}
               </button>
@@ -246,11 +246,11 @@ const Home: React.FC = () => {
                 {subscription.isElite && (
                   <div className="flex items-center space-x-3 p-3 bg-gradient-to-r from-warm-orange/10 to-mint-green/10 rounded-2xl border border-warm-orange/20">
                     <div className="w-8 h-8 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
-                      <span className="text-sm text-white">👑</span>
+                      <span className="text-sm text-white">📈</span>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-text-dark">Elite Coaching</p>
-                      <p className="text-xs text-text-light">1-on-1 virtual wellness sessions</p>
+                      <p className="text-sm font-semibold text-text-dark">Weekly Wellness Reports</p>
+                      <p className="text-xs text-text-light">Personalized summaries of your progress</p>
                     </div>
                   </div>
                 )}
@@ -283,6 +283,8 @@ const Home: React.FC = () => {
               </div>
             </div>
           )}
+          
+          {showAiChat && <AiChat onClose={() => setShowAiChat(false)} />}
         </div>
       </div>
     </div>
