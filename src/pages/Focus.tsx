@@ -157,7 +157,7 @@ const Focus: React.FC = () => {
       <div className="px-4 pt-8">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
-          
+
           <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-8 mb-6">
             {/* Main left: Session name, timer, settings (2/3 left on desktop) */}
             <div className="flex flex-col gap-6 md:col-span-2">
@@ -208,6 +208,24 @@ const Focus: React.FC = () => {
               />
             </div>
           </div>
+
+          {/* Modal/Overlay for Breathing Exercise */}
+          {isBreathing && selectedBreathingExercise && (
+            <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
+              <div className="bg-white dark:bg-deep-blue max-w-sm w-full p-6 rounded-2xl shadow-2xl relative animate-fade-in-up">
+                <BreathingExercise
+                  exerciseType={selectedBreathingExercise}
+                  onStop={stopBreathingExercise}
+                />
+                {/* Close button, optional */}
+                <button
+                  className="absolute top-3 right-3 text-gray-400 hover:text-gray-700 text-2xl"
+                  aria-label="Close"
+                  onClick={stopBreathingExercise}
+                >×</button>
+              </div>
+            </div>
+          )}
 
           {!canStartSession && (
             <div className="animate-fade-in-up md:max-w-2xl md:mx-auto" style={{ animationDelay: '0.6s' }}>
