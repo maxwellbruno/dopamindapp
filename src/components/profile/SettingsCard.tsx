@@ -166,11 +166,13 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
                   <Switch
                     id="theme"
                     checked={
-                      subscriptionTier === 'free' 
+                      (subscriptionTier === 'free')
                         ? false
                         : tempSettings.theme === 'dark'
                     }
-                    onCheckedChange={(checked) => {
+                    disabled={subscriptionTier === 'free'}
+                    // Only attach handler for pro/elite
+                    onCheckedChange={checked => {
                       if (subscriptionTier !== 'free') {
                         setTempSettings(prev => ({
                           ...prev,
@@ -185,7 +187,6 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
                         }
                       }
                     }}
-                    disabled={subscriptionTier === 'free'}
                   />
                   <span className="text-text-light capitalize select-none">
                     {subscriptionTier !== 'free' ? tempSettings.theme : 'Light'}
