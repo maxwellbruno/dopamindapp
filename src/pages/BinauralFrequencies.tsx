@@ -33,13 +33,13 @@ const BinauralFrequencies: React.FC = () => {
   if (!subscription.isElite) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="dopamind-card p-8 text-center">
+        <div className="dopamind-card p-6 md:p-8 text-center max-w-sm md:max-w-md w-full">
           <div className="text-4xl mb-6">👑</div>
-          <h1 className="text-xl font-bold text-deep-blue mb-2">Elite Exclusive</h1>
-          <p className="text-text-light mb-4">
+          <h1 className="text-lg md:text-xl font-bold text-deep-blue mb-2">Elite Exclusive</h1>
+          <p className="text-text-light mb-4 text-sm md:text-base">
             Only Dopamind Elite subscribers can access Binaural Frequencies.
           </p>
-          <Button variant="outline" onClick={() => navigate(-1)}>
+          <Button variant="outline" onClick={() => navigate(-1)} className="w-full sm:w-auto">
             Back
           </Button>
         </div>
@@ -48,25 +48,25 @@ const BinauralFrequencies: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray py-10 px-4 flex flex-col items-center relative">
-      <Button variant="ghost" className="absolute left-4 top-4" onClick={() => navigate(-1)}>
+    <div className="min-h-screen bg-light-gray py-6 md:py-10 px-4 flex flex-col items-center relative">
+      <Button variant="ghost" className="absolute left-2 md:left-4 top-2 md:top-4 text-sm md:text-base" onClick={() => navigate(-1)}>
         ← Back
       </Button>
-      <div className="dopamind-card w-full max-w-md p-8 animate-fade-in-up space-y-8">
-        <h2 className="text-2xl font-bold text-center mb-3">Binaural Frequencies</h2>
-        <div className="space-y-5">
+      <div className="dopamind-card w-full max-w-sm md:max-w-md lg:max-w-lg p-6 md:p-8 animate-fade-in-up space-y-6 md:space-y-8 mt-12 md:mt-0">
+        <h2 className="text-xl md:text-2xl font-bold text-center mb-3">Binaural Frequencies</h2>
+        <div className="space-y-4 md:space-y-5">
           {HZ_BEATS.map((hz) => (
             <div
               key={hz.hz}
-              className="rounded-2xl bg-white border border-warm-orange/30 p-6 flex flex-col items-center gap-2 shadow-md hover:scale-[1.03] transition-transform cursor-pointer"
+              className="rounded-xl md:rounded-2xl bg-white border border-warm-orange/30 p-4 md:p-6 flex flex-col items-center gap-2 shadow-md hover:scale-[1.02] md:hover:scale-[1.03] transition-transform cursor-pointer"
               onClick={() => navigate(`/binaural/${hz.hz}`)}
               role="button"
               tabIndex={0}
             >
-              <div className="text-3xl mb-2">{hz.emoji}</div>
-              <div className="text-lg font-semibold text-deep-blue">Binaural Beats – {hz.hz} Hz</div>
-              <div className="text-warm-orange font-bold">{hz.label}</div>
-              <div className="text-text-light text-sm text-center">{hz.desc}</div>
+              <div className="text-2xl md:text-3xl mb-1 md:mb-2">{hz.emoji}</div>
+              <div className="text-base md:text-lg font-semibold text-deep-blue text-center">Binaural Beats – {hz.hz} Hz</div>
+              <div className="text-warm-orange font-bold text-sm md:text-base">{hz.label}</div>
+              <div className="text-text-light text-xs md:text-sm text-center leading-relaxed">{hz.desc}</div>
             </div>
           ))}
         </div>

@@ -37,13 +37,13 @@ const GuidedMeditation: React.FC = () => {
   if (!subscription.isElite) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="dopamind-card p-8 text-center">
+        <div className="dopamind-card p-6 md:p-8 text-center max-w-sm md:max-w-md w-full">
           <div className="text-4xl mb-6">👑</div>
-          <h1 className="text-xl font-bold text-deep-blue mb-2">Elite Exclusive</h1>
-          <p className="text-text-light mb-4">
+          <h1 className="text-lg md:text-xl font-bold text-deep-blue mb-2">Elite Exclusive</h1>
+          <p className="text-text-light mb-4 text-sm md:text-base">
             Only Dopamind Elite subscribers can access Guided Meditations.
           </p>
-          <Button variant="outline" onClick={() => navigate(-1)}>
+          <Button variant="outline" onClick={() => navigate(-1)} className="w-full sm:w-auto">
             Back
           </Button>
         </div>
@@ -64,27 +64,38 @@ const GuidedMeditation: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray flex flex-col items-center px-4 py-10 relative">
-      <Button variant="ghost" className="absolute left-4 top-4" onClick={() => navigate(-1)}>
+    <div className="min-h-screen bg-light-gray flex flex-col items-center px-4 py-6 md:py-10 relative">
+      <Button variant="ghost" className="absolute left-2 md:left-4 top-2 md:top-4 text-sm md:text-base" onClick={() => navigate(-1)}>
         ← Back
       </Button>
-      <div className="dopamind-card w-full max-w-lg p-8 animate-fade-in-up flex flex-col gap-5">
+      <div className="dopamind-card w-full max-w-sm md:max-w-lg lg:max-w-2xl p-6 md:p-8 animate-fade-in-up flex flex-col gap-4 md:gap-5 mt-12 md:mt-0">
         <div className="text-center mb-4">
-          <div className="text-3xl mb-2">🧘‍♀️</div>
-          <h2 className="text-2xl font-bold mb-2">Guided Meditations</h2>
-          <p className="text-text-light text-sm mt-2">Transform your mind with expert-guided meditation sessions</p>
+          <div className="text-2xl md:text-3xl mb-2">🧘‍♀️</div>
+          <h2 className="text-xl md:text-2xl font-bold mb-2">Guided Meditations</h2>
+          <p className="text-text-light text-xs md:text-sm mt-2">Transform your mind with expert-guided meditation sessions</p>
         </div>
-        <div className="space-y-5">
+        <div className="space-y-4 md:space-y-5">
           {GUIDED_MEDITATIONS.map((meditation) => (
-            <div key={meditation.name} className="flex items-center justify-between border-b border-gray-100 py-2 last:border-b-0">
-              <div>
-                <div className="text-lg font-semibold">{meditation.name}</div>
+            <div key={meditation.name} className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-100 py-3 md:py-2 last:border-b-0 gap-3 sm:gap-2">
+              <div className="flex-1 min-w-0">
+                <div className="text-sm md:text-lg font-semibold text-deep-blue break-words">{meditation.name}</div>
               </div>
-              <div className="flex gap-2">
-                <audio controls className="w-36" src={meditation.url} />
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-2 items-stretch sm:items-center">
+                <audio 
+                  controls 
+                  className="w-full sm:w-32 md:w-36 h-8 md:h-10" 
+                  src={meditation.url}
+                  preload="none"
+                />
                 {isElite && (
-                  <Button size="icon" variant="ghost" title="Download" onClick={() => handleDownload(meditation.url, meditation.name)}>
-                    <Download size={18} />
+                  <Button 
+                    size="icon" 
+                    variant="ghost" 
+                    title="Download" 
+                    onClick={() => handleDownload(meditation.url, meditation.name)}
+                    className="w-8 h-8 md:w-10 md:h-10 flex-shrink-0 self-center"
+                  >
+                    <Download size={16} className="md:w-5 md:h-5" />
                   </Button>
                 )}
               </div>
@@ -92,7 +103,7 @@ const GuidedMeditation: React.FC = () => {
           ))}
         </div>
         {!isElite && (
-          <div className="mt-5 text-sm text-red-500 text-center">
+          <div className="mt-4 md:mt-5 text-xs md:text-sm text-red-500 text-center">
             Upgrade to Elite to download meditation tracks!
           </div>
         )}
