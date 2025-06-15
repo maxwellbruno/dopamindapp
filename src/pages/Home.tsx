@@ -1,6 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useSubscription } from '@/hooks/useSubscription';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
 import AiChat from '../components/AiChat';
 import MindfulAd from '../components/MindfulAd';
@@ -12,21 +14,9 @@ import DailyInsightCard from '../components/home/DailyInsightCard';
 import QuickActions from '../components/home/QuickActions';
 import PremiumFeatures from '../components/home/PremiumFeatures';
 
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: 'free' | 'pro' | 'elite';
-}
-
 const Home: React.FC = () => {
   const { user } = useAuth();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { isPremium, isElite, tier } = useSubscription();
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showChatPrompt, setShowChatPrompt] = useState(false);
@@ -80,8 +70,6 @@ const Home: React.FC = () => {
     return productivityTips[tipIndex];
   });
 
-  const isPremium = subscription.isPro || subscription.isElite;
-
   const handleChatClick = () => {
     if (!isPremium) {
       setShowChatPrompt(true);
@@ -103,7 +91,7 @@ const Home: React.FC = () => {
               day: 'numeric' 
             })}
             isPremium={isPremium}
-            tier={subscription.tier}
+            tier={tier}
           />
           
           <StatsGrid 
@@ -136,7 +124,7 @@ const Home: React.FC = () => {
             </div>
           ) : (
             <div className="mt-6">
-              <PremiumFeatures isElite={subscription.isElite} />
+              <PremiumFeatures isElite={isElite} />
             </div>
           )}
 
