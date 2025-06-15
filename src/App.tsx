@@ -26,6 +26,7 @@ import SoundGenre from './pages/SoundGenre';
 import Brainwaves from './pages/Brainwaves';
 import BinauralFrequencies from './pages/BinauralFrequencies';
 import GuidedMeditation from './pages/GuidedMeditation';
+import BrainwaveDetail from './pages/BrainwaveDetail';
 
 const queryClient = new QueryClient();
 
@@ -124,6 +125,7 @@ const AppContent: React.FC = () => {
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
           <Route path="/sound/:id" element={<SoundGenre />} />
           <Route path="/meditation/brainwaves" element={<Brainwaves />} />
+          <Route path="/brainwave/:type" element={<BrainwaveDetail />} />
           <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
           <Route path="/meditation/guided" element={<GuidedMeditation />} />
           <Route path="*" element={<NotFound />} />
