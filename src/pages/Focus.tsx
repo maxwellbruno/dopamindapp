@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,7 +10,7 @@ import { useBreathingExercise } from '@/hooks/useBreathingExercise';
 import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions } from '@/constants/focusConstants';
 import FocusLayout from '@/components/focus/FocusLayout';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
-import Button from '@/components/Button';
+import { Button } from '@/components/ui/button';
 
 const initialSubscription: SubscriptionData = {
   isPro: false,
