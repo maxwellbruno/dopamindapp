@@ -160,7 +160,7 @@ const Profile: React.FC = () => {
                       </div>
 
                       {/* Elite Plan */}
-                      <div className="border border-warm-orange rounded-2xl p-6 bg-white">
+                      <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
                         <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
                         <div className="flex items-baseline mb-4">
                           <span className="text-3xl font-bold text-deep-blue">$9.99</span>
@@ -243,7 +243,7 @@ const Profile: React.FC = () => {
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-warm-orange to-mint-green bg-clip-text text-transparent">{stats.currentStreak}</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-deep-blue to-mint-green bg-clip-text text-transparent">{stats.currentStreak}</div>
                 <div className="text-sm text-text-light">Current Streak</div>
               </div>
               
@@ -253,7 +253,7 @@ const Profile: React.FC = () => {
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold bg-gradient-to-r from-warm-orange to-mint-green bg-clip-text text-transparent">{averageSessionLength}m</div>
+                <div className="text-2xl font-bold bg-gradient-to-r from-deep-blue to-mint-green bg-clip-text text-transparent">{averageSessionLength}m</div>
                 <div className="text-sm text-text-light">Avg Session</div>
               </div>
             </div>
@@ -320,7 +320,7 @@ const Profile: React.FC = () => {
                     }))}
                     min="30"
                     max="480"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
@@ -338,7 +338,7 @@ const Profile: React.FC = () => {
                       ...prev,
                       reminderTime: e.target.value
                     }))}
-                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
@@ -356,7 +356,7 @@ const Profile: React.FC = () => {
                       customAffirmation: e.target.value
                     }))}
                     placeholder="Enter your personal affirmation"
-                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue text-deep-blue bg-white"
+                    className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
                   />
                 ) : (
                   <div className="mt-1 text-deep-blue bg-white rounded-xl p-3 italic border border-gray-200">"{settings.customAffirmation}"</div>

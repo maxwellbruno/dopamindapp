@@ -70,7 +70,7 @@ const AuthScreen: React.FC = () => {
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
+                  className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none rounded-xl bg-light-gray text-deep-blue"
                   required={!isLogin}
                 />
               </div>
@@ -86,7 +86,7 @@ const AuthScreen: React.FC = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
+                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>
@@ -101,7 +101,7 @@ const AuthScreen: React.FC = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
+                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>
@@ -117,7 +117,7 @@ const AuthScreen: React.FC = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-warm-orange text-sm font-medium hover:text-warm-orange/80"
+              className="text-mint-green text-sm font-medium hover:text-mint-green/80"
             >
               {isLogin ? 'Create an account' : 'Sign in'}
             </button>

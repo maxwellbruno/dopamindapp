@@ -24,15 +24,15 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
       case 'basic': // 4-7-8 Breathing
         return [
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Hold', duration: 7, color: 'bg-warm-orange', scale: 1.3 },
+          { name: 'Hold', duration: 7, color: 'bg-cool-gray', scale: 1.3 },
           { name: 'Breathe Out', duration: 8, color: 'bg-deep-blue', scale: 1 }
         ];
       case 'box': // Box Breathing
         return [
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Hold', duration: 4, color: 'bg-warm-orange', scale: 1.3 },
+          { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
           { name: 'Breathe Out', duration: 4, color: 'bg-deep-blue', scale: 1 },
-          { name: 'Hold', duration: 4, color: 'bg-warm-orange', scale: 1 }
+          { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1 }
         ];
       case 'coherent': // Coherent Breathing
         return [
@@ -43,22 +43,22 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
         return [
           { name: 'Deep Breath In', duration: 1, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Quick Out', duration: 1, color: 'bg-deep-blue', scale: 1 },
-          { name: 'Hold after 30 breaths', duration: 30, color: 'bg-warm-orange', scale: 1 },
+          { name: 'Hold after 30 breaths', duration: 30, color: 'bg-cool-gray', scale: 1 },
           { name: 'Recovery Breath', duration: 15, color: 'bg-mint-green', scale: 1.3 }
         ];
       case 'alternate': // Alternate Nostril
         return [
           { name: 'Inhale (Left)', duration: 4, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Hold', duration: 4, color: 'bg-warm-orange', scale: 1.3 },
+          { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
           { name: 'Exhale (Right)', duration: 4, color: 'bg-deep-blue', scale: 1 },
           { name: 'Inhale (Right)', duration: 4, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Hold', duration: 4, color: 'bg-warm-orange', scale: 1.3 },
+          { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
           { name: 'Exhale (Left)', duration: 4, color: 'bg-deep-blue', scale: 1 }
         ];
       default:
         return [
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Hold', duration: 4, color: 'bg-warm-orange', scale: 1.3 },
+          { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
           { name: 'Breathe Out', duration: 4, color: 'bg-deep-blue', scale: 1 }
         ];
     }
