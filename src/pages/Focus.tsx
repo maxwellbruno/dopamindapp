@@ -10,7 +10,6 @@ import { useBreathingExercise } from '@/hooks/useBreathingExercise';
 import { soundOptions, breathingExercises, maxFreeSessionDuration, maxFreeSessions } from '@/constants/focusConstants';
 import FocusLayout from '@/components/focus/FocusLayout';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
-import { Skeleton } from '@/components/ui/skeleton';
 
 const initialSubscription: SubscriptionData = {
   isPro: false,
@@ -24,6 +23,7 @@ const Focus: React.FC = () => {
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
 
+  // Don't wait to render whole page; only sidebar stats use isLoading
   const { data: focusStats, isLoading } = useQuery({
       queryKey: ['focusStats', user?.id],
       queryFn: async () => {
@@ -58,29 +58,6 @@ const Focus: React.FC = () => {
     if (!canStartSession) return;
     timerLogic.startTimer();
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-light-gray pb-20">
-        <div className="px-4 pt-8">
-          <div className="max-w-5xl mx-auto">
-            <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Focus</h1>
-            <div className="flex flex-col gap-6 md:grid md:grid-cols-3 md:gap-8 mb-6">
-              <div className="flex flex-col gap-6 md:col-span-2">
-                <Skeleton className="h-32 w-full rounded-2xl" />
-                <Skeleton className="h-48 w-full rounded-2xl" />
-              </div>
-              <div className="flex flex-col gap-6">
-                <Skeleton className="h-32 w-full rounded-2xl" />
-                <Skeleton className="h-32 w-full rounded-2xl" />
-                <Skeleton className="h-32 w-full rounded-2xl" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-light-gray pb-20">
