@@ -42,7 +42,7 @@ const SessionStatsSidebar: React.FC<SessionStatsSidebarProps> = ({
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-warm-orange to-mint-green rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-deep-blue to-mint-green rounded-full flex items-center justify-center">
               <span className="text-lg">📊</span>
             </div>
             <div>
