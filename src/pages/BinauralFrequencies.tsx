@@ -12,13 +12,13 @@ interface SubscriptionData {
 }
 
 const HZ_BEATS = [
-  { hz: "396 Hz", label: "Liberating Calm", desc: "Release guilt, fear, promote positivity.", emoji: "🌈" },
-  { hz: "417 Hz", label: "Positive Change", desc: "Facilitate change and undo negativity.", emoji: "🔄" },
-  { hz: "432 Hz", label: "Natural Harmony", desc: "Relaxation, believed to be harmonious with nature.", emoji: "🌱" },
-  { hz: "528 Hz", label: "DNA Healing & Transformation", desc: "Stress reduction, transformation, DNA repair.", emoji: "🧬" },
-  { hz: "639 Hz", label: "Relationship Balance", desc: "Inner harmony, better relationships.", emoji: "💞" },
-  { hz: "741 Hz", label: "Inner Awakening", desc: "Awaken intuition, encourage healthy living.", emoji: "✨" },
-  { hz: "852 Hz", label: "Spiritual Alignment", desc: "Return to spiritual order.", emoji: "🕉️" },
+  { hz: "396", label: "Liberating Calm", desc: "Release guilt, fear, promote positivity.", emoji: "🌈" },
+  { hz: "417", label: "Positive Change", desc: "Facilitate change and undo negativity.", emoji: "🔄" },
+  { hz: "432", label: "Natural Harmony", desc: "Relaxation, believed to be harmonious with nature.", emoji: "🌱" },
+  { hz: "528", label: "DNA Healing & Transformation", desc: "Stress reduction, transformation, DNA repair.", emoji: "🧬" },
+  { hz: "639", label: "Relationship Balance", desc: "Inner harmony, better relationships.", emoji: "💞" },
+  { hz: "741", label: "Inner Awakening", desc: "Awaken intuition, encourage healthy living.", emoji: "✨" },
+  { hz: "852", label: "Spiritual Alignment", desc: "Return to spiritual order.", emoji: "🕉️" },
 ];
 
 const BinauralFrequencies: React.FC = () => {
@@ -58,10 +58,13 @@ const BinauralFrequencies: React.FC = () => {
           {HZ_BEATS.map((hz) => (
             <div
               key={hz.hz}
-              className="rounded-2xl bg-white border border-warm-orange/30 p-6 flex flex-col items-center gap-2 shadow-md"
+              className="rounded-2xl bg-white border border-warm-orange/30 p-6 flex flex-col items-center gap-2 shadow-md hover:scale-[1.03] transition-transform cursor-pointer"
+              onClick={() => navigate(`/binaural/${hz.hz}`)}
+              role="button"
+              tabIndex={0}
             >
               <div className="text-3xl mb-2">{hz.emoji}</div>
-              <div className="text-lg font-semibold text-deep-blue">Binaural Beats – {hz.hz}</div>
+              <div className="text-lg font-semibold text-deep-blue">Binaural Beats – {hz.hz} Hz</div>
               <div className="text-warm-orange font-bold">{hz.label}</div>
               <div className="text-text-light text-sm text-center">{hz.desc}</div>
             </div>
