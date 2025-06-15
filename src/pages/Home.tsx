@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useSubscription } from '@/hooks/useSubscription';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
+import PricingModal from '../components/PricingModal';
 import AiChat from '../components/AiChat';
 import MindfulAd from '../components/MindfulAd';
 import HomeHeader from '../components/home/HomeHeader';
@@ -16,11 +16,12 @@ import PremiumFeatures from '../components/home/PremiumFeatures';
 
 const Home: React.FC = () => {
   const { user } = useAuth();
-  const { isPremium, isElite, tier } = useSubscription();
+  const { isPremium, isElite, tier, createSubscription, isCreatingSubscription } = useSubscription();
 
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showChatPrompt, setShowChatPrompt] = useState(false);
   const [showAiChat, setShowAiChat] = useState(false);
+  const [showPricingFromChat, setShowPricingFromChat] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -76,6 +77,23 @@ const Home: React.FC = () => {
     } else {
       setShowAiChat(true);
     }
+  };
+
+  const handleUpgradeFromChat = () => {
+    setShowChatPrompt(false);
+    setShowPricingFromChat(true);
+  };
+
+  const handleUpgrade = async (selectedTier: 'pro' | 'elite') => {
+    try {
+      const result = await createSubscription({ planId: selectedTier });
+      if (result?.checkout_url) {
+        window.location.href = result.checkout_url;
+      }
+    } catch (error) {
+      console.error('Failed to create subscription:', error);
+    }
+    setShowPricingFromChat(false);
   };
 
   return (
@@ -139,8 +157,12 @@ const Home: React.FC = () => {
                   <h3 className="text-lg font-bold text-text-dark mb-2">Mindfulnest AI Chat</h3>
                   <p className="text-text-light text-sm mb-4">Access your personal wellness AI assistant with Dopamind Pro</p>
                   <div className="space-y-3">
-                    <button className="w-full bg-mint-green text-white font-semibold rounded-2xl py-3 hover:scale-[1.02] transition-transform">
-                      Upgrade to Pro
+                    <button 
+                      onClick={handleUpgradeFromChat}
+                      disabled={isCreatingSubscription}
+                      className="w-full bg-mint-green text-white font-semibold rounded-2xl py-3 hover:scale-[1.02] transition-transform disabled:opacity-50"
+                    >
+                      {isCreatingSubscription ? 'Processing...' : 'Upgrade to Pro'}
                     </button>
                     <button 
                       onClick={() => setShowChatPrompt(false)}
@@ -153,6 +175,14 @@ const Home: React.FC = () => {
               </div>
             </div>
           )}
+
+          {/* Pricing Modal for Chat Upgrade */}
+          <PricingModal 
+            isOpen={showPricingFromChat}
+            onClose={() => setShowPricingFromChat(false)}
+            onUpgrade={handleUpgrade}
+            currentTier={tier}
+          />
           
           {showAiChat && <AiChat onClose={() => setShowAiChat(false)} />}
         </div>
