@@ -38,9 +38,19 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Use a variable OUTSIDE component scope to track first load
+let hasShownSplashScreen = false;
+
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
-  const [showLoading, setShowLoading] = useState(true);
+  // Only show splash once on very first app load
+  const [showLoading, setShowLoading] = useState(() => {
+    if (!hasShownSplashScreen) {
+      hasShownSplashScreen = true;
+      return true;
+    }
+    return false;
+  });
   const isMobile = useIsMobile();
   const [settings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
@@ -50,12 +60,13 @@ const AppContent: React.FC = () => {
   });
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLoading(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    if (showLoading) {
+      const timer = setTimeout(() => {
+        setShowLoading(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [showLoading]);
 
   useEffect(() => {
     const root = window.document.documentElement;
