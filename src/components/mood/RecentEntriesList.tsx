@@ -46,7 +46,7 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
               {entry.note && (
                 <p className="text-sm text-deep-blue mb-1 truncate">{entry.note}</p>
               )}
-              {entry.activities.length > 0 && (
+              {entry.activities && entry.activities.length > 0 && (
                 <div className="flex flex-wrap gap-1">
                   {entry.activities.map((activity, idx) => (
                     <span
@@ -106,4 +106,3 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
 };
 
 export default RecentEntriesList;
-

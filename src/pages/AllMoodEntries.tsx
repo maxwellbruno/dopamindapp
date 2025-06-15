@@ -1,20 +1,41 @@
 
 import React from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import { MoodEntry, SubscriptionData, Mood } from '@/types/mood';
 import { basicMoods, premiumMoods } from '@/data/moods';
 import PremiumUpgradePrompt from '@/components/PremiumUpgradePrompt';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const AllMoodEntries: React.FC = () => {
-  const [moodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', []);
+  const { user } = useAuth();
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
     isPro: false,
     isElite: false,
     subscriptionEnd: null,
     tier: 'free'
+  });
+
+  const { data: moodEntries = [], isLoading } = useQuery<MoodEntry[]>({
+    queryKey: ['mood_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('mood_entries')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    enabled: !!user,
   });
 
   const isPremium = subscription.isPro || subscription.isElite;
@@ -33,6 +54,10 @@ const AllMoodEntries: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  if (isLoading) {
+    return <div className="min-h-screen bg-light-gray flex items-center justify-center"><MinimalSpinner /></div>;
   }
 
   return (
@@ -67,7 +92,7 @@ const AllMoodEntries: React.FC = () => {
                   {entry.note && (
                     <div className="mb-1 text-sm text-deep-blue bg-light-gray p-2 rounded">{entry.note}</div>
                   )}
-                  {entry.activities.length > 0 && (
+                  {entry.activities && entry.activities.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-1">
                       {entry.activities.map((activity, idx) => (
                         <span key={idx} className="px-2 py-1 rounded text-xs bg-light-gray border text-deep-blue">

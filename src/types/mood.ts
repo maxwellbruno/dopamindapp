@@ -1,11 +1,13 @@
 
 export interface MoodEntry {
   id: string;
+  user_id: string;
   mood: string;
   intensity: number;
-  note: string;
-  activities: string[];
+  note: string | null;
+  activities: string[] | null;
   date: string;
+  created_at: string;
 }
 
 export interface SubscriptionData {

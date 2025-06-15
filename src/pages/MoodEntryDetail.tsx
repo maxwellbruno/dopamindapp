@@ -2,20 +2,42 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from '@tanstack/react-query';
 import { MoodEntry, SubscriptionData, Mood } from '@/types/mood';
 import { basicMoods, premiumMoods } from '@/data/moods';
 import PremiumUpgradePrompt from '@/components/PremiumUpgradePrompt';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
+import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const MoodEntryDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const [moodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', []);
+    const { user } = useAuth();
     const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
         isPro: false,
         isElite: false,
         subscriptionEnd: null,
         tier: 'free'
+    });
+
+    const { data: entry, isLoading } = useQuery<MoodEntry | null>({
+        queryKey: ['mood_entry', id],
+        queryFn: async () => {
+            if (!id) return null;
+            const { data, error } = await supabase
+                .from('mood_entries')
+                .select('*')
+                .eq('id', id)
+                .maybeSingle();
+            
+            if (error) {
+                throw new Error(error.message);
+            }
+            return data;
+        },
+        enabled: !!id,
     });
 
     const isPremium = subscription.isPro || subscription.isElite;
@@ -33,8 +55,11 @@ const MoodEntryDetail: React.FC = () => {
             </div>
         );
     }
+    
+    if (isLoading) {
+        return <div className="min-h-screen bg-light-gray flex items-center justify-center"><MinimalSpinner /></div>;
+    }
 
-    const entry = moodEntries.find(e => e.id === id);
     const allMoods = [...basicMoods, ...premiumMoods];
     const moodData = entry ? allMoods.find(m => m.label === entry.mood) : null;
 
@@ -87,7 +112,7 @@ const MoodEntryDetail: React.FC = () => {
                             </div>
                         )}
 
-                        {entry.activities.length > 0 && (
+                        {entry.activities && entry.activities.length > 0 && (
                             <div>
                                 <h3 className="font-semibold text-deep-blue mb-2">Activities:</h3>
                                 <div className="flex flex-wrap gap-2">
@@ -99,7 +124,7 @@ const MoodEntryDetail: React.FC = () => {
                                 </div>
                             </div>
                         )}
-                         {entry.activities.length === 0 && !entry.note && (
+                         {(!entry.activities || entry.activities.length === 0) && !entry.note && (
                             <p className="text-center text-text-light py-4">No additional details were recorded for this entry.</p>
                          )}
                     </div>

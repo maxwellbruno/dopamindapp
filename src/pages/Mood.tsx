@@ -1,5 +1,9 @@
+
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAuth } from '../contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { MoodEntry, SubscriptionData } from '@/types/mood';
 import { basicMoods, premiumMoods, basicActivities, premiumActivities } from '@/data/moods';
 import MoodForm from '@/components/mood/MoodForm';
@@ -8,6 +12,7 @@ import MoodCalendar from '@/components/mood/MoodCalendar';
 import WellnessSuggestion from '@/components/mood/WellnessSuggestion';
 import RecentEntriesList from '@/components/mood/RecentEntriesList';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
+import { useToast } from "@/components/ui/use-toast";
 
 const initialSubscription: SubscriptionData = {
   isPro: false,
@@ -16,17 +21,75 @@ const initialSubscription: SubscriptionData = {
   tier: 'free'
 };
 
-const initialMoodEntries: MoodEntry[] = [];
-
 const Mood: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string>('');
   const [intensity, setIntensity] = useState<number>(3);
   const [note, setNote] = useState<string>('');
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customActivity, setCustomActivity] = useState<string>('');
-  const [moodEntries, setMoodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', initialMoodEntries);
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [showForm, setShowForm] = useState(false);
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
+
+  const { data: moodEntries = [], isLoading: isLoadingEntries } = useQuery<MoodEntry[]>({
+    queryKey: ['mood_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('mood_entries')
+        .select('*')
+        .order('date', { ascending: false });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const addMoodMutation = useMutation({
+    mutationFn: async (newEntry: {
+      mood: string;
+      intensity: number;
+      note: string | null;
+      activities: string[] | null;
+      date: string;
+    }) => {
+      if (!user) throw new Error("User not logged in");
+      
+      const { error: insertError } = await supabase.from('mood_entries').insert([{ ...newEntry, user_id: user.id }]);
+      if (insertError) throw insertError;
+
+      const { error: rpcError } = await supabase.rpc('increment_mood_entries_count');
+      if (rpcError) throw rpcError;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['mood_entries', user?.id] });
+      queryClient.invalidateQueries({ queryKey: ['focusStats', user?.id] });
+      
+      setSelectedMood('');
+      setIntensity(3);
+      setNote('');
+      setSelectedActivities([]);
+      setCustomActivity('');
+      setShowForm(false);
+      
+      toast({
+        title: "Success",
+        description: "Your mood has been logged.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description: `Failed to log mood: ${error.message}`,
+        variant: "destructive",
+      });
+    },
+  });
 
   const isPremium = subscription.isPro || subscription.isElite;
 
@@ -51,30 +114,18 @@ const Mood: React.FC = () => {
   const handleSubmit = () => {
     if (!selectedMood) return;
 
-    const newEntry: MoodEntry = {
-      id: Date.now().toString(),
+    addMoodMutation.mutate({
       mood: selectedMood || 'Happy',
       intensity,
-      note,
-      activities: selectedActivities,
+      note: note || null,
+      activities: selectedActivities.length > 0 ? selectedActivities : [],
       date: new Date().toISOString()
-    };
-
-    setMoodEntries(prev => [newEntry, ...prev]);
-    
-    // Update stats
-    const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
-    stats.moodEntries += 1;
-    localStorage.setItem('dopamind_stats', JSON.stringify(stats));
-
-    // Reset form
-    setSelectedMood('');
-    setIntensity(3);
-    setNote('');
-    setSelectedActivities([]);
-    setCustomActivity('');
-    setShowForm(false);
+    });
   };
+
+  if (isLoadingEntries) {
+    return <div className="min-h-screen bg-light-gray flex items-center justify-center"><MinimalSpinner /></div>;
+  }
 
   return (
     <div className="min-h-screen bg-light-gray">
