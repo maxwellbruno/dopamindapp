@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { MoodEntry, SubscriptionData } from '@/types/mood';
@@ -8,6 +7,7 @@ import TrackMoodPrompt from '@/components/mood/TrackMoodPrompt';
 import MoodCalendar from '@/components/mood/MoodCalendar';
 import WellnessSuggestion from '@/components/mood/WellnessSuggestion';
 import RecentEntriesList from '@/components/mood/RecentEntriesList';
+import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const Mood: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string>('');
@@ -23,6 +23,7 @@ const Mood: React.FC = () => {
     tier: 'free'
   });
   const [showForm, setShowForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const isPremium = subscription.isPro || subscription.isElite;
 
@@ -71,6 +72,10 @@ const Mood: React.FC = () => {
     setCustomActivity('');
     setShowForm(false);
   };
+
+  if (isLoading) {
+    return <MinimalSpinner />;
+  }
 
   return (
     <div className="min-h-screen bg-light-gray">

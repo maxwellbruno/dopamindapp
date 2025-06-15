@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { format } from 'date-fns';
 import LoadingScreen from '@/components/LoadingScreen';
+import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
 const AllFocusSessions: React.FC = () => {
   const { user } = useAuth();
@@ -33,7 +33,7 @@ const AllFocusSessions: React.FC = () => {
   });
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <MinimalSpinner />;
   }
 
   return (
