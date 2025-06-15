@@ -38,6 +38,21 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// Immediately apply stored theme before React renders (to avoid FOUC)
+(function applyInitialTheme() {
+  try {
+    const stored = window.localStorage.getItem('dopamind_settings');
+    if (stored) {
+      const { theme } = JSON.parse(stored);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  } catch {}
+})();
+
 const initialSettings: UserSettings = {
   dailyFocusGoal: 120,
   reminderTime: '09:00',
@@ -48,15 +63,32 @@ const initialSettings: UserSettings = {
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
   const isMobile = useIsMobile();
-  const [settings] = useLocalStorage<UserSettings>('dopamind_settings', initialSettings);
+  const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', initialSettings);
 
-  useEffect(() => {
+  // Listen for theme changes and update HTML class in real time
+  React.useEffect(() => {
     const root = window.document.documentElement;
     if (settings.theme === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
+
+    // Listen to theme changes across tabs
+    function storageHandler(e: StorageEvent) {
+      if (e.key === 'dopamind_settings' && e.newValue) {
+        try {
+          const { theme } = JSON.parse(e.newValue);
+          if (theme === 'dark') {
+            root.classList.add('dark');
+          } else {
+            root.classList.remove('dark');
+          }
+        } catch {}
+      }
+    }
+    window.addEventListener('storage', storageHandler);
+    return () => window.removeEventListener('storage', storageHandler);
   }, [settings.theme]);
 
   if (isLoading) {
