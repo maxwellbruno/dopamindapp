@@ -29,12 +29,12 @@ const MeditationCard: React.FC = () => {
         </div>
 
         <div
-          className="rounded-xl bg-gradient-to-r from-deep-blue/80 to-mint-green/80 p-4 text-left cursor-pointer shadow-md hover:scale-[1.03] transition flex items-center gap-4"
+          className="rounded-xl bg-gradient-to-r from-warm-orange/80 to-mint-green/80 p-4 text-left cursor-pointer shadow-md hover:scale-[1.03] transition flex items-center gap-4"
           onClick={() => navigate("/meditation/binaural")}
           role="button"
           tabIndex={0}
         >
-          <div className="bg-deep-blue p-2 rounded-full">
+          <div className="bg-warm-orange p-2 rounded-full">
             <ArrowDown className="text-white" size={20} />
           </div>
           <div>

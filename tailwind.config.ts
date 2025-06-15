@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -58,6 +59,7 @@ export default {
 				// Dopamind Color Palette
 				'deep-blue': '#1E3A8A',
 				'mint-green': '#10B981',
+				'warm-orange': '#F59E0B',
 				'pure-white': '#FFFFFF',
 				'light-gray': '#F3F4F6',
 				'card-white': '#ffffff',
