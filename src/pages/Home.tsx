@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -92,9 +91,9 @@ const Home: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-light-gray pb-20">
-      <div className="px-4 pt-8">
-        <div className="max-w-md mx-auto">
+    <div className="min-h-screen bg-light-gray">
+      <div className="px-4 pt-8 md:pt-0">
+        <div className="max-w-md md:max-w-4xl lg:max-w-6xl mx-auto">
           <HomeHeader
             greeting={getGreeting()}
             userName={user?.name?.split(' ')[0] || ''}
@@ -115,18 +114,20 @@ const Home: React.FC = () => {
             moodsCount={moods.length}
           />
 
-          <StreakCard streak={stats.currentStreak} />
-
-          <AIChatCard isPremium={isPremium} onChatClick={handleChatClick} />
-
-          <DailyInsightCard dailyTip={dailyTip} />
-
-          {!isPremium && <MindfulAd />}
-          
-          <QuickActions />
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <div>
+              <StreakCard streak={stats.currentStreak} />
+              <DailyInsightCard dailyTip={dailyTip} />
+              {!isPremium && <MindfulAd />}
+            </div>
+            <div>
+              <AIChatCard isPremium={isPremium} onChatClick={handleChatClick} />
+              <QuickActions />
+            </div>
+          </div>
 
           {!isPremium ? (
-            <div className="animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+            <div className="animate-fade-in-up mt-6" style={{ animationDelay: '0.6s' }}>
               <PremiumUpgradePrompt 
                 feature="Unlock Advanced Analytics"
                 description="Get detailed insights into your focus patterns and mood trends with AI-powered recommendations."
@@ -134,7 +135,9 @@ const Home: React.FC = () => {
               />
             </div>
           ) : (
-            <PremiumFeatures isElite={subscription.isElite} />
+            <div className="mt-6">
+              <PremiumFeatures isElite={subscription.isElite} />
+            </div>
           )}
 
           {/* Chat Upgrade Prompt Modal */}

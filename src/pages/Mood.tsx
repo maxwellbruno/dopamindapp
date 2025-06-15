@@ -183,8 +183,8 @@ const Mood: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light-gray">
-      <div className="px-4 pt-6 pb-20">
-        <div className="max-w-md mx-auto">
+      <div className="px-4 pt-6 md:pt-0">
+        <div className="max-w-md md:max-w-4xl mx-auto">
           <h1 className="text-2xl font-bold text-deep-blue text-center mb-6">Mood Tracker</h1>
           
           {showForm ? (
@@ -208,7 +208,7 @@ const Mood: React.FC = () => {
 
               <div className="space-y-6">
                 <div>
-                  <div className="grid grid-cols-5 gap-3 mb-4">
+                  <div className="grid grid-cols-5 md:grid-cols-10 gap-3 mb-4">
                     {allMoods.slice(0, 10).map((mood, index) => (
                       <button
                         key={mood.label}
@@ -225,7 +225,7 @@ const Mood: React.FC = () => {
                   </div>
                   
                   {isPremium && allMoods.length > 10 && (
-                    <div className="grid grid-cols-5 gap-3">
+                    <div className="grid grid-cols-5 md:grid-cols-10 gap-3">
                       {allMoods.slice(10).map((mood) => (
                         <button
                           key={mood.label}
@@ -298,9 +298,7 @@ const Mood: React.FC = () => {
                         className={`px-3 py-2 text-sm rounded-full transition-colors ${
                           selectedActivities.includes(activity)
                             ? 'bg-mint-green text-white'
-                            : activity === 'Exercise' 
-                              ? 'bg-mint-green text-white'
-                              : 'bg-light-gray text-deep-blue hover:bg-gray-300 border border-gray-200'
+                            : 'bg-light-gray text-deep-blue hover:bg-gray-300 border border-gray-200'
                         }`}
                       >
                         {activity}

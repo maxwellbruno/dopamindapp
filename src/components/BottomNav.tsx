@@ -1,11 +1,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useIsMobile } from '../hooks/use-mobile';
 
 const BottomNav: React.FC = () => {
   const location = useLocation();
   const [isScrolling, setIsScrolling] = useState(false);
   const [scrollTimer, setScrollTimer] = useState<NodeJS.Timeout | null>(null);
+  const isMobile = useIsMobile();
 
   const navItems = [
     { path: '/home', icon: '🏠', label: 'Home' },
@@ -38,6 +40,10 @@ const BottomNav: React.FC = () => {
       }
     };
   }, [scrollTimer]);
+
+  if (!isMobile) {
+    return null;
+  }
 
   return (
     <nav className={`fixed bottom-0 left-0 right-0 z-50 transition-transform duration-300 ${

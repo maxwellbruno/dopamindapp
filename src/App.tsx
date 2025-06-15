@@ -9,6 +9,8 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import LoadingScreen from './components/LoadingScreen';
 import AuthScreen from './components/AuthScreen';
 import BottomNav from './components/BottomNav';
+import TopNav from './components/TopNav';
+import { useIsMobile } from './hooks/use-mobile';
 import Home from './pages/Home';
 import Focus from './pages/Focus';
 import Mood from './pages/Mood';
@@ -34,6 +36,7 @@ if ('serviceWorker' in navigator) {
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
   const [showLoading, setShowLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -57,15 +60,18 @@ const AppContent: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-light-gray">
-      <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/focus" element={<Focus />} />
-        <Route path="/mood" element={<Mood />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/profile/subscription" element={<SubscriptionManager />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <TopNav />
+      <main className={isMobile ? "pb-28" : "py-8"}>
+        <Routes>
+          <Route path="/" element={<Navigate to="/home" replace />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/focus" element={<Focus />} />
+          <Route path="/mood" element={<Mood />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/subscription" element={<SubscriptionManager />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
       <BottomNav />
     </div>
   );
