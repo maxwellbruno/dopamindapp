@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
@@ -43,8 +44,13 @@ const Focus: React.FC = () => {
       if (sound?.url) {
         if (audioPlayer.src !== sound.url) {
             audioPlayer.src = sound.url;
+            audioPlayer.load();
         }
-        audioPlayer.play().catch(e => console.error("Error playing audio:", e));
+        
+        const playPromise = audioPlayer.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => console.error("Error playing audio:", e));
+        }
       }
     } else {
       audioPlayer.pause();
