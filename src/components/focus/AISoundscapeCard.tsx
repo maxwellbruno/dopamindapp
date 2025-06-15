@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Music } from 'lucide-react';
 
 interface AISoundscapeCardProps {
   isElite: boolean;
@@ -25,7 +26,7 @@ const AISoundscapeCard: React.FC<AISoundscapeCardProps> = ({ isElite }) => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">🎵</span>
+              <Music className="w-6 h-6 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-semibold text-deep-blue mb-1">AI Soundscape</h3>
