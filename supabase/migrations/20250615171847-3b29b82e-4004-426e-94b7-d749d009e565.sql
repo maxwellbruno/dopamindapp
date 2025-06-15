@@ -4,7 +4,7 @@ CREATE TABLE public.subscription_plans (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   price_cents INTEGER NOT NULL,
-  currency TEXT NOT NULL DEFAULT 'NGN',
+  currency TEXT NOT NULL DEFAULT 'USD',
   interval TEXT NOT NULL DEFAULT 'monthly',
   features JSONB NOT NULL DEFAULT '[]'::jsonb,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now()
@@ -53,10 +53,10 @@ ON public.subscriptions
 FOR INSERT 
 WITH CHECK (auth.uid() = user_id);
 
--- Insert default subscription plans
+-- Insert default subscription plans with USD pricing
 INSERT INTO public.subscription_plans (id, name, price_cents, currency, features) VALUES
-('pro', 'Dopamind Pro', 199900, 'NGN', '["Advanced mood analytics", "Custom focus sessions", "Progress tracking", "Breathing exercises", "Dopamind AI Chat Assistant", "Priority support"]'::jsonb),
-('elite', 'Dopamind Elite', 399900, 'NGN', '["Everything in Pro", "Personalized recommendations", "Advanced meditation guides", "Weekly wellness reports", "Premium content library", "AI Soundscape Generation"]'::jsonb);
+('pro', 'Dopamind Pro', 999, 'USD', '["Advanced mood analytics", "Custom focus sessions", "Progress tracking", "Breathing exercises", "Dopamind AI Chat Assistant", "Priority support"]'::jsonb),
+('elite', 'Dopamind Elite', 1999, 'USD', '["Everything in Pro", "Personalized recommendations", "Advanced meditation guides", "Weekly wellness reports", "Premium content library", "AI Soundscape Generation"]'::jsonb);
 
 -- Function to get user subscription status
 CREATE OR REPLACE FUNCTION public.get_user_subscription()
