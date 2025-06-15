@@ -76,7 +76,7 @@ const Mood: React.FC = () => {
     <div className="min-h-screen bg-light-gray">
       <div className="px-4 pt-6 md:pt-0">
         <div className="max-w-md md:max-w-4xl mx-auto">
-          <h1 className="text-2xl font-bold text-deep-blue text-center mb-6">Mood Tracker</h1>
+          <h1 className="text-2xl font-bold text-deep-blue text-center mb-6 animate-fade-in-up">Mood Tracker</h1>
           
           {showForm ? (
             <MoodForm

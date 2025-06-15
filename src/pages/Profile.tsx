@@ -39,7 +39,7 @@ const Profile: React.FC = () => {
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
         <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold text-text-dark mb-6 text-center">Profile</h1>
+          <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Profile</h1>
 
           <UserInfo subscriptionTier={subscription.tier} />
 
