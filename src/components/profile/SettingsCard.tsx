@@ -22,14 +22,44 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
     setTempSettings(settings);
   }, [settings]);
 
+  // Instantly update <html> class when user toggles theme (in tempSettings)
+  useEffect(() => {
+    // Only update <html> class if currently editing and theme actually changes
+    if (isEditing && (subscriptionTier === 'pro' || subscriptionTier === 'elite')) {
+      const root = window.document.documentElement;
+      if (tempSettings.theme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+    }
+  }, [tempSettings.theme, isEditing, subscriptionTier]);
+
   const handleSaveSettings = () => {
-    setSettings(tempSettings);
+    // Update settings and <html> class globally
+    setSettings(prev => {
+      // If theme changed, update class on save as well (for any cross-tab sync)
+      const root = window.document.documentElement;
+      if (tempSettings.theme === 'dark') {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
+      return { ...prev, ...tempSettings };
+    });
     setIsEditing(false);
   };
 
   const handleCancelEdit = () => {
     setTempSettings(settings);
     setIsEditing(false);
+    // Reset <html> class to current persisted theme
+    const root = window.document.documentElement;
+    if (settings.theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
   };
 
   return (
@@ -136,7 +166,17 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
                     checked={tempSettings.theme === 'dark'}
                     onCheckedChange={(checked) => {
                       if (subscriptionTier !== 'free') {
-                        setTempSettings(prev => ({...prev, theme: checked ? 'dark' : 'light'}))
+                        setTempSettings(prev => ({
+                          ...prev,
+                          theme: checked ? 'dark' : 'light'
+                        }));
+                        // Instantly update <html> class for visible theme switch
+                        const root = window.document.documentElement;
+                        if (checked) {
+                          root.classList.add('dark');
+                        } else {
+                          root.classList.remove('dark');
+                        }
                       }
                     }}
                     disabled={subscriptionTier === 'free'}
@@ -163,3 +203,4 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
 };
 
 export default SettingsCard;
+
