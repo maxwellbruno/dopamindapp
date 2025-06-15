@@ -4,79 +4,78 @@
 
 @layer base {
   :root {
-    --background: 209 213 219;
-    --foreground: 30 58 138;
+    --background: 220 8% 97%;
+    --foreground: 225 63% 33%;
 
-    --card: 255 255 255;
-    --card-foreground: 30 58 138;
+    --card: 0 0% 100%;
+    --card-foreground: 225 63% 33%;
 
-    --popover: 255 255 255;
-    --popover-foreground: 30 58 138;
+    --popover: 0 0% 100%;
+    --popover-foreground: 225 63% 33%;
 
-    --primary: 16 185 129;
-    --primary-foreground: 255 255 255;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 209 213 219; /* Previously warm-orange, now light-gray */
-    --secondary-foreground: 30 58 138; /* Previously white, now deep-blue */
+    --secondary: 160 84% 39%; /* Mint Green */
+    --secondary-foreground: 0 0% 100%; /* White */
 
-    --muted: 209 213 219;
-    --muted-foreground: 30 58 138;
+    --muted: 220 9% 91%;
+    --muted-foreground: 220 6% 46%;
 
-    --accent: 30 58 138;
-    --accent-foreground: 255 255 255;
+    --accent: 225 63% 33%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 248 250 252;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 209 213 219;
-    --input: 255 255 255;
-    --ring: 30 58 138;
+    --border: 220 8% 83%;
+    --input: 220 8% 83%;
+    --ring: 225 63% 33%;
 
     --radius: 1.5rem;
 
-    --success: 16 185 129;
-    --warning: 245 158 11;
+    --success: 160 84% 39%;
+    --warning: 38 92% 50%;
     
     /* Dopamind Color Palette */
-    --deep-blue: 30 58 138; /* #1E3A8A */
-    --mint-green: 16 185 129; /* #10B981 */
-    --warm-orange: 245 158 11; /* #F59E0B */
-    --pure-white: 255 255 255; /* #FFFFFF */
-    --light-gray: 243 244 246; /* #F3F4F6 */
-    --card-white: 255 255 255;
-    --text-dark: 30 58 138; /* #1E3A8A */
-    --text-light: 107 114 128; /* #6B7280 */
-    --cool-gray: 107 114 128; /* #6B7280 */
+    --deep-blue: 225 63% 33%; /* #1E3A8A */
+    --mint-green: 160 84% 39%; /* #10B981 */
+    --pure-white: 0 0% 100%; /* #FFFFFF */
+    --light-gray: 220 13% 96%; /* #F3F4F6 */
+    --card-white: 0 0% 100%;
+    --text-dark: 225 63% 33%; /* #1E3A8A */
+    --text-light: 220 6% 46%; /* #6B7280 */
+    --cool-gray: 220 6% 46%; /* #6B7280 */
   }
 
   .dark {
-    --background: 30 58 138;
-    --foreground: 248 250 252;
+    --background: 225 63% 33%;
+    --foreground: 0 0% 98%;
 
-    --card: 30 58 138;
-    --card-foreground: 248 250 252;
+    --card: 225 63% 33%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 30 58 138;
-    --popover-foreground: 248 250 252;
+    --popover: 225 63% 33%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 16 185 129;
-    --primary-foreground: 255 255 255;
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 209 213 219; /* Previously warm-orange, now light-gray */
-    --secondary-foreground: 30 58 138; /* Previously white, now deep-blue */
+    --secondary: 160 84% 39%; /* Mint Green */
+    --secondary-foreground: 0 0% 100%; /* White */
 
-    --muted: 71 85 105;
-    --muted-foreground: 148 163 184;
+    --muted: 215 20% 34%;
+    --muted-foreground: 215 25% 65%;
 
-    --accent: 30 58 138;
-    --accent-foreground: 248 250 252;
+    --accent: 225 63% 33%;
+    --accent-foreground: 0 0% 98%;
 
-    --destructive: 239 68 68;
-    --destructive-foreground: 248 250 252;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 71 85 105;
-    --input: 71 85 105;
-    --ring: 16 185 129;
+    --border: 215 20% 34%;
+    --input: 215 20% 34%;
+    --ring: 160 84% 39%;
   }
 }
 
