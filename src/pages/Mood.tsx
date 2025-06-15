@@ -1,10 +1,10 @@
 
 import React, { useState } from 'react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { MoodEntry, SubscriptionData } from '@/types/mood';
+import { useSubscription } from '@/hooks/useSubscription';
+import { MoodEntry } from '@/types/mood';
 import { basicMoods, premiumMoods, basicActivities, premiumActivities } from '@/data/moods';
 import MoodForm from '@/components/mood/MoodForm';
 import TrackMoodPrompt from '@/components/mood/TrackMoodPrompt';
@@ -14,22 +14,15 @@ import RecentEntriesList from '@/components/mood/RecentEntriesList';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
 import { useToast } from "@/components/ui/use-toast";
 
-const initialSubscription: SubscriptionData = {
-  isPro: false,
-  isElite: false,
-  subscriptionEnd: null,
-  tier: 'free'
-};
-
 const Mood: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string>('');
   const [intensity, setIntensity] = useState<number>(3);
   const [note, setNote] = useState<string>('');
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customActivity, setCustomActivity] = useState<string>('');
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [showForm, setShowForm] = useState(false);
   const { user } = useAuth();
+  const { isPremium } = useSubscription();
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
@@ -95,8 +88,6 @@ const Mood: React.FC = () => {
       });
     },
   });
-
-  const isPremium = subscription.isPro || subscription.isElite;
 
   const allMoods = isPremium ? [...basicMoods, ...premiumMoods] : basicMoods;
   const allActivities = isPremium ? [...basicActivities, ...premiumActivities] : basicActivities;
