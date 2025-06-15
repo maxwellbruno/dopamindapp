@@ -20,6 +20,7 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import SubscriptionManager from './pages/SubscriptionManager';
 import AllMoodEntries from './pages/AllMoodEntries';
+import SoundGenre from './pages/SoundGenre';
 
 const queryClient = new QueryClient();
 
@@ -89,6 +90,7 @@ const AppContent: React.FC = () => {
           <Route path="/mood/all" element={<AllMoodEntries />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
+          <Route path="/sound/:id" element={<SoundGenre />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

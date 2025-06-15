@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 
 interface AmbientSoundsSidebarProps {
   availableSounds: any[];
@@ -15,39 +16,53 @@ const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
   setSelectedSound,
   isPremium,
   soundOptions,
-}) => (
-  <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.5s' }}>
-    <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
-    <div className="space-y-3">
-      {availableSounds.map((sound) => (
-        <div key={sound.id} className="flex items-center justify-between">
-          <span className="text-text-dark">{sound.name}</span>
-          <div className="flex items-center space-x-2">
-            <input
-              type="radio"
-              name="sound"
-              value={sound.id}
-              checked={selectedSound === sound.id}
-              onChange={() => setSelectedSound(sound.id)}
-              className="text-mint-green"
-            />
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.5s' }}>
+      <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
+      <div className="space-y-3">
+        {availableSounds.map((sound) => (
+          <div key={sound.id} className="flex items-center justify-between group">
+            <span className="text-text-dark">{sound.name}</span>
+            <div className="flex items-center space-x-2">
+              <input
+                type="radio"
+                name="sound"
+                value={sound.id}
+                checked={selectedSound === sound.id}
+                onChange={() => setSelectedSound(sound.id)}
+                className="text-mint-green"
+              />
+              {isPremium && (
+                <button
+                  type="button"
+                  className="ml-2 text-mint-green underline hover:scale-105 text-xs transition group-hover:font-bold"
+                  onClick={() => navigate(`/sound/${sound.id}`)}
+                  aria-label={`Explore ${sound.name}`}
+                >
+                  Explore
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
-      {!isPremium && (
-        <div className="pt-2 border-t border-gray-200">
-          <p className="text-xs text-text-light mb-2">Premium sounds available with Pro</p>
-          <div className="space-y-2">
-            {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
-              <div key={sound.id} className="flex items-center justify-between opacity-50">
-                <span className="text-gray-400">{sound.name} 🔒</span>
-              </div>
-            ))}
+        ))}
+        {!isPremium && (
+          <div className="pt-2 border-t border-gray-200">
+            <p className="text-xs text-text-light mb-2">Premium sounds available with Pro</p>
+            <div className="space-y-2">
+              {soundOptions.filter(s => s.premium).slice(0, 2).map((sound) => (
+                <div key={sound.id} className="flex items-center justify-between opacity-50">
+                  <span className="text-gray-400">{sound.name} 🔒</span>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default AmbientSoundsSidebar;
