@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +27,11 @@ import Brainwaves from './pages/Brainwaves';
 import BinauralFrequencies from './pages/BinauralFrequencies';
 
 const queryClient = new QueryClient();
+
+// Lazy imports for the meditation pages
+const MeditationFrequencies = React.lazy(() => import('./pages/MeditationFrequencies'));
+const Brainwaves = React.lazy(() => import('./pages/Brainwaves'));
+const BinauralFrequencies = React.lazy(() => import('./pages/BinauralFrequencies'));
 
 // Register service worker for PWA
 if ('serviceWorker' in navigator) {
@@ -106,22 +111,24 @@ const AppContent: React.FC = () => {
     <div className="min-h-screen bg-light-gray dark:bg-deep-blue">
       <TopNav />
       <main className={isMobile ? "pb-28" : "py-8"}>
-        <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/focus" element={<Focus />} />
-          <Route path="/focus/all" element={<AllFocusSessions />} />
-          <Route path="/mood" element={<Mood />} />
-          <Route path="/mood/:id" element={<MoodEntryDetail />} />
-          <Route path="/mood/all" element={<AllMoodEntries />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/profile/subscription" element={<SubscriptionManager />} />
-          <Route path="/sound/:id" element={<SoundGenre />} />
-          <Route path="/meditation/frequencies" element={<React.lazy(() => import('./pages/MeditationFrequencies')) />} />
-          <Route path="/meditation/brainwaves" element={<React.lazy(() => import('./pages/Brainwaves'))} />
-          <Route path="/meditation/binaural" element={<React.lazy(() => import('./pages/BinauralFrequencies'))} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<LoadingScreen />}>
+          <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/focus" element={<Focus />} />
+            <Route path="/focus/all" element={<AllFocusSessions />} />
+            <Route path="/mood" element={<Mood />} />
+            <Route path="/mood/:id" element={<MoodEntryDetail />} />
+            <Route path="/mood/all" element={<AllMoodEntries />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/subscription" element={<SubscriptionManager />} />
+            <Route path="/sound/:id" element={<SoundGenre />} />
+            <Route path="/meditation/frequencies" element={<MeditationFrequencies />} />
+            <Route path="/meditation/brainwaves" element={<Brainwaves />} />
+            <Route path="/meditation/binaural" element={<BinauralFrequencies />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </main>
       <BottomNav />
     </div>
