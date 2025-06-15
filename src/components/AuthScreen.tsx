@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useAuth } from '../contexts/AuthContext';
 import { Brain } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
+import { Link } from 'react-router-dom';
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -136,9 +137,9 @@ const AuthScreen: React.FC = () => {
           </div>
 
           <div className="mt-4 text-center">
-            <button className="text-deep-blue/70 text-sm hover:text-deep-blue">
+            <Link to="/terms" className="text-deep-blue/70 text-sm hover:text-deep-blue transition-colors">
               Terms and conditions
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -29,6 +29,7 @@ import GuidedMeditation from './pages/GuidedMeditation';
 import BrainwaveDetail from './pages/BrainwaveDetail';
 import BinauralDetail from './pages/BinauralDetail';
 import AISoundscape from './pages/AISoundscape';
+import TermsAndConditions from './pages/TermsAndConditions';
 
 const queryClient = new QueryClient();
 
@@ -105,7 +106,10 @@ const AppContent: React.FC = () => {
   if (!user) {
     return (
       <>
-        <AuthScreen />
+        <Routes>
+          <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="*" element={<AuthScreen />} />
+        </Routes>
         <PWAInstallPrompt />
       </>
     );
@@ -132,6 +136,7 @@ const AppContent: React.FC = () => {
           <Route path="/binaural/:hz" element={<BinauralDetail />} />
           <Route path="/meditation/guided" element={<GuidedMeditation />} />
           <Route path="/ai-soundscape" element={<AISoundscape />} />
+          <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
