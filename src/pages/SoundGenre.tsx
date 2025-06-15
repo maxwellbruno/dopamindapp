@@ -17,6 +17,7 @@ const SOUND_TRACKS: Record<string, { name: string; url: string }[]> = {
     { name: "Rainy Night", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1d03b8.mp3" },
     { name: "LoFi Chill", url: "https://cdn.pixabay.com/audio/2022/12/19/audio_1250240416.mp3" },
     { name: "Evening Jazz", url: "https://cdn.pixabay.com/audio/2022/03/15/audio_115b898d98.mp3" },
+    { name: "Rainy Lofi City", url: "https://cdn.pixabay.com/audio/2024/05/29/audio_1947b1c313.mp3" },
   ],
   whitenoise: [
     { name: "Pure White Noise", url: "https://cdn.pixabay.com/audio/2022/07/26/audio_121b2265a1.mp3" },
@@ -120,3 +121,4 @@ const SoundGenre: React.FC = () => {
 };
 
 export default SoundGenre;
+
