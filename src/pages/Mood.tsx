@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { MoodEntry, SubscriptionData } from '@/types/mood';
@@ -10,19 +9,23 @@ import WellnessSuggestion from '@/components/mood/WellnessSuggestion';
 import RecentEntriesList from '@/components/mood/RecentEntriesList';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
 
+const initialSubscription: SubscriptionData = {
+  isPro: false,
+  isElite: false,
+  subscriptionEnd: null,
+  tier: 'free'
+};
+
+const initialMoodEntries: MoodEntry[] = [];
+
 const Mood: React.FC = () => {
   const [selectedMood, setSelectedMood] = useState<string>('');
   const [intensity, setIntensity] = useState<number>(3);
   const [note, setNote] = useState<string>('');
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [customActivity, setCustomActivity] = useState<string>('');
-  const [moodEntries, setMoodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', []);
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const [moodEntries, setMoodEntries] = useLocalStorage<MoodEntry[]>('dopamind_moods', initialMoodEntries);
+  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [showForm, setShowForm] = useState(false);
 
   const isPremium = subscription.isPro || subscription.isElite;
@@ -113,4 +116,3 @@ const Mood: React.FC = () => {
 };
 
 export default Mood;
-

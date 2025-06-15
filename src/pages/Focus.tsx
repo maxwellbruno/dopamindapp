@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
@@ -14,23 +13,19 @@ import { supabase } from '@/integrations/supabase/client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from '@/components/ui/use-toast';
 import LoadingScreen from '@/components/LoadingScreen';
+import { SubscriptionData } from '@/types/mood';
 
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: 'free' | 'pro' | 'elite';
-}
+const initialSubscription: SubscriptionData = {
+  isPro: false,
+  isElite: false,
+  subscriptionEnd: null,
+  tier: 'free'
+};
 
 const Focus: React.FC = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
 
   const { data: focusStats, isLoading: isLoadingStats } = useQuery({
       queryKey: ['focusStats', user?.id],

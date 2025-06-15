@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -39,15 +38,17 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+const initialSettings: UserSettings = {
+  dailyFocusGoal: 120,
+  reminderTime: '09:00',
+  theme: 'light',
+  customAffirmation: 'I am focused and productive'
+};
+
 const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
   const isMobile = useIsMobile();
-  const [settings] = useLocalStorage<UserSettings>('dopamind_settings', {
-    dailyFocusGoal: 120,
-    reminderTime: '09:00',
-    theme: 'light',
-    customAffirmation: 'I am focused and productive'
-  });
+  const [settings] = useLocalStorage<UserSettings>('dopamind_settings', initialSettings);
 
   useEffect(() => {
     const root = window.document.documentElement;
