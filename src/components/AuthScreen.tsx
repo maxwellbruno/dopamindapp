@@ -70,7 +70,7 @@ const AuthScreen: React.FC = () => {
                   placeholder="Enter your full name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
+                  className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
                   required={!isLogin}
                 />
               </div>
@@ -86,7 +86,7 @@ const AuthScreen: React.FC = () => {
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
+                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>
@@ -101,7 +101,7 @@ const AuthScreen: React.FC = () => {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 border-gray-300 focus:border-mint-green focus:ring-mint-green/20 rounded-xl bg-light-gray text-deep-blue"
+                className="mt-1 border-gray-300 focus:border-deep-blue focus:ring-deep-blue/20 rounded-xl bg-light-gray text-deep-blue"
                 required
               />
             </div>

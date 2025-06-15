@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -30,7 +31,7 @@
 
     --border: 209 213 219;
     --input: 255 255 255;
-    --ring: 16 185 129;
+    --ring: 30 58 138;
 
     --radius: 1.5rem;
 
@@ -102,7 +103,7 @@
 
   input:focus,
   textarea:focus {
-    @apply border-mint-green ring-2 ring-mint-green/20;
+    @apply border-deep-blue ring-2 ring-deep-blue/20;
   }
 
   /* Ensure proper text contrast on different backgrounds */
