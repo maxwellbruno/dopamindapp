@@ -66,6 +66,86 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          features: Json
+          id: string
+          interval: string
+          name: string
+          price_cents: number
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          features?: Json
+          id: string
+          interval?: string
+          name: string
+          price_cents: number
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          features?: Json
+          id?: string
+          interval?: string
+          name?: string
+          price_cents?: number
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          paystack_customer_id: string | null
+          paystack_subscription_id: string | null
+          plan_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paystack_customer_id?: string | null
+          paystack_subscription_id?: string | null
+          plan_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          paystack_customer_id?: string | null
+          paystack_subscription_id?: string | null
+          plan_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_stats: {
         Row: {
           current_streak: number
@@ -102,6 +182,15 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["CompositeTypes"]["focus_stats"]
       }
+      get_user_subscription: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          plan_id: string
+          status: string
+          current_period_end: string
+          cancel_at_period_end: boolean
+        }[]
+      }
       increment_mood_entries_count: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -109,6 +198,10 @@ export type Database = {
       update_user_stats_on_session_complete: {
         Args: { session_duration: number }
         Returns: undefined
+      }
+      user_has_active_subscription: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
