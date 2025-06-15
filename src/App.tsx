@@ -22,9 +22,6 @@ import SubscriptionManager from './pages/SubscriptionManager';
 import AllMoodEntries from './pages/AllMoodEntries';
 import AllFocusSessions from './pages/AllFocusSessions';
 import SoundGenre from './pages/SoundGenre';
-import MeditationFrequencies from './pages/MeditationFrequencies';
-import Brainwaves from './pages/Brainwaves';
-import BinauralFrequencies from './pages/BinauralFrequencies';
 
 const queryClient = new QueryClient();
 
