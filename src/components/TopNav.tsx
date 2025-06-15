@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { BrainCircuit } from 'lucide-react';
+import { Brain } from 'lucide-react';
 
 const TopNav: React.FC = () => {
   const location = useLocation();
@@ -18,7 +18,7 @@ const TopNav: React.FC = () => {
       <div className="container mx-auto px-6 py-3">
         <div className="flex justify-between items-center">
           <Link to="/home" className="flex items-center space-x-2">
-            <BrainCircuit className="h-8 w-8 text-mint-green" />
+            <Brain className="h-8 w-8 text-mint-green" />
             <span className="text-xl font-bold text-deep-blue">Dopamind</span>
           </Link>
           <nav className="flex items-center space-x-8">
