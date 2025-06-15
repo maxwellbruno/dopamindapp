@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '../contexts/AuthContext';
 import { Brain } from 'lucide-react';
+import { useToast } from "@/components/ui/use-toast";
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,18 +13,31 @@ const AuthScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const { login, register } = useAuth();
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    try {
-      if (isLogin) {
-        await login(email, password);
-      } else {
-        await register(email, password, name);
-      }
-    } catch (error) {
-      console.error('Auth error:', error);
+    setIsSubmitting(true);
+
+    const result = isLogin
+      ? await login(email, password)
+      : await register(email, password, name);
+
+    if (result.error) {
+      toast({
+        title: "Authentication Error",
+        description: result.error.message,
+        variant: "destructive",
+      });
+    } else if (!isLogin) {
+      toast({
+        title: "Success!",
+        description: "Please check your email to confirm your account.",
+      });
     }
+
+    setIsSubmitting(false);
   };
 
   return (
@@ -104,8 +118,9 @@ const AuthScreen: React.FC = () => {
             <Button 
               type="submit"
               className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold mt-6"
+              disabled={isSubmitting}
             >
-              {isLogin ? 'Sign In' : 'Create Account'}
+              {isSubmitting ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In' : 'Create Account')}
             </Button>
           </form>
           
@@ -114,6 +129,7 @@ const AuthScreen: React.FC = () => {
               type="button"
               onClick={() => setIsLogin(!isLogin)}
               className="w-full bg-deep-blue text-pure-white h-12 rounded-xl font-semibold"
+              disabled={isSubmitting}
             >
               {isLogin ? 'Create an account' : 'Sign in'}
             </Button>

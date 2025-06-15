@@ -1,5 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { AuthError } from '@supabase/supabase-js';
 
 interface User {
   id: string;
@@ -9,9 +11,9 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string, name: string) => Promise<boolean>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<{ error: AuthError | null }>;
+  register: (email: string, password: string, name: string) => Promise<{ error: AuthError | null }>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -30,59 +32,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('dopamind_user');
-    if (savedUser) {
-      setUser(JSON.parse(savedUser));
-    }
-    setIsLoading(false);
+    setIsLoading(true);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user;
+      if (currentUser) {
+        setUser({ 
+          id: currentUser.id, 
+          email: currentUser.email || '', 
+          name: currentUser.user_metadata.name || 'User' 
+        });
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const savedUsers = JSON.parse(localStorage.getItem('dopamind_users') || '[]');
-    const existingUser = savedUsers.find((u: any) => u.email === email && u.password === password);
-    
-    if (existingUser) {
-      const userData = { id: existingUser.id, email: existingUser.email, name: existingUser.name };
-      setUser(userData);
-      localStorage.setItem('dopamind_user', JSON.stringify(userData));
-      return true;
-    }
-    return false;
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    return { error };
   };
 
-  const register = async (email: string, password: string, name: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const savedUsers = JSON.parse(localStorage.getItem('dopamind_users') || '[]');
-    const existingUser = savedUsers.find((u: any) => u.email === email);
-    
-    if (existingUser) {
-      return false; // User already exists
-    }
-    
-    const newUser = {
-      id: Date.now().toString(),
+  const register = async (email: string, password: string, name: string) => {
+    const { error } = await supabase.auth.signUp({
       email,
       password,
-      name
-    };
-    
-    savedUsers.push(newUser);
-    localStorage.setItem('dopamind_users', JSON.stringify(savedUsers));
-    
-    const userData = { id: newUser.id, email: newUser.email, name: newUser.name };
-    setUser(userData);
-    localStorage.setItem('dopamind_user', JSON.stringify(userData));
-    return true;
+      options: {
+        data: {
+          name: name,
+        },
+        emailRedirectTo: `${window.location.origin}/home`,
+      },
+    });
+    return { error };
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('dopamind_user');
+  const logout = async () => {
+    await supabase.auth.signOut();
   };
 
   return (
