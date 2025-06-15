@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
 import AiChat from '../components/AiChat';
+import MindfulAd from '../components/MindfulAd';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -186,6 +187,9 @@ const Home: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* Mindful Ad for free users */}
+          {!isPremium && <MindfulAd />}
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-4 mb-6">
