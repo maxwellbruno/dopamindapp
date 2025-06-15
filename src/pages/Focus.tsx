@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,6 +23,34 @@ const Focus: React.FC = () => {
   const { user } = useAuth();
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
+  const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    const audio = new Audio();
+    audio.loop = true;
+    setAudioPlayer(audio);
+
+    return () => {
+      audio.pause();
+      setAudioPlayer(null);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!audioPlayer) return;
+
+    if (selectedSound) {
+      const sound = soundOptions.find(s => s.id === selectedSound);
+      if (sound?.url) {
+        if (audioPlayer.src !== sound.url) {
+            audioPlayer.src = sound.url;
+        }
+        audioPlayer.play().catch(e => console.error("Error playing audio:", e));
+      }
+    } else {
+      audioPlayer.pause();
+    }
+  }, [selectedSound, audioPlayer]);
 
   // Don't wait to render whole page; only sidebar stats use isLoading
   const { data: focusStats, isLoading } = useQuery({
@@ -46,7 +75,8 @@ const Focus: React.FC = () => {
   const canStartSession = isPremium || todaySessions < maxFreeSessions;
   const canCustomizeDuration = isPremium;
 
-  const availableSounds = soundOptions.filter(sound => !sound.premium || isPremium);
+  const availableSounds = soundOptions.filter(sound => sound.type === 'ambient' && (!sound.premium || isPremium));
+  const allAmbientSoundsForSidebar = soundOptions.filter(sound => sound.type === 'ambient');
   const availableBreathingExercises = breathingExercises.filter(exercise => !exercise.premium || isPremium);
 
   const handleSessionDurationChange = (value: number) => {
@@ -94,7 +124,7 @@ const Focus: React.FC = () => {
             availableSounds={availableSounds}
             selectedSound={selectedSound}
             setSelectedSound={setSelectedSound}
-            soundOptions={soundOptions}
+            soundOptions={allAmbientSoundsForSidebar}
             totalSessions={totalSessions}
             currentStreak={currentStreak}
             isLoading={isLoading}

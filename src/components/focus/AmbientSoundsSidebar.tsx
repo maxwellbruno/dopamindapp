@@ -2,11 +2,12 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { Play, Pause } from 'lucide-react';
 
 interface AmbientSoundsSidebarProps {
   availableSounds: any[];
   selectedSound: string | null;
-  setSelectedSound: (id: string) => void;
+  setSelectedSound: (id: string | null) => void;
   isPremium: boolean;
   soundOptions: any[];
 }
@@ -20,6 +21,14 @@ const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
 }) => {
   const navigate = useNavigate();
 
+  const handleSoundSelect = (soundId: string) => {
+    if (selectedSound === soundId) {
+      setSelectedSound(null);
+    } else {
+      setSelectedSound(soundId);
+    }
+  };
+
   return (
     <div className="dopamind-card p-6 animate-fade-in-up md:h-full" style={{ animationDelay: '0.5s' }}>
       <h3 className="text-lg font-semibold text-text-dark mb-4">Ambient Sounds</h3>
@@ -28,14 +37,9 @@ const AmbientSoundsSidebar: React.FC<AmbientSoundsSidebarProps> = ({
           <div key={sound.id} className="flex items-center justify-between group">
             <span className="text-text-dark">{sound.name}</span>
             <div className="flex items-center space-x-2">
-              <input
-                type="radio"
-                name="sound"
-                value={sound.id}
-                checked={selectedSound === sound.id}
-                onChange={() => setSelectedSound(sound.id)}
-                className="text-mint-green"
-              />
+              <Button variant="ghost" size="icon" onClick={() => handleSoundSelect(sound.id)} aria-label={`Play ${sound.name}`}>
+                {selectedSound === sound.id ? <Pause size={16} /> : <Play size={16} />}
+              </Button>
               {isPremium && (
                 <Button
                   variant="link"
