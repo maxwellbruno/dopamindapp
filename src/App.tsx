@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -6,6 +5,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { UserSettings } from './types/settings';
 import LoadingScreen from './components/LoadingScreen';
 import AuthScreen from './components/AuthScreen';
 import BottomNav from './components/BottomNav';
@@ -37,6 +38,12 @@ const AppContent: React.FC = () => {
   const { user, isLoading } = useAuth();
   const [showLoading, setShowLoading] = useState(true);
   const isMobile = useIsMobile();
+  const [settings] = useLocalStorage<UserSettings>('dopamind_settings', {
+    dailyFocusGoal: 120,
+    reminderTime: '09:00',
+    theme: 'light',
+    customAffirmation: 'I am focused and productive'
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -45,6 +52,15 @@ const AppContent: React.FC = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (settings.theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+  }, [settings.theme]);
 
   if (showLoading) {
     return <LoadingScreen />;
@@ -59,7 +75,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray">
+    <div className="min-h-screen bg-light-gray dark:bg-deep-blue">
       <TopNav />
       <main className={isMobile ? "pb-28" : "py-8"}>
         <Routes>

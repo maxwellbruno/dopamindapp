@@ -6,13 +6,10 @@ import { Label } from '@/components/ui/label';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Link } from 'react-router-dom';
-
-interface UserSettings {
-  dailyFocusGoal: number;
-  reminderTime: string;
-  theme: 'light' | 'dark';
-  customAffirmation: string;
-}
+import { UserSettings } from '../types/settings';
+import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Lock } from 'lucide-react';
 
 interface SubscriptionData {
   isPro: boolean;
@@ -362,6 +359,42 @@ const Profile: React.FC = () => {
                   <div className="mt-1 text-deep-blue bg-white rounded-xl p-3 italic border border-gray-200">"{settings.customAffirmation}"</div>
                 )}
               </div>
+
+              <div>
+                <Label htmlFor="theme" className="text-text-dark font-semibold flex items-center gap-2">
+                  Dark Mode
+                  {subscription.tier === 'free' && isEditing && <Lock className="h-4 w-4 text-gray-400" />}
+                </Label>
+                {isEditing ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Switch
+                          id="theme"
+                          checked={tempSettings.theme === 'dark'}
+                          onCheckedChange={(checked) => {
+                            if (subscription.tier !== 'free') {
+                              setTempSettings(prev => ({...prev, theme: checked ? 'dark' : 'light'}))
+                            }
+                          }}
+                          disabled={subscription.tier === 'free'}
+                        />
+                        <span className="text-text-light capitalize">
+                          {subscription.tier !== 'free' ? tempSettings.theme : 'Light'}
+                        </span>
+                      </div>
+                    </TooltipTrigger>
+                    {subscription.tier === 'free' && (
+                      <TooltipContent>
+                        <p>Upgrade to Pro to unlock Dark Mode.</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                ) : (
+                  <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3 capitalize">{settings.theme}</div>
+                )}
+              </div>
+
             </div>
           </div>
 
