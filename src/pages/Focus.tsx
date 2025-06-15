@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,20 +22,20 @@ const Focus: React.FC = () => {
   const { user } = useAuth();
   const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', initialSubscription);
   const [selectedSound, setSelectedSound] = useState<string | null>(null);
-  const [audioPlayer, setAudioPlayer] = useState<HTMLAudioElement | null>(null);
+  const audioPlayerRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    const audio = new Audio();
-    audio.loop = true;
-    setAudioPlayer(audio);
-
+    audioPlayerRef.current = new Audio();
+    audioPlayerRef.current.loop = true;
+    
+    const player = audioPlayerRef.current;
     return () => {
-      audio.pause();
-      setAudioPlayer(null);
+      player.pause();
     };
   }, []);
 
   useEffect(() => {
+    const audioPlayer = audioPlayerRef.current;
     if (!audioPlayer) return;
 
     if (selectedSound) {
@@ -50,7 +49,7 @@ const Focus: React.FC = () => {
     } else {
       audioPlayer.pause();
     }
-  }, [selectedSound, audioPlayer]);
+  }, [selectedSound]);
 
   // Don't wait to render whole page; only sidebar stats use isLoading
   const { data: focusStats, isLoading } = useQuery({
