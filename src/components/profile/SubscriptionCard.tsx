@@ -71,9 +71,10 @@ const SubscriptionCard: React.FC = () => {
                   </div>
                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
                   <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">₦9,999</span>
+                    <span className="text-3xl font-bold text-deep-blue">$4.99</span>
                     <span className="text-text-light ml-1">/month</span>
                   </div>
+                  <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Advanced mood analytics</li>
                     <li>✓ Custom focus sessions</li>
@@ -94,9 +95,10 @@ const SubscriptionCard: React.FC = () => {
                 <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
                   <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">₦19,999</span>
+                    <span className="text-3xl font-bold text-deep-blue">$9.99</span>
                     <span className="text-text-light ml-1">/month</span>
                   </div>
+                  <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Everything in Pro</li>
                     <li>✓ Personalized recommendations</li>

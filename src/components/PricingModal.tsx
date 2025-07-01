@@ -24,7 +24,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'pro' as const,
       name: 'Pro',
-      price: '$9.99',
+      price: '$4.99',
       period: '/month',
       description: 'Perfect for building healthy habits',
       features: [
@@ -41,7 +41,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'elite' as const,
       name: 'Elite',
-      price: '$19.99',
+      price: '$9.99',
       period: '/month',
       description: 'For serious wellness enthusiasts',
       features: [
@@ -100,6 +100,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
                     <span className="text-3xl font-bold text-deep-blue">{tier.price}</span>
                     <span className="text-deep-blue ml-1">{tier.period}</span>
                   </div>
+                  <p className="text-xs text-mint-green mb-2">✨ 7-day free trial included!</p>
                   <p className="text-deep-blue text-sm">{tier.description}</p>
                 </div>
                 
@@ -124,7 +125,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
                   }`}
                 >
                   {isCreatingSubscription ? 'Processing...' : 
-                   currentTier === tier.id ? 'Current Plan' : `Upgrade to ${tier.name}`}
+                   currentTier === tier.id ? 'Current Plan' : `Start Free Trial`}
                 </Button>
               </div>
             </div>

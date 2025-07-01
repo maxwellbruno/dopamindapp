@@ -42,6 +42,7 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     const { planId, email }: CreateSubscriptionRequest = await req.json();
+    console.log('Creating subscription for plan:', planId, 'User email:', email);
 
     // Get the subscription plan details
     const { data: plan, error: planError } = await supabaseClient
@@ -58,7 +59,10 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    console.log('Found plan:', plan);
+
     // Create Paystack customer
+    console.log('Creating Paystack customer...');
     const customerResponse = await fetch('https://api.paystack.co/customer', {
       method: 'POST',
       headers: {
@@ -82,37 +86,37 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Create Paystack plan if it doesn't exist
-    const planResponse = await fetch(`https://api.paystack.co/plan/${planId}`, {
+    console.log('Customer created:', customerData.data.customer_code);
+
+    // Create Paystack plan (without plan_code parameter)
+    console.log('Creating Paystack plan...');
+    const createPlanResponse = await fetch('https://api.paystack.co/plan', {
+      method: 'POST',
       headers: {
         'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
+        'Content-Type': 'application/json',
       },
+      body: JSON.stringify({
+        name: plan.name,
+        interval: plan.interval,
+        amount: plan.price_cents,
+        currency: 'NGN', // Always use NGN for Paystack
+      }),
     });
 
-    if (!planResponse.ok) {
-      // Create the plan
-      const createPlanResponse = await fetch('https://api.paystack.co/plan', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: plan.name,
-          interval: plan.interval,
-          amount: plan.price_cents,
-          currency: plan.currency,
-          plan_code: planId,
-        }),
-      });
+    const planCreateData = await createPlanResponse.json();
+    console.log('Plan creation response:', planCreateData);
 
-      if (!createPlanResponse.ok) {
-        const planError = await createPlanResponse.json();
-        console.error('Failed to create Paystack plan:', planError);
-      }
+    if (!createPlanResponse.ok && planCreateData.message !== 'Plan name already exists') {
+      console.error('Failed to create Paystack plan:', planCreateData);
+      return new Response(JSON.stringify({ error: 'Failed to create plan' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
-    // Initialize transaction for subscription
+    // Initialize transaction for subscription with trial period
+    console.log('Initializing transaction...');
     const transactionResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
@@ -122,22 +126,24 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         email: email,
         amount: plan.price_cents,
-        currency: plan.currency,
-        plan: planId,
+        currency: 'NGN',
+        plan: planCreateData.data?.plan_code || planId,
         callback_url: `${req.headers.get('origin')}/profile`,
         metadata: {
           user_id: user.id,
           plan_id: planId,
           customer_code: customerData.data.customer_code,
+          trial_days: 7, // 7-day free trial
         },
       }),
     });
 
     const transactionData = await transactionResponse.json();
+    console.log('Transaction response:', transactionData);
 
     if (!transactionResponse.ok) {
       console.error('Transaction initialization failed:', transactionData);
-      return new Response(JSON.stringify({ error: 'Failed to initialize transaction' }), {
+      return new Response(JSON.stringify({ error: transactionData.message || 'Failed to initialize transaction' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -157,6 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
       console.error('Failed to store subscription:', subscriptionError);
     }
 
+    console.log('Subscription creation successful, returning checkout URL');
     return new Response(JSON.stringify({
       checkout_url: transactionData.data.authorization_url,
       reference: transactionData.data.reference,
