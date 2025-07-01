@@ -15,6 +15,16 @@ import DailyInsightCard from '../components/home/DailyInsightCard';
 import QuickActions from '../components/home/QuickActions';
 import PremiumFeatures from '../components/home/PremiumFeatures';
 
+interface Session {
+  date: string;
+  duration: number;
+}
+
+interface MoodEntry {
+  date: string;
+  value: number;
+}
+
 const Home: React.FC = () => {
   const { user } = useAuth();
   const { isPremium, isElite, tier, createSubscription, isCreatingSubscription } = useSubscription();
@@ -29,19 +39,20 @@ const Home: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Get current data from localStorage
-  const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
-  const moods = JSON.parse(localStorage.getItem('dopamind_moods') || '[]');
+  // Get current data from localStorage with proper typing
+  const sessions: Session[] = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
+  const moods: MoodEntry[] = JSON.parse(localStorage.getItem('dopamind_moods') || '[]');
   const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
   
   // Calculate today's focus time from sessions
   const today = new Date().toDateString();
-  const todaySessions = sessions.filter((session: any) => {
+  const todaySessions = sessions.filter((session: Session) => {
+    if (!session.date) return false;
     const sessionDate = new Date(session.date);
     return sessionDate.toDateString() === today;
   });
   
-  const todayFocusMinutes = todaySessions.reduce((sum: number, session: any) => sum + (session.duration || 0), 0);
+  const todayFocusMinutes = todaySessions.reduce((sum: number, session: Session) => sum + (session.duration || 0), 0);
   const totalHours = Math.floor(todayFocusMinutes / 60);
   const totalMinutes = todayFocusMinutes % 60;
   
@@ -49,7 +60,10 @@ const Home: React.FC = () => {
   const calculateCurrentStreak = () => {
     if (sessions.length === 0) return 0;
     
-    const sessionDates = [...new Set(sessions.map((session: any) => new Date(session.date).toDateString()))];
+    const sessionDates = [...new Set(sessions
+      .filter((session: Session) => session.date)
+      .map((session: Session) => new Date(session.date).toDateString())
+    )];
     sessionDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
     
     let streak = 0;
@@ -76,7 +90,7 @@ const Home: React.FC = () => {
 
   // Calculate average mood from mood entries
   const averageMood = moods.length > 0 
-    ? moods.reduce((sum: number, mood: any) => sum + mood.value, 0) / moods.length 
+    ? moods.reduce((sum: number, mood: MoodEntry) => sum + (mood.value || 0), 0) / moods.length 
     : 0;
 
   const getMoodLabel = (value: number) => {
