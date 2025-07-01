@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -19,17 +18,19 @@ const SubscriptionCard: React.FC = () => {
 
   const handleUpgrade = async (planId: 'pro' | 'elite') => {
     try {
+      console.log('Starting upgrade process for plan:', planId);
       const result = await createSubscription({ planId });
+      console.log('Subscription creation result:', result);
+      
       if (result?.checkout_url) {
+        console.log('Redirecting to checkout URL:', result.checkout_url);
         window.location.href = result.checkout_url;
+      } else {
+        throw new Error('No checkout URL received');
       }
     } catch (error) {
       console.error('Failed to create subscription:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create subscription. Please try again.",
-        variant: "destructive",
-      });
+      // Error toast is already handled in the hook
     }
   };
 
@@ -70,7 +71,7 @@ const SubscriptionCard: React.FC = () => {
                   </div>
                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
                   <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">$9.99</span>
+                    <span className="text-3xl font-bold text-deep-blue">₦9,999</span>
                     <span className="text-text-light ml-1">/month</span>
                   </div>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
@@ -93,7 +94,7 @@ const SubscriptionCard: React.FC = () => {
                 <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
                   <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">$19.99</span>
+                    <span className="text-3xl font-bold text-deep-blue">₦19,999</span>
                     <span className="text-text-light ml-1">/month</span>
                   </div>
                   <ul className="space-y-2 text-sm text-text-light mb-6">

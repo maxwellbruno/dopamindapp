@@ -18,28 +18,41 @@ const PWAInstallPrompt: React.FC = () => {
   const [isIOS, setIsIOS] = useState(false);
 
   useEffect(() => {
+    console.log('PWA Install Prompt: Component mounted');
+    
     // Check if user is on mobile
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
     const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
+    console.log('PWA Install Prompt: isMobile =', isMobile, 'isIOSDevice =', isIOSDevice);
     
     // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isInWebAppiOS = (window.navigator as any).standalone === true;
     
+    console.log('PWA Install Prompt: isStandalone =', isStandalone, 'isInWebAppiOS =', isInWebAppiOS);
+    
     // Check if user has already dismissed the prompt
     const hasSeenPrompt = localStorage.getItem('dopamind_pwa_prompt_dismissed');
+    const lastShown = localStorage.getItem('dopamind_pwa_prompt_shown');
+    const daysSinceLastShown = lastShown ? (Date.now() - parseInt(lastShown)) / (1000 * 60 * 60 * 24) : 999;
+    
+    console.log('PWA Install Prompt: hasSeenPrompt =', hasSeenPrompt, 'daysSinceLastShown =', daysSinceLastShown);
     
     setIsIOS(isIOSDevice);
     
-    if (isMobile && !isStandalone && !isInWebAppiOS && !hasSeenPrompt) {
+    if (isMobile && !isStandalone && !isInWebAppiOS && (!hasSeenPrompt || daysSinceLastShown > 7)) {
+      console.log('PWA Install Prompt: Conditions met, showing prompt after delay');
       // Show prompt after a short delay for better UX
       setTimeout(() => {
         setShowPrompt(true);
-      }, 2000);
+        localStorage.setItem('dopamind_pwa_prompt_shown', Date.now().toString());
+      }, 3000);
     }
 
     // Listen for the beforeinstallprompt event (Android/Chrome)
     const handleBeforeInstallPrompt = (e: Event) => {
+      console.log('PWA Install Prompt: beforeinstallprompt event received');
       e.preventDefault();
       setDeferredPrompt(e as BeforeInstallPromptEvent);
     };
@@ -52,9 +65,11 @@ const PWAInstallPrompt: React.FC = () => {
   }, []);
 
   const handleInstall = async () => {
+    console.log('PWA Install Prompt: Install button clicked');
     if (deferredPrompt) {
       deferredPrompt.prompt();
       const { outcome } = await deferredPrompt.userChoice;
+      console.log('PWA Install Prompt: User choice =', outcome);
       
       if (outcome === 'accepted') {
         setDeferredPrompt(null);
@@ -65,15 +80,19 @@ const PWAInstallPrompt: React.FC = () => {
   };
 
   const handleDismiss = () => {
+    console.log('PWA Install Prompt: Dismissed permanently');
     setShowPrompt(false);
     localStorage.setItem('dopamind_pwa_prompt_dismissed', 'dismissed');
   };
 
   const handleMaybeLater = () => {
+    console.log('PWA Install Prompt: Maybe later clicked');
     setShowPrompt(false);
     // Don't set permanent dismissal, allow showing again after some time
     localStorage.setItem('dopamind_pwa_prompt_shown', Date.now().toString());
   };
+
+  console.log('PWA Install Prompt: Rendering, showPrompt =', showPrompt);
 
   if (!showPrompt) return null;
 

@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import type {
@@ -6,7 +7,7 @@ import type {
 } from "@/components/ui/toast"
 
 const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_REMOVE_DELAY = 5000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -139,8 +140,11 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">
 
-function toast({ ...props }: Toast) {
+function toast({ className, ...props }: Toast) {
   const id = genId()
+
+  // Apply mindful styling by default
+  const mindfulClassName = className || "bg-gradient-to-r from-mint-green/10 to-mint-green/20 border-mint-green/30 text-deep-blue rounded-2xl shadow-lg"
 
   const update = (props: ToasterToast) =>
     dispatch({
@@ -154,6 +158,7 @@ function toast({ ...props }: Toast) {
     toast: {
       ...props,
       id,
+      className: mindfulClassName,
       open: true,
       onOpenChange: (open) => {
         if (!open) dismiss()
