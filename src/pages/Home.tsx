@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -28,23 +29,58 @@ const Home: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
+  // Get current data from localStorage
   const sessions = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
   const moods = JSON.parse(localStorage.getItem('dopamind_moods') || '[]');
-
-  const totalHours = Math.floor(stats.totalFocusMinutes / 60);
-  const totalMinutes = stats.totalFocusMinutes % 60;
+  const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
+  
+  // Calculate today's focus time from sessions
+  const today = new Date().toDateString();
   const todaySessions = sessions.filter((session: any) => {
     const sessionDate = new Date(session.date);
+    return sessionDate.toDateString() === today;
+  });
+  
+  const todayFocusMinutes = todaySessions.reduce((sum: number, session: any) => sum + (session.duration || 0), 0);
+  const totalHours = Math.floor(todayFocusMinutes / 60);
+  const totalMinutes = todayFocusMinutes % 60;
+  
+  // Calculate current streak from sessions
+  const calculateCurrentStreak = () => {
+    if (sessions.length === 0) return 0;
+    
+    const sessionDates = [...new Set(sessions.map((session: any) => new Date(session.date).toDateString()))];
+    sessionDates.sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+    
+    let streak = 0;
     const today = new Date();
-    return sessionDate.toDateString() === today.toDateString();
-  }).length;
+    
+    for (let i = 0; i < sessionDates.length; i++) {
+      const sessionDate = new Date(sessionDates[i]);
+      const daysDiff = Math.floor((today.getTime() - sessionDate.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (i === 0 && daysDiff <= 1) {
+        streak = 1;
+      } else if (daysDiff === streak) {
+        streak++;
+      } else {
+        break;
+      }
+    }
+    
+    return streak;
+  };
 
+  const currentStreak = calculateCurrentStreak();
+  const todaySessionsCount = todaySessions.length;
+
+  // Calculate average mood from mood entries
   const averageMood = moods.length > 0 
     ? moods.reduce((sum: number, mood: any) => sum + mood.value, 0) / moods.length 
     : 0;
 
   const getMoodLabel = (value: number) => {
+    if (moods.length === 0) return 'No entries yet';
     if (value >= 4) return 'Great';
     if (value >= 3) return 'Good';
     if (value >= 2) return 'Okay';
@@ -115,14 +151,14 @@ const Home: React.FC = () => {
           <StatsGrid 
             totalHours={totalHours}
             totalMinutes={totalMinutes}
-            todaySessions={todaySessions}
+            todaySessions={todaySessionsCount}
             averageMoodLabel={getMoodLabel(averageMood)}
             moodsCount={moods.length}
           />
 
           <div className="md:grid md:grid-cols-2 md:gap-6">
             <div>
-              <StreakCard streak={stats.currentStreak} />
+              <StreakCard streak={currentStreak} />
               <DailyInsightCard dailyTip={dailyTip} />
               {!isPremium && <MindfulAd />}
             </div>

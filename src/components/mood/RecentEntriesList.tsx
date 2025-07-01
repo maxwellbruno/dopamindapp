@@ -94,9 +94,12 @@ const RecentEntriesList: React.FC<RecentEntriesListProps> = ({ moodEntries, allM
               className="w-full"
             />
             <div className="flex justify-center mt-4">
-              <Button size="sm" variant="ghost" onClick={() => setShowPrompt(false)}>
+              <button 
+                onClick={() => setShowPrompt(false)}
+                className="bg-mint-green text-white px-4 py-2 rounded-md font-medium hover:bg-mint-green/90 transition-colors"
+              >
                 Close
-              </Button>
+              </button>
             </div>
           </div>
         </div>

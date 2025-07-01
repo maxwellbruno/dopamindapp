@@ -58,9 +58,10 @@ const AISoundscapeCard: React.FC<AISoundscapeCardProps> = ({ isElite, isPremium 
               onClick={handleNavigate}
               disabled={isCreatingSubscription}
               className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-medium px-6 py-2 rounded-xl shadow-md hover:shadow-lg transition-all duration-200"
-              style={{ color: 'white !important' }}
             >
-              {!isElite ? 'Upgrade' : 'Explore'}
+              <span className="text-white">
+                {!isElite ? 'Upgrade' : 'Explore'}
+              </span>
             </Button>
           </div>
         </CardContent>

@@ -74,12 +74,13 @@ const SessionStatsSidebar: React.FC<SessionStatsSidebarProps> = ({
               </div>
             </div>
           </div>
-          <Button 
+          <button
             onClick={handleViewAllClick}
             disabled={isCreatingSubscription}
+            className="bg-mint-green text-white px-4 py-2 rounded-md font-medium hover:bg-mint-green/90 transition-colors disabled:opacity-50"
           >
             View All
-          </Button>
+          </button>
         </div>
       </div>
 

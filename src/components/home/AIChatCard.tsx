@@ -22,7 +22,7 @@ const AIChatCard: React.FC<AIChatCardProps> = ({ isPremium, onChatClick }) => {
           className={`px-4 py-2 rounded-2xl font-semibold text-sm transition-all ${
             isPremium 
               ? 'bg-mint-green text-white hover:scale-105' 
-              : 'bg-gray-200 text-gray-500'
+              : 'bg-mint-green text-white'
           }`}
         >
           {isPremium ? 'Chat' : '🔒 Pro'}
