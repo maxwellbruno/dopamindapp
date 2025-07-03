@@ -18,6 +18,16 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
+    // Check if required environment variables are set
+    const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
+    if (!paystackSecretKey) {
+      console.error('PAYSTACK_SECRET_KEY is not configured');
+      return new Response(JSON.stringify({ error: 'Payment service not configured' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabaseClient = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_ANON_KEY') ?? '',
