@@ -88,8 +88,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Customer created:', customerData.data.customer_code);
 
-    // Create Paystack plan (without plan_code parameter)
+    // Create or get Paystack plan
     console.log('Creating Paystack plan...');
+    let planCode = planId;
+    
     const createPlanResponse = await fetch('https://api.paystack.co/plan', {
       method: 'POST',
       headers: {
@@ -97,19 +99,34 @@ const handler = async (req: Request): Promise<Response> => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: plan.name,
+        name: `${plan.name} - ${planId}`,
         interval: plan.interval,
         amount: plan.price_cents,
-        currency: 'NGN', // Always use NGN for Paystack
+        currency: 'NGN',
       }),
     });
 
     const planCreateData = await createPlanResponse.json();
     console.log('Plan creation response:', planCreateData);
 
-    if (!createPlanResponse.ok && planCreateData.message !== 'Plan name already exists') {
+    if (createPlanResponse.ok && planCreateData.data?.plan_code) {
+      planCode = planCreateData.data.plan_code;
+      console.log('Plan created successfully:', planCode);
+    } else if (planCreateData.message?.includes('Plan name already exists')) {
+      console.log('Plan already exists, using existing plan');
+      // Get existing plan
+      const existingPlanResponse = await fetch(`https://api.paystack.co/plan?name=${encodeURIComponent(plan.name)}`, {
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
+        },
+      });
+      const existingPlanData = await existingPlanResponse.json();
+      if (existingPlanData.data && existingPlanData.data.length > 0) {
+        planCode = existingPlanData.data[0].plan_code;
+      }
+    } else {
       console.error('Failed to create Paystack plan:', planCreateData);
-      return new Response(JSON.stringify({ error: 'Failed to create plan' }), {
+      return new Response(JSON.stringify({ error: `Failed to create plan: ${planCreateData.message || 'Unknown error'}` }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -127,7 +144,7 @@ const handler = async (req: Request): Promise<Response> => {
         email: email,
         amount: plan.price_cents,
         currency: 'NGN',
-        plan: planCreateData.data?.plan_code || planId,
+        plan: planCode,
         callback_url: `${req.headers.get('origin')}/profile`,
         metadata: {
           user_id: user.id,
