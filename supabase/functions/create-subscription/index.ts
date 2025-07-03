@@ -114,15 +114,18 @@ const handler = async (req: Request): Promise<Response> => {
       console.log('Plan created successfully:', planCode);
     } else if (planCreateData.message?.includes('Plan name already exists')) {
       console.log('Plan already exists, using existing plan');
-      // Get existing plan
-      const existingPlanResponse = await fetch(`https://api.paystack.co/plan?name=${encodeURIComponent(plan.name)}`, {
+      // Get all plans and find the one with matching name
+      const existingPlanResponse = await fetch('https://api.paystack.co/plan', {
         headers: {
           'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
         },
       });
       const existingPlanData = await existingPlanResponse.json();
       if (existingPlanData.data && existingPlanData.data.length > 0) {
-        planCode = existingPlanData.data[0].plan_code;
+        const matchingPlan = existingPlanData.data.find((p: any) => p.name === `${plan.name} - ${planId}`);
+        if (matchingPlan) {
+          planCode = matchingPlan.plan_code;
+        }
       }
     } else {
       console.error('Failed to create Paystack plan:', planCreateData);
