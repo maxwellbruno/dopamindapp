@@ -69,11 +69,11 @@ const SubscriptionCard: React.FC = () => {
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <span className="bg-mint-green text-white px-3 py-1 rounded-full text-sm font-semibold">Most Popular</span>
                   </div>
-                  <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
-                  <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">$4.99</span>
-                    <span className="text-text-light ml-1">/month</span>
-                  </div>
+                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
+                   <div className="flex items-baseline mb-4">
+                     <span className="text-3xl font-bold text-deep-blue">₦7,500</span>
+                     <span className="text-text-light ml-1">/month</span>
+                   </div>
                   <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Advanced mood analytics</li>
@@ -92,12 +92,12 @@ const SubscriptionCard: React.FC = () => {
                   </Button>
                 </div>
 
-                <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
-                  <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
-                  <div className="flex items-baseline mb-4">
-                    <span className="text-3xl font-bold text-deep-blue">$9.99</span>
-                    <span className="text-text-light ml-1">/month</span>
-                  </div>
+                 <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
+                   <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
+                   <div className="flex items-baseline mb-4">
+                     <span className="text-3xl font-bold text-deep-blue">₦15,000</span>
+                     <span className="text-text-light ml-1">/month</span>
+                   </div>
                   <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Everything in Pro</li>
