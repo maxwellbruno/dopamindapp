@@ -99,8 +99,17 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Customer created:', customerData.data.customer_code);
 
     // Create or get Paystack plan
-    console.log('Creating Paystack plan...');
+    console.log('Creating Paystack plan...', { 
+      planName: plan.name, 
+      planId, 
+      amount: plan.price_cents, 
+      currency: plan.currency 
+    });
     let planCode = planId;
+    
+    // Convert to kobo (smallest unit for NGN)
+    const amountInKobo = plan.price_cents;
+    console.log('Amount in kobo:', amountInKobo);
     
     const createPlanResponse = await fetch('https://api.paystack.co/plan', {
       method: 'POST',
@@ -111,7 +120,7 @@ const handler = async (req: Request): Promise<Response> => {
       body: JSON.stringify({
         name: `${plan.name} - ${planId}`,
         interval: plan.interval,
-        amount: plan.price_cents,
+        amount: amountInKobo,
         currency: 'NGN',
       }),
     });
@@ -155,7 +164,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         email: email,
-        amount: plan.price_cents,
+        amount: amountInKobo,
         currency: 'NGN',
         plan: planCode,
         callback_url: `${req.headers.get('origin')}/profile`,
