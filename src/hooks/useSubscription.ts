@@ -56,6 +56,12 @@ export function useSubscription() {
 
       if (error) {
         console.error('Supabase function error:', error);
+        console.error('Error details:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        });
         throw new Error(error.message || 'Failed to create subscription');
       }
 
