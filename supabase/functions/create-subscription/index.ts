@@ -12,13 +12,28 @@ interface CreateSubscriptionRequest {
 }
 
 const handler = async (req: Request): Promise<Response> => {
+  console.log('=== CREATE SUBSCRIPTION FUNCTION STARTED ===');
+  console.log('Method:', req.method);
+  console.log('Headers:', Object.fromEntries(req.headers.entries()));
+  
   if (req.method === 'OPTIONS') {
+    console.log('Handling OPTIONS request');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     // Check if required environment variables are set
+    console.log('Checking environment variables...');
     const paystackSecretKey = Deno.env.get('PAYSTACK_SECRET_KEY');
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    console.log('Environment check:', {
+      hasPaystackKey: !!paystackSecretKey,
+      hasSupabaseUrl: !!supabaseUrl,
+      hasServiceKey: !!supabaseServiceKey
+    });
+    
     if (!paystackSecretKey) {
       console.error('PAYSTACK_SECRET_KEY is not configured');
       return new Response(JSON.stringify({ error: 'Payment service not configured' }), {
@@ -52,13 +67,27 @@ const handler = async (req: Request): Promise<Response> => {
 
     if (userError || !user) {
       console.error('Auth error:', userError);
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      return new Response(JSON.stringify({ error: 'Unauthorized: ' + (userError?.message || 'No user found') }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }
 
-    const { planId, email }: CreateSubscriptionRequest = await req.json();
+    console.log('User authenticated successfully:', { userId: user.id, email: user.email });
+
+    let requestBody;
+    try {
+      requestBody = await req.json();
+      console.log('Request body:', requestBody);
+    } catch (e) {
+      console.error('Failed to parse request body:', e);
+      return new Response(JSON.stringify({ error: 'Invalid request body' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { planId, email }: CreateSubscriptionRequest = requestBody;
     console.log('Creating subscription for plan:', planId, 'User email:', email);
 
     // Get the subscription plan details
@@ -219,16 +248,20 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
   } catch (error) {
-    console.error('Error in create-subscription function:', error);
+    console.error('=== ERROR IN CREATE-SUBSCRIPTION FUNCTION ===');
+    console.error('Error:', error);
     const errorMessage = error instanceof Error ? error.message : 'Internal server error';
     console.error('Error details:', {
       message: errorMessage,
       stack: error instanceof Error ? error.stack : undefined,
-      name: error instanceof Error ? error.name : undefined
+      name: error instanceof Error ? error.name : undefined,
+      type: typeof error
     });
+    
     return new Response(JSON.stringify({ 
       error: errorMessage,
-      details: 'Check edge function logs for more information'
+      details: 'Check edge function logs for more information',
+      timestamp: new Date().toISOString()
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
