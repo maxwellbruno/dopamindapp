@@ -152,9 +152,13 @@ const handler = async (req: Request): Promise<Response> => {
     });
     let planCode = planId;
     
-    // Convert to kobo (smallest unit for NGN)
+    // The amount is already in kobo, but let's ensure it's reasonable
     const amountInKobo = plan.price_cents;
     console.log('Amount in kobo:', amountInKobo);
+    
+    // Use a simpler plan name
+    const planName = `${plan.name.replace(' ', '_')}_${planId}`;
+    console.log('Using plan name:', planName);
     
     const createPlanResponse = await fetch('https://api.paystack.co/plan', {
       method: 'POST',
@@ -163,7 +167,7 @@ const handler = async (req: Request): Promise<Response> => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: `${plan.name} - ${planId}`,
+        name: planName,
         interval: plan.interval,
         amount: amountInKobo,
         currency: 'NGN',
@@ -172,6 +176,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const planCreateData = await createPlanResponse.json();
     console.log('Plan creation response:', planCreateData);
+    console.log('Plan creation status:', createPlanResponse.status);
 
     if (createPlanResponse.ok && planCreateData.data?.plan_code) {
       planCode = planCreateData.data.plan_code;
@@ -186,9 +191,10 @@ const handler = async (req: Request): Promise<Response> => {
       });
       const existingPlanData = await existingPlanResponse.json();
       if (existingPlanData.data && existingPlanData.data.length > 0) {
-        const matchingPlan = existingPlanData.data.find((p: any) => p.name === `${plan.name} - ${planId}`);
+        const matchingPlan = existingPlanData.data.find((p: any) => p.name === planName);
         if (matchingPlan) {
           planCode = matchingPlan.plan_code;
+          console.log('Found existing plan:', planCode);
         }
       }
     } else {
