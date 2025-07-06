@@ -14,6 +14,7 @@ interface CreateSubscriptionRequest {
 const handler = async (req: Request): Promise<Response> => {
   console.log('=== CREATE SUBSCRIPTION FUNCTION STARTED ===');
   console.log('Method:', req.method);
+  console.log('URL:', req.url);
   console.log('Headers:', Object.fromEntries(req.headers.entries()));
   
   if (req.method === 'OPTIONS') {
@@ -42,9 +43,17 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error('Missing Supabase configuration');
+      return new Response(JSON.stringify({ error: 'Service configuration error' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      supabaseUrl,
+      supabaseServiceKey,
       {
         auth: {
           autoRefreshToken: false,

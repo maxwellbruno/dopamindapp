@@ -45,14 +45,26 @@ export function useSubscription() {
 
       console.log('Creating subscription for plan:', planId, 'User email:', user.email);
 
+      // Get the current session to ensure we have a valid token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('No valid session found. Please log in again.');
+      }
+
+      console.log('Invoking edge function with session:', !!session);
+
       const { data, error } = await supabase.functions.invoke('create-subscription', {
         body: {
           planId,
           email: user.email,
         },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
       });
 
       console.log('Supabase function response:', { data, error });
+      console.log('Function response status:', error?.status || 'success');
 
       if (error) {
         console.error('Supabase function error:', error);
