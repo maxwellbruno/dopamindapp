@@ -143,67 +143,27 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Customer created:', customerData.data.customer_code);
 
-    // Create or get Paystack plan
-    console.log('Creating Paystack plan...', { 
-      planName: plan.name, 
-      planId, 
-      amount: plan.price_cents, 
-      currency: plan.currency 
-    });
-    let planCode = planId;
+    // Use existing Paystack plan codes
+    console.log('Using existing Paystack plan for:', planId);
+    let planCode: string;
     
-    // The amount is already in kobo, but let's ensure it's reasonable
-    const amountInKobo = plan.price_cents;
-    console.log('Amount in kobo:', amountInKobo);
-    
-    // Use a simpler plan name
-    const planName = `${plan.name.replace(' ', '_')}_${planId}`;
-    console.log('Using plan name:', planName);
-    
-    const createPlanResponse = await fetch('https://api.paystack.co/plan', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: planName,
-        interval: plan.interval,
-        amount: amountInKobo,
-        currency: 'NGN',
-      }),
-    });
-
-    const planCreateData = await createPlanResponse.json();
-    console.log('Plan creation response:', planCreateData);
-    console.log('Plan creation status:', createPlanResponse.status);
-
-    if (createPlanResponse.ok && planCreateData.data?.plan_code) {
-      planCode = planCreateData.data.plan_code;
-      console.log('Plan created successfully:', planCode);
-    } else if (planCreateData.message?.includes('Plan name already exists')) {
-      console.log('Plan already exists, using existing plan');
-      // Get all plans and find the one with matching name
-      const existingPlanResponse = await fetch('https://api.paystack.co/plan', {
-        headers: {
-          'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
-        },
-      });
-      const existingPlanData = await existingPlanResponse.json();
-      if (existingPlanData.data && existingPlanData.data.length > 0) {
-        const matchingPlan = existingPlanData.data.find((p: any) => p.name === planName);
-        if (matchingPlan) {
-          planCode = matchingPlan.plan_code;
-          console.log('Found existing plan:', planCode);
-        }
-      }
-    } else {
-      console.error('Failed to create Paystack plan:', planCreateData);
-      return new Response(JSON.stringify({ error: `Failed to create plan: ${planCreateData.message || 'Unknown error'}` }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
+    // Map plan IDs to your existing Paystack plan codes
+    switch (planId) {
+      case 'pro':
+        planCode = 'PLN_qzmRrpnd61su8v';
+        break;
+      case 'elite':
+        planCode = 'PLN_pfnvmwgb4ySiyuf';
+        break;
+      default:
+        console.error('Unknown plan ID:', planId);
+        return new Response(JSON.stringify({ error: 'Invalid plan selected' }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
     }
+    
+    console.log('Using plan code:', planCode);
 
     // Initialize transaction for subscription with trial period
     console.log('Initializing transaction...');
@@ -215,7 +175,6 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         email: email,
-        amount: amountInKobo,
         currency: 'NGN',
         plan: planCode,
         callback_url: `${req.headers.get('origin')}/profile`,
