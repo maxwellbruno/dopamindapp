@@ -74,7 +74,7 @@ const SubscriptionCard: React.FC = () => {
                      <span className="text-3xl font-bold text-deep-blue">KES 699</span>
                      <span className="text-text-light ml-1">/month</span>
                    </div>
-                  <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
+                   <p className="text-xs text-mint-green mb-4">🎉 7-day FREE trial • No charge today!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Advanced mood analytics</li>
                     <li>✓ Custom focus sessions</li>
@@ -88,7 +88,7 @@ const SubscriptionCard: React.FC = () => {
                     disabled={isCreatingSubscription}
                     className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90 disabled:opacity-50"
                   >
-                    {isCreatingSubscription ? 'Processing...' : 'Start Free Trial'}
+                     {isCreatingSubscription ? 'Processing...' : 'Start 7-Day FREE Trial'}
                   </Button>
                 </div>
 
@@ -98,7 +98,7 @@ const SubscriptionCard: React.FC = () => {
                      <span className="text-3xl font-bold text-deep-blue">KES 1,499</span>
                      <span className="text-text-light ml-1">/month</span>
                    </div>
-                  <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
+                  <p className="text-xs text-mint-green mb-4">🎉 7-day FREE trial • No charge today!</p>
                   <ul className="space-y-2 text-sm text-text-light mb-6">
                     <li>✓ Everything in Pro</li>
                     <li>✓ Personalized recommendations</li>
@@ -112,7 +112,7 @@ const SubscriptionCard: React.FC = () => {
                     disabled={isCreatingSubscription}
                     className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90 disabled:opacity-50"
                   >
-                    {isCreatingSubscription ? 'Processing...' : 'Start Free Trial'}
+                    {isCreatingSubscription ? 'Processing...' : 'Start 7-Day FREE Trial'}
                   </Button>
                 </div>
               </div>

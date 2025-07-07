@@ -100,7 +100,8 @@ const PricingModal: React.FC<PricingModalProps> = ({
                     <span className="text-3xl font-bold text-deep-blue">{tier.price}</span>
                     <span className="text-deep-blue ml-1">{tier.period}</span>
                   </div>
-                  <p className="text-xs text-mint-green mb-2">✨ 7-day free trial included!</p>
+                   <p className="text-xs text-mint-green mb-4">🎉 7-day FREE trial • No charge today!</p>
+                   <p className="text-deep-blue text-xs mb-4">Setup payment method for after trial period</p>
                   <p className="text-deep-blue text-sm">{tier.description}</p>
                 </div>
                 
@@ -124,8 +125,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
                       : 'bg-mint-green hover:bg-mint-green/90 hover:scale-[1.02] disabled:opacity-50'
                   }`}
                 >
-                  {isCreatingSubscription ? 'Processing...' : 
-                   currentTier === tier.id ? 'Current Plan' : `Start Free Trial`}
+                     {isCreatingSubscription ? 'Processing...' : 'Start 7-Day FREE Trial'}
                 </Button>
               </div>
             </div>
@@ -133,10 +133,10 @@ const PricingModal: React.FC<PricingModalProps> = ({
           
           <div className="text-center pt-4 border-t border-gray-200">
             <p className="text-deep-blue text-sm mb-2">
-              🔒 Secure payment • Cancel anytime
+              🎉 Start your 7-day FREE trial • No charge today
             </p>
             <p className="text-deep-blue text-xs">
-              7-day free trial • No commitment required
+              Setup payment for after trial • Cancel anytime
             </p>
           </div>
         </div>

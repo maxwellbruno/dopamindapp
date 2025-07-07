@@ -143,30 +143,28 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Customer created:', customerData.data.customer_code);
 
-    // Use existing Paystack plan codes
-    console.log('Using existing Paystack plan for:', planId);
-    let planCode: string;
+    // Create or use KES-specific Paystack plans
+    console.log('Setting up KES subscription for:', planId);
     
-    // Map plan IDs to your existing Paystack plan codes
-    switch (planId) {
-      case 'pro':
-        planCode = 'PLN_qzmRrpnd61su8v';
-        break;
-      case 'elite':
-        planCode = 'PLN_pfnvmwgb4ySiyuf';
-        break;
-      default:
-        console.error('Unknown plan ID:', planId);
-        return new Response(JSON.stringify({ error: 'Invalid plan selected' }), {
-          status: 400,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        });
-    }
-    
-    console.log('Using plan code:', planCode);
+    // Get plan pricing from our database
+    const planPricing = {
+      'pro': { amount: 69900, name: 'Dopamind Pro' }, // KES 699 in kobo
+      'elite': { amount: 149900, name: 'Dopamind Elite' } // KES 1,499 in kobo
+    };
 
-    // Initialize transaction for subscription with trial period
-    console.log('Initializing transaction...');
+    const currentPlan = planPricing[planId as keyof typeof planPricing];
+    if (!currentPlan) {
+      console.error('Unknown plan ID:', planId);
+      return new Response(JSON.stringify({ error: 'Invalid plan selected' }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Using KES pricing:', currentPlan);
+
+    // Initialize transaction for one-time payment (7-day trial handled differently)
+    console.log('Initializing KES transaction...');
     const transactionResponse = await fetch('https://api.paystack.co/transaction/initialize', {
       method: 'POST',
       headers: {
@@ -175,15 +173,17 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         email: email,
+        amount: currentPlan.amount, // Amount in kobo (KES cents)
         currency: 'KES',
-        plan: planCode,
         callback_url: `${req.headers.get('origin')}/profile`,
         metadata: {
           user_id: user.id,
           plan_id: planId,
           customer_code: customerData.data.customer_code,
-          trial_days: 7, // 7-day free trial
+          subscription_type: 'monthly',
+          trial_period: 7, // For our internal tracking
         },
+        channels: ['card', 'bank', 'ussd', 'mobile_money'], // Enable mobile money for Kenya
       }),
     });
 

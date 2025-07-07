@@ -40,6 +40,9 @@ const handler = async (req: Request): Promise<Response> => {
     console.log('Received webhook event:', event.event, event.data);
 
     switch (event.event) {
+      case 'charge.success':
+        await handleChargeSuccess(supabaseClient, event.data);
+        break;
       case 'subscription.create':
       case 'subscription.enable':
         await handleSubscriptionActivated(supabaseClient, event.data);
@@ -132,6 +135,52 @@ async function handlePaymentFailed(supabaseClient: any, data: any) {
     if (error) {
       console.error('Failed to update subscription status:', error);
     }
+  }
+}
+
+async function handleChargeSuccess(supabaseClient: any, data: any) {
+  console.log('Processing charge success for KES subscription');
+  
+  const { metadata, customer, amount, currency, paid_at } = data;
+  
+  if (!metadata?.user_id || !metadata?.plan_id) {
+    console.error('Missing required metadata in charge.success event');
+    return;
+  }
+
+  if (currency !== 'KES') {
+    console.error('Unexpected currency in charge.success:', currency);
+    return;
+  }
+
+  console.log('Setting up trial subscription for user:', metadata.user_id, 'Plan:', metadata.plan_id);
+  
+  // Calculate trial period (7 days from now)
+  const trialEndDate = new Date();
+  trialEndDate.setDate(trialEndDate.getDate() + 7);
+  
+  // Update subscription with trial status
+  const { error } = await supabaseClient
+    .from('subscriptions')
+    .upsert({
+      user_id: metadata.user_id,
+      plan_id: metadata.plan_id,
+      paystack_customer_id: customer.customer_code,
+      status: 'trialing', // Start with trial status
+      current_period_start: new Date().toISOString(),
+      current_period_end: trialEndDate.toISOString(),
+      cancel_at_period_end: false,
+      updated_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    console.error('Failed to create trial subscription:', error);
+  } else {
+    console.log('Trial subscription created successfully');
+    console.log('User:', metadata.user_id);
+    console.log('Plan:', metadata.plan_id);
+    console.log('Trial ends:', trialEndDate.toISOString());
+    console.log('Amount paid:', amount, currency);
   }
 }
 
