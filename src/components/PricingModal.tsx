@@ -24,7 +24,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'pro' as const,
       name: 'Pro',
-      price: '₦7,500',
+      price: 'KES 699',
       period: '/month',
       description: 'Perfect for building healthy habits',
       features: [
@@ -41,7 +41,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
     {
       id: 'elite' as const,
       name: 'Elite',
-      price: '₦15,000',
+      price: 'KES 1,499',
       period: '/month',
       description: 'For serious wellness enthusiasts',
       features: [

@@ -71,7 +71,7 @@ const SubscriptionCard: React.FC = () => {
                   </div>
                    <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Pro</h4>
                    <div className="flex items-baseline mb-4">
-                     <span className="text-3xl font-bold text-deep-blue">₦7,500</span>
+                     <span className="text-3xl font-bold text-deep-blue">KES 699</span>
                      <span className="text-text-light ml-1">/month</span>
                    </div>
                   <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>
@@ -95,7 +95,7 @@ const SubscriptionCard: React.FC = () => {
                  <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
                    <h4 className="text-lg font-bold text-mint-green mb-2">Dopamind Elite</h4>
                    <div className="flex items-baseline mb-4">
-                     <span className="text-3xl font-bold text-deep-blue">₦15,000</span>
+                     <span className="text-3xl font-bold text-deep-blue">KES 1,499</span>
                      <span className="text-text-light ml-1">/month</span>
                    </div>
                   <p className="text-xs text-mint-green mb-4">✨ 7-day free trial included!</p>

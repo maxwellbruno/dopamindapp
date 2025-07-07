@@ -175,7 +175,7 @@ const handler = async (req: Request): Promise<Response> => {
       },
       body: JSON.stringify({
         email: email,
-        currency: 'NGN',
+        currency: 'KES',
         plan: planCode,
         callback_url: `${req.headers.get('origin')}/profile`,
         metadata: {
