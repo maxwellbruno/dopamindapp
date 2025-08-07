@@ -71,10 +71,12 @@ const handler = async (req: Request): Promise<Response> => {
 async function handleSubscriptionActivated(supabaseClient: any, data: any) {
   const { customer, plan, subscription_code, next_payment_date } = data;
   
+  console.log('Processing subscription activation:', { customer: customer?.customer_code, plan: plan?.plan_code, subscription_code });
+  
   // Find user by customer code
   const { data: existingSubscription, error: findError } = await supabaseClient
     .from('subscriptions')
-    .select('user_id')
+    .select('user_id, plan_id')
     .eq('paystack_customer_id', customer.customer_code)
     .single();
 
@@ -83,13 +85,18 @@ async function handleSubscriptionActivated(supabaseClient: any, data: any) {
     return;
   }
 
+  // Calculate next period end (30 days from now for monthly subscription)
+  const nextPeriodEnd = new Date();
+  nextPeriodEnd.setDate(nextPeriodEnd.getDate() + 30);
+
   const { error } = await supabaseClient
     .from('subscriptions')
     .update({
       paystack_subscription_id: subscription_code,
       status: 'active',
       current_period_start: new Date().toISOString(),
-      current_period_end: new Date(next_payment_date).toISOString(),
+      current_period_end: next_payment_date ? new Date(next_payment_date).toISOString() : nextPeriodEnd.toISOString(),
+      cancel_at_period_end: false,
       updated_at: new Date().toISOString(),
     })
     .eq('user_id', existingSubscription.user_id);
@@ -97,7 +104,11 @@ async function handleSubscriptionActivated(supabaseClient: any, data: any) {
   if (error) {
     console.error('Failed to update subscription:', error);
   } else {
-    console.log('Subscription activated for user:', existingSubscription.user_id);
+    console.log('Subscription activated successfully');
+    console.log('User:', existingSubscription.user_id);
+    console.log('Plan:', existingSubscription.plan_id);
+    console.log('Status: trialing -> active');
+    console.log('Next payment:', next_payment_date || nextPeriodEnd.toISOString());
   }
 }
 
@@ -153,34 +164,68 @@ async function handleChargeSuccess(supabaseClient: any, data: any) {
     return;
   }
 
-  console.log('Setting up trial subscription for user:', metadata.user_id, 'Plan:', metadata.plan_id);
+  console.log('Setting up subscription for user:', metadata.user_id, 'Plan:', metadata.plan_id);
+  console.log('Payment amount:', amount, currency);
   
-  // Calculate trial period (7 days from now)
-  const trialEndDate = new Date();
-  trialEndDate.setDate(trialEndDate.getDate() + 7);
+  // Check if this is a trial payment (small amount) or full subscription
+  const expectedAmounts = {
+    'pro': 69900, // KES 699 in kobo
+    'elite': 149900 // KES 1,499 in kobo
+  };
   
-  // Update subscription with trial status
-  const { error } = await supabaseClient
-    .from('subscriptions')
-    .upsert({
-      user_id: metadata.user_id,
-      plan_id: metadata.plan_id,
-      paystack_customer_id: customer.customer_code,
-      status: 'trialing', // Start with trial status
-      current_period_start: new Date().toISOString(),
-      current_period_end: trialEndDate.toISOString(),
-      cancel_at_period_end: false,
-      updated_at: new Date().toISOString(),
-    });
+  const isTrialPayment = amount < expectedAmounts[metadata.plan_id];
+  
+  if (isTrialPayment) {
+    // Handle trial subscription (7-day trial)
+    const trialEndDate = new Date();
+    trialEndDate.setDate(trialEndDate.getDate() + 7);
+    
+    const { error } = await supabaseClient
+      .from('subscriptions')
+      .upsert({
+        user_id: metadata.user_id,
+        plan_id: metadata.plan_id,
+        paystack_customer_id: customer.customer_code,
+        status: 'trialing',
+        current_period_start: new Date().toISOString(),
+        current_period_end: trialEndDate.toISOString(),
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString(),
+      });
 
-  if (error) {
-    console.error('Failed to create trial subscription:', error);
+    if (error) {
+      console.error('Failed to create trial subscription:', error);
+    } else {
+      console.log('Trial subscription created successfully');
+      console.log('Trial ends:', trialEndDate.toISOString());
+    }
   } else {
-    console.log('Trial subscription created successfully');
-    console.log('User:', metadata.user_id);
-    console.log('Plan:', metadata.plan_id);
-    console.log('Trial ends:', trialEndDate.toISOString());
-    console.log('Amount paid:', amount, currency);
+    // Handle full subscription payment - activate immediately
+    const nextPeriodEnd = new Date();
+    nextPeriodEnd.setDate(nextPeriodEnd.getDate() + 30); // 30 days for monthly
+    
+    const { error } = await supabaseClient
+      .from('subscriptions')
+      .upsert({
+        user_id: metadata.user_id,
+        plan_id: metadata.plan_id,
+        paystack_customer_id: customer.customer_code,
+        status: 'active',
+        current_period_start: new Date().toISOString(),
+        current_period_end: nextPeriodEnd.toISOString(),
+        cancel_at_period_end: false,
+        updated_at: new Date().toISOString(),
+      });
+
+    if (error) {
+      console.error('Failed to create active subscription:', error);
+    } else {
+      console.log('Active subscription created successfully');
+      console.log('User:', metadata.user_id);
+      console.log('Plan:', metadata.plan_id);
+      console.log('Status: active');
+      console.log('Next billing:', nextPeriodEnd.toISOString());
+    }
   }
 }
 
