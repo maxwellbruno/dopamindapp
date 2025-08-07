@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      dopamine_rewards: {
+        Row: {
+          amount: number
+          claimed: boolean | null
+          claimed_at: string | null
+          created_at: string | null
+          id: string
+          reward_type: string
+          transaction_hash: string | null
+          user_id: string
+          week_end_date: string
+          week_start_date: string
+        }
+        Insert: {
+          amount: number
+          claimed?: boolean | null
+          claimed_at?: string | null
+          created_at?: string | null
+          id?: string
+          reward_type: string
+          transaction_hash?: string | null
+          user_id: string
+          week_end_date: string
+          week_start_date: string
+        }
+        Update: {
+          amount?: number
+          claimed?: boolean | null
+          claimed_at?: string | null
+          created_at?: string | null
+          id?: string
+          reward_type?: string
+          transaction_hash?: string | null
+          user_id?: string
+          week_end_date?: string
+          week_start_date?: string
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           created_at: string
@@ -178,11 +217,78 @@ export type Database = {
         }
         Relationships: []
       }
+      user_task_streaks: {
+        Row: {
+          created_at: string | null
+          current_streak: number | null
+          id: string
+          last_completed_date: string | null
+          task_type: string
+          total_completions: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_completed_date?: string | null
+          task_type: string
+          total_completions?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          current_streak?: number | null
+          id?: string
+          last_completed_date?: string | null
+          task_type?: string
+          total_completions?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_wallets: {
+        Row: {
+          created_at: string | null
+          id: string
+          privy_did: string | null
+          updated_at: string | null
+          user_id: string
+          wallet_address: string | null
+          wallet_provider: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          privy_did?: string | null
+          updated_at?: string | null
+          user_id: string
+          wallet_address?: string | null
+          wallet_provider?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          privy_did?: string | null
+          updated_at?: string | null
+          user_id?: string
+          wallet_address?: string | null
+          wallet_provider?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      check_weekly_rewards: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       get_user_focus_stats: {
         Args: Record<PropertyKey, never>
         Returns: Database["public"]["CompositeTypes"]["focus_stats"]
@@ -198,6 +304,10 @@ export type Database = {
       }
       increment_mood_entries_count: {
         Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
+      update_task_streak: {
+        Args: { task_type_param: string; completion_date?: string }
         Returns: undefined
       }
       update_user_stats_on_session_complete: {

@@ -8,13 +8,20 @@ import UserInfo from '../components/profile/UserInfo';
 import SubscriptionCard from '../components/profile/SubscriptionCard';
 import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
+import WalletCard from '../components/profile/WalletCard';
+import RewardsCard from '../components/profile/RewardsCard';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useWallet } from '@/hooks/useWallet';
+import { useRewards } from '@/hooks/useRewards';
+import { toast } from 'sonner';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const { tier } = useSubscription();
+  const { wallet, balances, isLoading: walletLoading, connectWallet, isConnected } = useWallet();
+  const { taskStreaks, pendingRewards, totalDopamineEarned, claimReward, isLoading: rewardsLoading } = useRewards();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
@@ -76,22 +83,71 @@ const Profile: React.FC = () => {
   const stats = profileData?.stats || { totalFocusMinutes: 0, currentStreak: 0, moodEntries: 0 };
   const sessions = profileData?.sessions || [];
 
+  const handleWalletConnect = async () => {
+    try {
+      await connectWallet();
+      toast.success('Wallet connected successfully!');
+    } catch (error) {
+      toast.error('Failed to connect wallet');
+      console.error('Wallet connection error:', error);
+    }
+  };
+
+  const handleSendCrypto = () => {
+    toast.info('Send functionality will be available soon');
+  };
+
+  const handleReceiveCrypto = () => {
+    toast.info('Receive functionality will be available soon');
+  };
+
+  const handleBuyCrypto = () => {
+    toast.info('Buy crypto functionality will be available soon');
+  };
+
+  const handleClaimReward = async (rewardId: string) => {
+    try {
+      await claimReward(rewardId);
+      toast.success('Reward claimed successfully!');
+    } catch (error) {
+      toast.error('Failed to claim reward');
+      console.error('Claim reward error:', error);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Profile</h1>
 
-          {/* Desktop layout: User/Subscription > Stats/Settings */}
-          <div className="flex flex-col gap-6 md:grid md:grid-cols-2 md:gap-8">
+          {/* Desktop layout: User/Subscription/Wallet > Stats/Settings/Rewards */}
+          <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
             <div className="flex flex-col gap-6">
               <UserInfo subscriptionTier={tier} />
               <SubscriptionCard />
+              <WalletCard
+                walletAddress={wallet?.address}
+                ethBalance={balances.eth}
+                usdtBalance={balances.usdt}
+                dopamineBalance={balances.dopamine}
+                onConnect={handleWalletConnect}
+                onSend={handleSendCrypto}
+                onReceive={handleReceiveCrypto}
+                onBuy={handleBuyCrypto}
+                isConnected={isConnected}
+              />
             </div>
             <div className="flex flex-col gap-6">
               <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
+              <RewardsCard
+                taskStreaks={taskStreaks}
+                pendingRewards={pendingRewards}
+                totalDopamineEarned={totalDopamineEarned}
+                onClaimReward={handleClaimReward}
+              />
               <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={tier} />
-              <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+              <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
                 <Button 
                   onClick={logout}
                   className="w-full bg-mint-green text-white hover:bg-mint-green/90 rounded-xl"
