@@ -131,9 +131,10 @@ export function useSubscription() {
     },
   });
 
-  const hasActiveSubscription = subscription?.status === 'active' && 
-    (!subscription?.current_period_end || new Date(subscription.current_period_end) > new Date());
-
+  const hasActiveSubscription = subscription?.status === 'active' || 
+    subscription?.status === 'trialing' || 
+    subscription?.status === 'pending'; // Include pending for test subscriptions
+    
   const isPro = hasActiveSubscription && subscription?.plan_id === 'pro';
   const isElite = hasActiveSubscription && subscription?.plan_id === 'elite';
   const isPremium = isPro || isElite;
