@@ -95,7 +95,7 @@
   }
 
   .dark body {
-    color: hsl(var(--foreground));
+    @apply bg-background text-foreground;
   }
 
   button,

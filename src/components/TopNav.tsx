@@ -14,12 +14,12 @@ const TopNav: React.FC = () => {
   ];
 
   return (
-    <header className="hidden md:flex bg-white shadow-sm sticky top-0 z-40">
+    <header className="hidden md:flex bg-white dark:bg-deep-blue shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-6 py-3">
         <div className="flex justify-between items-center">
           <Link to="/home" className="flex items-center space-x-2">
             <Brain className="h-8 w-8 text-mint-green" />
-            <span className="text-xl font-bold text-deep-blue">Dopamind</span>
+            <span className="text-xl font-bold text-deep-blue dark:text-white">Dopamind</span>
           </Link>
           <nav className="flex items-center space-x-8">
             {navItems.map((item) => {
@@ -30,8 +30,8 @@ const TopNav: React.FC = () => {
                   to={item.path}
                   className={`text-base font-medium transition-colors relative ${
                     isActive
-                      ? 'text-deep-blue'
-                      : 'text-cool-gray hover:text-deep-blue'
+                      ? 'text-deep-blue dark:text-white'
+                      : 'text-cool-gray dark:text-gray-300 hover:text-deep-blue dark:hover:text-pure-white'
                   }`}
                 >
                   {item.label}
