@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-
+import { usePrivy, useWallets } from '@privy-io/react-auth';
 interface WalletData {
   address?: string;
   privyDid?: string;
@@ -23,7 +23,8 @@ export const useWallet = () => {
     dopamine: '0.00'
   });
   const [isLoading, setIsLoading] = useState(false);
-
+  const { login: privyLogin, authenticated: privyAuthenticated, user: privyUser } = usePrivy();
+  const { wallets: privyWallets } = useWallets();
   // Fetch wallet data from database
   const fetchWallet = async () => {
     if (!user) return;
@@ -79,28 +80,39 @@ export const useWallet = () => {
     }
   };
 
-  // Connect wallet (placeholder for Privy integration)
-  const connectWallet = async () => {
-    setIsLoading(true);
-    try {
-      // This will be implemented with Privy integration
-      console.log('Connecting wallet...');
-      
-      // Placeholder wallet data - replace with actual Privy integration
-      const mockWallet = {
-        address: '0x' + Math.random().toString(16).substr(2, 40),
-        privyDid: 'did:privy:' + Math.random().toString(16).substr(2, 20),
-        provider: 'privy'
-      };
-
-      await saveWallet(mockWallet);
-    } catch (error) {
-      console.error('Error connecting wallet:', error);
-      throw error;
-    } finally {
-      setIsLoading(false);
+// Connect wallet via Privy embedded wallet
+const connectWallet = async () => {
+  setIsLoading(true);
+  try {
+    if (!privyAuthenticated) {
+      await privyLogin();
     }
-  };
+
+    // Find embedded wallet from Privy
+    const embedded = (privyWallets || []).find((w: any) =>
+      w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
+    ) as any;
+
+    const address: string | undefined = embedded?.address;
+
+    if (!address) {
+      throw new Error('No embedded wallet available from Privy');
+    }
+
+    const walletData: WalletData = {
+      address,
+      privyDid: (privyUser as any)?.id,
+      provider: 'privy'
+    };
+
+    await saveWallet(walletData);
+  } catch (error) {
+    console.error('Error connecting wallet:', error);
+    throw error;
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   // Fetch token balances (placeholder - will integrate with Base network)
   const fetchBalances = async () => {
@@ -119,15 +131,37 @@ export const useWallet = () => {
     }
   };
 
-  useEffect(() => {
-    fetchWallet();
-  }, [user]);
+useEffect(() => {
+  fetchWallet();
+}, [user]);
 
-  useEffect(() => {
-    if (wallet?.address) {
-      fetchBalances();
+// Auto-sync Privy embedded wallet to Supabase on session/wallet changes
+useEffect(() => {
+  const sync = async () => {
+    try {
+      const embedded = (privyWallets || []).find((w: any) =>
+        w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
+      ) as any;
+      const address: string | undefined = embedded?.address;
+      if (user && address && wallet?.address !== address) {
+        await saveWallet({
+          address,
+          privyDid: (privyUser as any)?.id,
+          provider: 'privy',
+        });
+      }
+    } catch (e) {
+      console.warn('Wallet sync skipped', e);
     }
-  }, [wallet?.address]);
+  };
+  sync();
+}, [privyWallets, privyAuthenticated, user?.id]);
+
+useEffect(() => {
+  if (wallet?.address) {
+    fetchBalances();
+  }
+}, [wallet?.address]);
 
   return {
     wallet,

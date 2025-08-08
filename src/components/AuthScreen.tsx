@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Brain } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import { Link } from 'react-router-dom';
+import { usePrivy } from '@privy-io/react-auth';
 
 const AuthScreen: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -16,6 +16,7 @@ const AuthScreen: React.FC = () => {
   const { login, register } = useAuth();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { login: privyLogin, authenticated: privyAuthenticated } = usePrivy();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,16 +32,25 @@ const AuthScreen: React.FC = () => {
         description: result.error.message,
         variant: "destructive",
       });
-    } else if (!isLogin) {
-      toast({
-        title: "Success!",
-        description: "Please check your email to confirm your account.",
-      });
+    } else {
+      // After Supabase auth succeeds, ensure a Privy session to auto-create embedded wallet
+      try {
+        if (!privyAuthenticated) {
+          await privyLogin();
+        }
+      } catch (err) {
+        console.warn('Privy login prompt dismissed or failed', err);
+      }
+      if (!isLogin) {
+        toast({
+          title: "Success!",
+          description: "Please check your email to confirm your account.",
+        });
+      }
     }
 
     setIsSubmitting(false);
   };
-
   return (
     <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
       <div className="w-full max-w-md">
@@ -124,6 +134,33 @@ const AuthScreen: React.FC = () => {
               {isSubmitting ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In' : 'Create Account')}
             </Button>
           </form>
+
+          {/* Social login via Privy */}
+          <div className="mt-6">
+            <div className="flex items-center">
+              <div className="flex-1 h-px bg-light-gray" />
+              <span className="px-3 text-deep-blue/60 text-sm">or continue with</span>
+              <div className="flex-1 h-px bg-light-gray" />
+            </div>
+            <div className="grid grid-cols-2 gap-3 mt-4">
+              <Button
+                type="button"
+                onClick={() => privyLogin()}
+                className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray"
+                disabled={isSubmitting}
+              >
+                Google
+              </Button>
+              <Button
+                type="button"
+                onClick={() => privyLogin()}
+                className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray"
+                disabled={isSubmitting}
+              >
+                X (Twitter)
+              </Button>
+            </div>
+          </div>
           
           <div className="mt-6 text-center">
             <Button

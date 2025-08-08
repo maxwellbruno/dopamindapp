@@ -30,6 +30,7 @@ import BrainwaveDetail from './pages/BrainwaveDetail';
 import BinauralDetail from './pages/BinauralDetail';
 import AISoundscape from './pages/AISoundscape';
 import TermsAndConditions from './pages/TermsAndConditions';
+import { PrivyProvider } from '@privy-io/react-auth';
 
 const queryClient = new QueryClient();
 
@@ -148,15 +149,28 @@ const AppContent: React.FC = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <BrowserRouter>
-          <AppContent />
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
+    <PrivyProvider
+      appId="cme2rnady00odk10bljcc2kr7"
+      config={{
+        loginMethods: ['google', 'twitter', 'email'],
+        appearance: {
+          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+        },
+        embeddedWallets: {
+          createOnLogin: 'users-without-wallets',
+        },
+      }}
+    >
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <BrowserRouter>
+            <AppContent />
+          </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
+    </PrivyProvider>
   </QueryClientProvider>
 );
 
