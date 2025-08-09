@@ -3,13 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Brain } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { usePrivy } from '@privy-io/react-auth';
-
 const AuthScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const { login: privyLogin } = usePrivy();
-
-  return (
-    <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
+  const {
+    login: privyLogin
+  } = usePrivy();
+  return <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header with app icon */}
         <div className="text-center mb-8">
@@ -37,14 +36,7 @@ const AuthScreen: React.FC = () => {
 
           {/* Privy-only login options */}
           <div className="space-y-3">
-            <Button
-              type="button"
-              onClick={() => privyLogin()}
-              className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold"
-              disabled={isSubmitting}
-            >
-              Continue with Email (Code)
-            </Button>
+            <Button type="button" onClick={() => privyLogin()} className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" disabled={isSubmitting}>Continue with Email</Button>
 
             <div className="flex items-center">
               <div className="flex-1 h-px bg-light-gray" />
@@ -53,20 +45,10 @@ const AuthScreen: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button
-                type="button"
-                onClick={() => privyLogin()}
-                className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray"
-                disabled={isSubmitting}
-              >
+              <Button type="button" onClick={() => privyLogin()} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 Google
               </Button>
-              <Button
-                type="button"
-                onClick={() => privyLogin()}
-                className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray"
-                disabled={isSubmitting}
-              >
+              <Button type="button" onClick={() => privyLogin()} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 X (Twitter)
               </Button>
             </div>
@@ -79,8 +61,6 @@ const AuthScreen: React.FC = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default AuthScreen;
