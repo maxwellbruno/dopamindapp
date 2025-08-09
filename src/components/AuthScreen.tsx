@@ -33,20 +33,13 @@ const AuthScreen: React.FC = () => {
         variant: "destructive",
       });
     } else {
-      // After Supabase auth succeeds, ensure a Privy session to auto-create embedded wallet
-      try {
-        if (!privyAuthenticated) {
-          await privyLogin();
-        }
-      } catch (err) {
-        console.warn('Privy login prompt dismissed or failed', err);
-      }
       if (!isLogin) {
         toast({
           title: "Success!",
           description: "Please check your email to confirm your account.",
         });
       }
+
     }
 
     setIsSubmitting(false);

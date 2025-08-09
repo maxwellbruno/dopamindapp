@@ -9,6 +9,7 @@ const corsHeaders = {
 interface CreateSubscriptionRequest {
   planId: string;
   email: string;
+  trial?: boolean;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -163,29 +164,31 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log('Using KES pricing:', currentPlan);
 
-    // Initialize transaction for one-time payment (7-day trial handled differently)
-    console.log('Initializing KES transaction...');
-    const transactionResponse = await fetch('https://api.paystack.co/transaction/initialize', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: email,
-        amount: currentPlan.amount, // Amount in kobo (KES cents)
-        currency: 'KES',
-        callback_url: `${req.headers.get('origin')}/profile`,
-        metadata: {
-          user_id: user.id,
-          plan_id: planId,
-          customer_code: customerData.data.customer_code,
-          subscription_type: 'monthly',
-          trial_period: 7, // For our internal tracking
-        },
-        channels: ['card', 'bank', 'ussd', 'mobile_money'], // Enable mobile money for Kenya
-      }),
-    });
+// Initialize transaction, allowing optional 7-day trial (small initial charge)
+console.log('Initializing KES transaction...');
+const amountToCharge = (requestBody as CreateSubscriptionRequest).trial ? 100 : currentPlan.amount; // Trial = KES 1 (100 kobo)
+const transactionResponse = await fetch('https://api.paystack.co/transaction/initialize', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${Deno.env.get('PAYSTACK_SECRET_KEY')}`,
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    email: email,
+    amount: amountToCharge,
+    currency: 'KES',
+    callback_url: `${req.headers.get('origin')}/profile`,
+    metadata: {
+      user_id: user.id,
+      plan_id: planId,
+      customer_code: customerData.data.customer_code,
+      subscription_type: 'monthly',
+      trial_period: (requestBody as CreateSubscriptionRequest).trial ? 7 : 0,
+      trial: !!(requestBody as CreateSubscriptionRequest).trial,
+    },
+    channels: ['card', 'bank', 'ussd', 'mobile_money'],
+  }),
+});
 
     const transactionData = await transactionResponse.json();
     console.log('Transaction response:', transactionData);

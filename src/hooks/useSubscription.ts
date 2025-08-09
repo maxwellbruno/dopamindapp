@@ -37,8 +37,8 @@ export function useSubscription() {
     enabled: !!user,
   });
 
-  const createSubscriptionMutation = useMutation<CreateSubscriptionResponse, Error, { planId: string }>({
-    mutationFn: async ({ planId }: { planId: string }) => {
+const createSubscriptionMutation = useMutation<CreateSubscriptionResponse, Error, { planId: string; trial?: boolean }>({
+  mutationFn: async ({ planId, trial }: { planId: string; trial?: boolean }) => {
       if (!user?.email) {
         throw new Error('User email not found');
       }
@@ -53,15 +53,16 @@ export function useSubscription() {
 
       console.log('Invoking edge function with session:', !!session);
 
-      const { data, error } = await supabase.functions.invoke('create-subscription', {
-        body: {
-          planId,
-          email: user.email,
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+const { data, error } = await supabase.functions.invoke('create-subscription', {
+  body: {
+    planId,
+    email: user.email,
+    trial: !!trial,
+  },
+  headers: {
+    Authorization: `Bearer ${session.access_token}`,
+  },
+});
 
       console.log('Supabase function response:', { data, error });
       console.log('Function response status:', error?.status || 'success');

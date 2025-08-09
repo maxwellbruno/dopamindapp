@@ -16,23 +16,23 @@ const SubscriptionCard: React.FC = () => {
     isLoading 
   } = useSubscription();
 
-  const handleUpgrade = async (planId: 'pro' | 'elite') => {
-    try {
-      console.log('Starting upgrade process for plan:', planId);
-      const result = await createSubscription({ planId });
-      console.log('Subscription creation result:', result);
-      
-      if (result?.checkout_url) {
-        console.log('Redirecting to checkout URL:', result.checkout_url);
-        window.location.href = result.checkout_url;
-      } else {
-        throw new Error('No checkout URL received');
-      }
-    } catch (error) {
-      console.error('Failed to create subscription:', error);
-      // Error toast is already handled in the hook
+const handleUpgrade = async (planId: 'pro' | 'elite', options?: { trial?: boolean }) => {
+  try {
+    console.log('Starting upgrade process for plan:', planId, 'options:', options);
+    const result = await createSubscription({ planId, trial: options?.trial });
+    console.log('Subscription creation result:', result);
+    
+    if (result?.checkout_url) {
+      console.log('Redirecting to checkout URL:', result.checkout_url);
+      window.location.href = result.checkout_url;
+    } else {
+      throw new Error('No checkout URL received');
     }
-  };
+  } catch (error) {
+    console.error('Failed to create subscription:', error);
+    // Error toast is already handled in the hook
+  }
+};
 
   if (isLoading) {
     return (
@@ -83,13 +83,23 @@ const SubscriptionCard: React.FC = () => {
                     <li>✓ Dopamind AI Chat Assistant</li>
                     <li>✓ Priority support</li>
                   </ul>
-                  <Button 
-                    onClick={() => handleUpgrade('pro')}
-                    disabled={isCreatingSubscription}
-                    className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90 disabled:opacity-50"
-                  >
-                     {isCreatingSubscription ? 'Processing...' : 'Start 7-Day FREE Trial'}
-                  </Button>
+<div className="space-y-2">
+  <Button 
+    onClick={() => handleUpgrade('pro', { trial: true })}
+    disabled={isCreatingSubscription}
+    className="w-full bg-mint-green text-white font-semibold rounded-xl hover:bg-mint-green/90 disabled:opacity-50"
+  >
+     {isCreatingSubscription ? 'Processing...' : 'Start 7-Day FREE Trial'}
+  </Button>
+  <Button 
+    onClick={() => handleUpgrade('pro')}
+    disabled={isCreatingSubscription}
+    variant="outline"
+    className="w-full !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white"
+  >
+    {isCreatingSubscription ? 'Processing...' : 'Upgrade Now'}
+  </Button>
+</div>
                 </div>
 
                  <div className="border-2 border-deep-blue rounded-2xl p-6 bg-white">
