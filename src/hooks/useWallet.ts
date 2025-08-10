@@ -144,6 +144,13 @@ useEffect(() => {
       ) as any;
       const address: string | undefined = embedded?.address;
       if (user && address && wallet?.address !== address) {
+        // Immediately reflect embedded wallet in UI
+        setWallet({
+          address,
+          privyDid: (privyUser as any)?.id,
+          provider: 'privy',
+        });
+        // Persist to Supabase in background
         await saveWallet({
           address,
           privyDid: (privyUser as any)?.id,
