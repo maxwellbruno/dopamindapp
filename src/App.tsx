@@ -31,6 +31,7 @@ import BinauralDetail from './pages/BinauralDetail';
 import AISoundscape from './pages/AISoundscape';
 import TermsAndConditions from './pages/TermsAndConditions';
 import { PrivyProvider } from '@privy-io/react-auth';
+import NameSetupDialog from './components/NameSetupDialog';
 
 const queryClient = new QueryClient();
 
@@ -143,6 +144,7 @@ const AppContent: React.FC = () => {
       </main>
       <BottomNav />
       <PWAInstallPrompt />
+      <NameSetupDialog />
     </div>
   );
 };

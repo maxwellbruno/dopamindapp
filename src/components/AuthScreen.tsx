@@ -5,9 +5,35 @@ import { Link } from 'react-router-dom';
 import { usePrivy } from '@privy-io/react-auth';
 const AuthScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const {
-    login: privyLogin
-  } = usePrivy();
+  const { login: privyLogin } = usePrivy();
+
+  // Auto-start login when opened outside iframe via fallback
+  React.useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('auth') === 'start') {
+        void privyLogin();
+      }
+    } catch {}
+  }, [privyLogin]);
+
+  const handlePrivyLogin = async () => {
+    setIsSubmitting(true);
+    try {
+      await privyLogin();
+    } catch (err) {
+      // If Privy blocks inside iframe, open a new tab to complete login
+      const msg = (err as Error)?.message || '';
+      if (msg.includes('Frame ancestor is not allowed') || typeof window !== 'undefined') {
+        try {
+          const url = `${window.location.origin}/?auth=start`;
+          window.open(url, '_blank', 'noopener,noreferrer');
+        } catch {}
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header with app icon */}
@@ -36,7 +62,7 @@ const AuthScreen: React.FC = () => {
 
           {/* Privy-only login options */}
           <div className="space-y-3">
-            <Button type="button" onClick={() => privyLogin()} className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" disabled={isSubmitting}>Continue with Email</Button>
+            <Button type="button" onClick={handlePrivyLogin} className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" disabled={isSubmitting}>Continue with Email</Button>
 
             <div className="flex items-center">
               <div className="flex-1 h-px bg-light-gray" />
@@ -45,10 +71,10 @@ const AuthScreen: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button type="button" onClick={() => privyLogin()} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
+              <Button type="button" onClick={handlePrivyLogin} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 Google
               </Button>
-              <Button type="button" onClick={() => privyLogin()} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
+              <Button type="button" onClick={handlePrivyLogin} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 X (Twitter)
               </Button>
             </div>

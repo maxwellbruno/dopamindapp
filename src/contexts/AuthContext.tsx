@@ -15,6 +15,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   register: (email: string, password: string, name: string) => Promise<{ error: AuthError | null }>;
   logout: () => Promise<void>;
+  updateDisplayName: (name: string) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -114,8 +115,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try { await supabase.auth.signOut(); } catch {}
     setUser(null);
   };
+
+  const updateDisplayName = async (name: string) => {
+    try {
+      await supabase.auth.updateUser({ data: { name } });
+      setUser(prev => (prev ? { ...prev, name } : prev));
+    } catch (_) {
+      // ignore
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateDisplayName, isLoading }}>
       {children}
     </AuthContext.Provider>
   );
