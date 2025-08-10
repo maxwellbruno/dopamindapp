@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoading, setIsLoading] = useState(true);
   // Use Privy auth state in addition to Supabase
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout } = usePrivy() as any;
+  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout, getAccessToken } = usePrivy() as any;
   useEffect(() => {
     setIsLoading(true);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -66,8 +66,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const id = String(pUser?.id || email || 'privy-user');
       setUser({ id, email, name });
       setIsLoading(false);
+
+      // Silently link to a Supabase session so RLS-protected data works
+      (async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session && email) {
+            const token = await getAccessToken?.();
+            const resp = await fetch('https://brgycopmuuanrrqmrdmf.supabase.co/functions/v1/privy-supabase-link', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({ email, privy_id: String(pUser?.id || '') }),
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data?.email_otp) {
+                await supabase.auth.verifyOtp({ email: data.email || email, token: data.email_otp, type: 'email' });
+              }
+            }
+          }
+        } catch (_) {
+          // ignore
+        }
+      })();
     }
-  }, [privyAuthenticated, privyUser]);
+  }, [privyAuthenticated, privyUser, getAccessToken]);
 
   const login = async (_email: string, _password: string) => {
     try {
