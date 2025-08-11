@@ -17,19 +17,26 @@ const AuthScreen: React.FC = () => {
     } catch {}
   }, [privyLogin]);
 
-  const handlePrivyLogin = async () => {
+  const handlePrivyLogin = async (method?: 'email' | 'google' | 'twitter') => {
+    // If inside an iframe, navigate top window to start auth immediately
+    try {
+      if (typeof window !== 'undefined' && window.top && window.top !== window.self) {
+        const url = `${window.location.origin}/?auth=start`;
+        window.open(url, '_top');
+        return;
+      }
+    } catch {}
+
     setIsSubmitting(true);
     try {
-      await privyLogin();
-    } catch (err) {
-      // If Privy blocks inside iframe, open a new tab to complete login
-      const msg = (err as Error)?.message || '';
-      if (msg.includes('Frame ancestor is not allowed') || typeof window !== 'undefined') {
-        try {
-          const url = `${window.location.origin}/?auth=start`;
-          window.open(url, '_blank', 'noopener,noreferrer');
-        } catch {}
-      }
+      const loginFn = privyLogin as unknown as (args?: any) => Promise<void>;
+      await loginFn(method ? { loginMethod: method } : undefined);
+    } catch (_err) {
+      // Fallback: open top-level navigation to trigger auth outside iframe
+      try {
+        const url = `${window.location.origin}/?auth=start`;
+        window.open(url, '_top');
+      } catch {}
     } finally {
       setIsSubmitting(false);
     }
@@ -62,7 +69,7 @@ const AuthScreen: React.FC = () => {
 
           {/* Privy-only login options */}
           <div className="space-y-3">
-            <Button type="button" onClick={handlePrivyLogin} className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" disabled={isSubmitting}>Continue with Email</Button>
+            <Button type="button" onClick={() => handlePrivyLogin('email')} className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" disabled={isSubmitting}>Continue with Email</Button>
 
             <div className="flex items-center">
               <div className="flex-1 h-px bg-light-gray" />
@@ -71,10 +78,10 @@ const AuthScreen: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button type="button" onClick={handlePrivyLogin} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
+              <Button type="button" onClick={() => handlePrivyLogin('google')} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 Google
               </Button>
-              <Button type="button" onClick={handlePrivyLogin} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
+              <Button type="button" onClick={() => handlePrivyLogin('twitter')} className="w-full bg-pure-white border border-gray-200 text-deep-blue h-12 rounded-xl font-semibold hover:bg-light-gray" disabled={isSubmitting}>
                 X (Twitter)
               </Button>
             </div>
