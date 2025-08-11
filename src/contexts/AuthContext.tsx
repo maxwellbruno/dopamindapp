@@ -32,9 +32,10 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  // Use Privy auth state in addition to Supabase
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout, getAccessToken } = usePrivy() as any;
+  // Use Privy auth state
+  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout } = usePrivy();
+  
+  console.log('🔍 AuthProvider state:', { privyAuthenticated, hasPrivyUser: !!privyUser, hasSupabaseUser: !!user });
   useEffect(() => {
     setIsLoading(true);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -56,58 +57,91 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // Bridge Privy auth into a Supabase session (do not override app user with Privy DID)
+  // Link Privy authentication with Supabase
   useEffect(() => {
-    if (!privyAuthenticated || !privyUser) return;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pUser: any = privyUser;
-    const email = pUser?.email?.address || pUser?.linkedAccounts?.find((a: any) => a.type === 'email')?.address || '';
+    const linkAccounts = async () => {
+      if (!privyAuthenticated || !privyUser) {
+        console.log('🔓 Privy not authenticated, skipping link');
+        return;
+      }
 
-    (async () => {
+      // Get email from Privy user
+      let email = privyUser.email?.address;
+      if (!email) {
+        const emailAccount = privyUser.linkedAccounts?.find((account: any) => account.type === 'email');
+        email = emailAccount ? (emailAccount as any).address : null;
+      }
+      
+      if (!email) {
+        console.error('❌ No email found in Privy user');
+        return;
+      }
+
       try {
-        setIsLoading(true);
+        console.log('🔗 Linking Privy user with Supabase:', email);
+        
+        // Check if already have a Supabase session
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session && email) {
-          const token = await getAccessToken?.();
-          const resp = await fetch('https://brgycopmuuanrrqmrdmf.supabase.co/functions/v1/privy-supabase-link', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-            body: JSON.stringify({ email, privy_id: String(pUser?.id || '') }),
+        if (session) {
+          console.log('✅ Already have Supabase session');
+          return;
+        }
+
+        // Call edge function to link accounts
+        const { data, error } = await supabase.functions.invoke('privy-supabase-link', {
+          body: { 
+            email,
+            privy_id: privyUser.id 
+          }
+        });
+        
+        if (error) {
+          console.error('❌ Failed to link accounts:', error);
+          return;
+        }
+        
+        if (data?.email_otp) {
+          console.log('📧 Verifying OTP to create Supabase session');
+          const { error: otpError } = await supabase.auth.verifyOtp({
+            type: 'email',
+            email: data.email || email,
+            token: data.email_otp
           });
-          if (resp.ok) {
-            const data = await resp.json();
-            if (data?.email_otp) {
-              await supabase.auth.verifyOtp({ email: data.email || email, token: data.email_otp, type: 'email' });
-            }
+          
+          if (otpError) {
+            console.error('❌ OTP verification failed:', otpError);
+          } else {
+            console.log('✅ Successfully linked Privy with Supabase');
           }
         }
-      } catch (_) {
-        // ignore
-      } finally {
-        setIsLoading(false);
+      } catch (error) {
+        console.error('❌ Error linking accounts:', error);
       }
-    })();
-  }, [privyAuthenticated, privyUser, getAccessToken]);
+    };
+
+    linkAccounts();
+  }, [privyAuthenticated, privyUser]);
 
   const login = async (_email: string, _password: string) => {
+    console.log('🔑 Login called, delegating to Privy');
     try {
       await privyLogin();
-    } catch (_) {
-      // ignore and rely on Privy UI errors
+      return { error: null };
+    } catch (error) {
+      console.error('❌ Login error:', error);
+      return { error: error as any };
     }
-    return { error: null };
   };
 
   const register = async (_email: string, _password: string, _name: string) => {
+    console.log('📝 Register called, delegating to Privy');
     try {
       await privyLogin();
-    } catch (_) {
-      // ignore and rely on Privy UI errors
+      return { error: null };
+    } catch (error) {
+      console.error('❌ Register error:', error);
+      return { error: error as any };
     }
-    return { error: null };
   };
 
   const logout = async () => {
