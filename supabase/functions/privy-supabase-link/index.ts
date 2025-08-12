@@ -71,8 +71,12 @@ serve(async (req) => {
     }
 
     // Ensure a Supabase user exists for this email (confirmed)
-    const { data: existing, error: getErr } = await supabaseAdmin.auth.admin.getUserByEmail(email);
-    let supaUserId = existing?.user?.id;
+    const { data: existing, error: getErr } = await supabaseAdmin.auth.admin.listUsers({
+      page: 1,
+      perPage: 1,
+      filter: `email:${email}`
+    });
+    let supaUserId = existing?.users?.[0]?.id;
 
     if (getErr && getErr.message && !supaUserId) {
       // Continue, we'll create the user instead

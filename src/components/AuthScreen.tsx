@@ -8,6 +8,13 @@ const AuthScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { login: privyLogin, ready: privyReady, authenticated } = usePrivy();
 
+  // Redirect if already authenticated
+  React.useEffect(() => {
+    if (authenticated) {
+      window.location.href = '/';
+    }
+  }, [authenticated]);
+
   const handlePrivyLogin = async () => {
     if (!privyReady || !privyLogin || isSubmitting) {
       return;
@@ -55,9 +62,9 @@ const AuthScreen: React.FC = () => {
               type="button" 
               onClick={handlePrivyLogin} 
               className="w-full bg-mint-green hover:bg-mint-green/90 text-pure-white h-12 rounded-xl font-semibold" 
-              disabled={isSubmitting || !privyReady}
+              disabled={isSubmitting || !privyReady || authenticated}
             >
-              {!privyReady ? 'Loading...' : 'Continue with Privy'}
+              {isSubmitting ? 'Signing in...' : (!privyReady ? 'Loading...' : 'Continue with Privy')}
             </Button>
 
             <div className="text-center text-xs text-deep-blue/60">
