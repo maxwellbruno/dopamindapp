@@ -3,6 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthError } from '@supabase/supabase-js';
 import { usePrivy } from '@privy-io/react-auth';
+import { cleanupAuthState, PrivyTokenVerifier } from '@/lib/authUtils';
 
 interface User {
   id: string;
@@ -32,10 +33,12 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  // Use Privy auth state
-  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout } = usePrivy();
+  const [authStateStable, setAuthStateStable] = useState(false);
   
-  console.log('🔍 AuthProvider state:', { privyAuthenticated, hasPrivyUser: !!privyUser, hasSupabaseUser: !!user });
+  // Use Privy auth state
+  const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout, getAccessToken } = usePrivy();
+  
+  console.log('🔍 AuthProvider state:', { privyAuthenticated, hasPrivyUser: !!privyUser, hasSupabaseUser: !!user, authStateStable });
   useEffect(() => {
     setIsLoading(true);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -49,7 +52,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         setUser(null);
       }
-      setIsLoading(false);
+      
+      // Mark auth state as stable after a short delay
+      setTimeout(() => {
+        setIsLoading(false);
+        setAuthStateStable(true);
+      }, 100);
     });
 
     return () => {
@@ -60,7 +68,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Link Privy authentication with Supabase
   useEffect(() => {
     const linkAccounts = async () => {
-      if (!privyAuthenticated || !privyUser) {
+      if (!privyAuthenticated || !privyUser || !authStateStable) {
         return;
       }
 
@@ -77,6 +85,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       try {
+        // Verify Privy token if available
+        const accessToken = await getAccessToken();
+        if (accessToken) {
+          const isValidToken = await PrivyTokenVerifier.verifyToken(accessToken);
+          if (!isValidToken) {
+            console.warn('Privy token verification failed');
+            return;
+          }
+        }
+
         // Check if already have a Supabase session
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.user?.email === email) {
@@ -112,10 +130,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    // Small delay to ensure Privy authentication is fully settled
-    const timeoutId = setTimeout(linkAccounts, 1000);
-    return () => clearTimeout(timeoutId);
-  }, [privyAuthenticated, privyUser]);
+    // Only link accounts when auth state is stable
+    if (authStateStable) {
+      const timeoutId = setTimeout(linkAccounts, 500);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [privyAuthenticated, privyUser, authStateStable, getAccessToken]);
 
   const login = async (_email: string, _password: string) => {
     console.log('🔑 Login called, delegating to Privy');
@@ -140,9 +160,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    try { await privyLogout?.(); } catch {}
-    try { await supabase.auth.signOut(); } catch {}
-    setUser(null);
+    try {
+      // Clean up auth state first
+      cleanupAuthState();
+      
+      // Sign out from both services
+      await privyLogout?.();
+      await supabase.auth.signOut({ scope: 'global' });
+      
+      setUser(null);
+      setAuthStateStable(false);
+      
+      // Force page reload for clean state
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force cleanup anyway
+      setUser(null);
+      window.location.href = '/';
+    }
   };
 
   const updateDisplayName = async (name: string) => {

@@ -11,7 +11,8 @@ const AuthScreen: React.FC = () => {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (authenticated) {
-      window.location.href = '/';
+      // Use replace to avoid redirect loops
+      window.location.replace('/home');
     }
   }, [authenticated]);
 

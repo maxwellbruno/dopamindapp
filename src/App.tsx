@@ -122,8 +122,8 @@ const AppContent: React.FC = () => {
       <TopNav />
       <main className={isMobile ? "pb-28" : "py-8"}>
         <Routes>
-          <Route path="/" element={<Navigate to="/home" replace />} />
-          <Route path="/home" element={<Home />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Navigate to="/" replace />} />
           <Route path="/focus" element={<Focus />} />
           <Route path="/focus/all" element={<AllFocusSessions />} />
           <Route path="/mood" element={<Mood />} />
