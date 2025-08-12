@@ -61,7 +61,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const linkAccounts = async () => {
       if (!privyAuthenticated || !privyUser) {
-        console.log('🔓 Privy not authenticated, skipping link');
         return;
       }
 
@@ -73,17 +72,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       if (!email) {
-        console.error('❌ No email found in Privy user');
+        console.error('No email found in Privy user');
         return;
       }
 
       try {
-        console.log('🔗 Linking Privy user with Supabase:', email);
-        
         // Check if already have a Supabase session
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-          console.log('✅ Already have Supabase session');
+        if (session?.user?.email === email) {
           return;
         }
 
@@ -96,12 +92,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
         
         if (error) {
-          console.error('❌ Failed to link accounts:', error);
+          console.error('Failed to link accounts:', error);
           return;
         }
         
         if (data?.email_otp) {
-          console.log('📧 Verifying OTP to create Supabase session');
           const { error: otpError } = await supabase.auth.verifyOtp({
             type: 'email',
             email: data.email || email,
@@ -109,17 +104,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           
           if (otpError) {
-            console.error('❌ OTP verification failed:', otpError);
-          } else {
-            console.log('✅ Successfully linked Privy with Supabase');
+            console.error('OTP verification failed:', otpError);
           }
         }
       } catch (error) {
-        console.error('❌ Error linking accounts:', error);
+        console.error('Error linking accounts:', error);
       }
     };
 
-    linkAccounts();
+    // Small delay to ensure Privy authentication is fully settled
+    const timeoutId = setTimeout(linkAccounts, 1000);
+    return () => clearTimeout(timeoutId);
   }, [privyAuthenticated, privyUser]);
 
   const login = async (_email: string, _password: string) => {

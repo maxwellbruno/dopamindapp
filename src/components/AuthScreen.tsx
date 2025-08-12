@@ -7,46 +7,18 @@ import { usePrivy } from '@privy-io/react-auth';
 const AuthScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { login: privyLogin, ready: privyReady, authenticated } = usePrivy();
-  
-  console.log('🔍 AuthScreen Debug:', {
-    privyReady,
-    authenticated,
-    loginFunction: !!privyLogin,
-    loginType: typeof privyLogin
-  });
-
-  // Auto-start login when opened outside iframe via fallback
-  React.useEffect(() => {
-    try {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('auth') === 'start') {
-        void privyLogin();
-      }
-    } catch {}
-  }, [privyLogin]);
 
   const handlePrivyLogin = async () => {
-    console.log('🚀 Login button clicked!');
-    console.log('🔍 Privy state:', { privyReady, loginFunction: !!privyLogin });
-    
-    if (!privyReady) {
-      console.error('❌ Privy not ready yet');
-      return;
-    }
-    
-    if (!privyLogin) {
-      console.error('❌ Privy login function not available');
+    if (!privyReady || !privyLogin || isSubmitting) {
       return;
     }
 
     setIsSubmitting(true);
-    console.log('✨ Starting Privy login...');
     
     try {
       await privyLogin();
-      console.log('✅ Privy login successful');
     } catch (error) {
-      console.error('❌ Privy login error:', error);
+      console.error('Privy login error:', error);
     } finally {
       setIsSubmitting(false);
     }
