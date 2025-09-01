@@ -11,8 +11,8 @@ const AuthScreen: React.FC = () => {
   // Redirect if already authenticated
   React.useEffect(() => {
     if (authenticated) {
-      // Use replace to avoid redirect loops
-      window.location.replace('/home');
+      // Use replace to avoid redirect loops - redirect to root instead of /home
+      window.location.replace('/');
     }
   }, [authenticated]);
 
@@ -69,7 +69,7 @@ const AuthScreen: React.FC = () => {
             </Button>
 
             <div className="text-center text-xs text-deep-blue/60">
-              Sign in with email, Google, or X (Twitter)
+              Sign in with email, Google, Farcaster, or X (Twitter)
             </div>
           </div>
 

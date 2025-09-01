@@ -67,10 +67,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Link Privy authentication with Supabase
   useEffect(() => {
+    let linkingInProgress = false;
+    
     const linkAccounts = async () => {
-      if (!privyAuthenticated || !privyUser || !authStateStable) {
+      if (!privyAuthenticated || !privyUser || !authStateStable || linkingInProgress) {
         return;
       }
+      
+      linkingInProgress = true;
 
       // Get email from Privy user
       let email = privyUser.email?.address;
@@ -127,6 +131,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       } catch (error) {
         console.error('Error linking accounts:', error);
+      } finally {
+        linkingInProgress = false;
       }
     };
 

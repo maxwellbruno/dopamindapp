@@ -154,7 +154,7 @@ const App = () => (
     <PrivyProvider
       appId="cme2rnady00odk10bljcc2kr7"
       config={{
-        loginMethods: ['google', 'twitter', 'email'],
+        loginMethods: ['google', 'twitter', 'farcaster', 'email'],
         appearance: {
           theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
         },
