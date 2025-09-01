@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -10,6 +10,9 @@ import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
 import WalletCard from '../components/profile/WalletCard';
 import RewardsCard from '../components/profile/RewardsCard';
+import SendCryptoModal from '../components/wallet/SendCryptoModal';
+import ReceiveCryptoModal from '../components/wallet/ReceiveCryptoModal';
+import BuyCryptoModal from '../components/wallet/BuyCryptoModal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
@@ -28,6 +31,11 @@ const Profile: React.FC = () => {
     theme: 'light',
     customAffirmation: 'I am focused and productive'
   });
+
+  // Modal states
+  const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [receiveModalOpen, setReceiveModalOpen] = useState(false);
+  const [buyModalOpen, setBuyModalOpen] = useState(false);
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -94,15 +102,27 @@ const Profile: React.FC = () => {
   };
 
   const handleSendCrypto = () => {
-    toast.info('Send functionality will be available soon');
+    if (!isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+    setSendModalOpen(true);
   };
 
   const handleReceiveCrypto = () => {
-    toast.info('Receive functionality will be available soon');
+    if (!isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+    setReceiveModalOpen(true);
   };
 
   const handleBuyCrypto = () => {
-    toast.info('Buy crypto functionality will be available soon');
+    if (!isConnected) {
+      toast.error('Please connect your wallet first');
+      return;
+    }
+    setBuyModalOpen(true);
   };
 
   const handleClaimReward = async (rewardId: string) => {
@@ -159,6 +179,28 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Wallet Modals */}
+      <SendCryptoModal
+        isOpen={sendModalOpen}
+        onClose={() => setSendModalOpen(false)}
+        walletAddress={wallet?.address}
+        ethBalance={balances.eth}
+        usdtBalance={balances.usdt}
+        dopamineBalance={balances.dopamine}
+      />
+      
+      <ReceiveCryptoModal
+        isOpen={receiveModalOpen}
+        onClose={() => setReceiveModalOpen(false)}
+        walletAddress={wallet?.address}
+      />
+      
+      <BuyCryptoModal
+        isOpen={buyModalOpen}
+        onClose={() => setBuyModalOpen(false)}
+        walletAddress={wallet?.address}
+      />
     </div>
   );
 };
