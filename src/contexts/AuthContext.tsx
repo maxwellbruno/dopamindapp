@@ -39,8 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { user: privyUser, authenticated: privyAuthenticated, login: privyLogin, logout: privyLogout, getAccessToken } = usePrivy();
   
   console.log('🔍 AuthProvider state:', { privyAuthenticated, hasPrivyUser: !!privyUser, hasSupabaseUser: !!user, authStateStable });
+  
   useEffect(() => {
-    setIsLoading(true);
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const currentUser = session?.user;
       if (currentUser) {
@@ -53,11 +53,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
       }
       
-      // Mark auth state as stable after a short delay
-      setTimeout(() => {
-        setIsLoading(false);
-        setAuthStateStable(true);
-      }, 100);
+      // Mark auth state as stable immediately
+      setIsLoading(false);
+      setAuthStateStable(true);
     });
 
     return () => {
@@ -136,10 +134,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     };
 
-    // Only link accounts when auth state is stable
-    if (authStateStable) {
-      const timeoutId = setTimeout(linkAccounts, 500);
-      return () => clearTimeout(timeoutId);
+    // Only link accounts when auth state is stable and we have Privy authentication
+    if (authStateStable && privyAuthenticated && privyUser) {
+      linkAccounts();
     }
   }, [privyAuthenticated, privyUser, authStateStable, getAccessToken]);
 

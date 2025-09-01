@@ -8,13 +8,7 @@ const AuthScreen: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const { login: privyLogin, ready: privyReady, authenticated } = usePrivy();
 
-  // Redirect if already authenticated
-  React.useEffect(() => {
-    if (authenticated) {
-      // Use replace to avoid redirect loops - redirect to root instead of /home
-      window.location.replace('/');
-    }
-  }, [authenticated]);
+  // Don't redirect automatically - let the app routing handle it
 
   const handlePrivyLogin = async () => {
     if (!privyReady || !privyLogin || isSubmitting) {
