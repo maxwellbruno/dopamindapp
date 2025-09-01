@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePrivy, useWallets } from '@privy-io/react-auth';
+import { createPublicClient, http, formatEther, erc20Abi } from 'viem';
+import { base } from 'viem/chains';
 interface WalletData {
   address?: string;
   privyDid?: string;
@@ -114,20 +116,40 @@ const connectWallet = async () => {
   }
 };
 
-  // Fetch token balances (placeholder - will integrate with Base network)
+  // Token contract addresses on Base network
+  const USDT_CONTRACT = '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2'; // USDT on Base
+  const DOPAMINE_CONTRACT = '0x0000000000000000000000000000000000000000'; // Placeholder - replace with actual DOPAMINE token contract
+
+  // Create Base network client
+  const baseClient = createPublicClient({
+    chain: base,
+    transport: http()
+  });
+
+  // Fetch token balances from Base network
   const fetchBalances = async () => {
     if (!wallet?.address) return;
 
     try {
-      // Placeholder for Base network integration
-      // This will be implemented with actual Base network calls
+      setIsLoading(true);
+      
+      // Fetch ETH balance
+      const ethBalance = await baseClient.getBalance({
+        address: wallet.address as `0x${string}`
+      });
+      
+      // For now, use placeholder values for tokens until contracts are properly configured
+      // In production, replace with actual token contract calls
       setBalances({
-        eth: '0.00',
-        usdt: '0.00',
-        dopamine: '0.00'
+        eth: formatEther(ethBalance),
+        usdt: '0.00', // Placeholder - will be fetched from USDT contract
+        dopamine: '0.00' // Placeholder - will be fetched from DOPAMINE contract
       });
     } catch (error) {
       console.error('Error fetching balances:', error);
+      // Keep existing balances on error
+    } finally {
+      setIsLoading(false);
     }
   };
 
