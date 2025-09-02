@@ -87,21 +87,30 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  console.log("Coinbase onramp function called");
+
   try {
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? "",
     );
 
+    console.log("Supabase client created");
+
     // Verify user
     const authHeader = req.headers.get("Authorization");
+    console.log("Auth header present:", !!authHeader);
     if (!authHeader) throw new Error("No authorization header");
 
     const token = authHeader.replace("Bearer ", "");
     const { data: authData, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !authData?.user) throw new Error("Unauthorized");
+    console.log("Auth verification result:", { hasUser: !!authData?.user, authError });
+    if (authError || !authData?.user) throw new Error(`Unauthorized: ${authError?.message || 'No user'}`);
 
-    const { walletAddress, amount, cryptoCurrency, fiatCurrency = "USD" } = await req.json();
+    const requestBody = await req.json();
+    console.log("Request body:", requestBody);
+    
+    const { walletAddress, amount, cryptoCurrency, fiatCurrency = "USD" } = requestBody;
     if (!walletAddress || !amount || !cryptoCurrency) {
       throw new Error("Missing required parameters: walletAddress, amount, cryptoCurrency");
     }
@@ -109,10 +118,19 @@ serve(async (req) => {
     const appId = Deno.env.get("COINBASE_ONRAMP_APP_ID");
     const keyId = Deno.env.get("COINBASE_ONRAMP_KEY_ID");
     const privateKey = Deno.env.get("COINBASE_ONRAMP_PRIVATE_KEY");
+    
+    console.log("Credentials check:", {
+      hasAppId: !!appId,
+      hasKeyId: !!keyId,
+      hasPrivateKey: !!privateKey
+    });
+    
     if (!appId || !keyId || !privateKey) {
       throw new Error("Coinbase onramp credentials not configured");
     }
 
+    console.log("Creating session token...");
+    
     // Create a secure session token for hosted Onramp
     const sessionToken = await createSessionToken({
       appId,
@@ -122,6 +140,8 @@ serve(async (req) => {
       asset: cryptoCurrency,
       blockchain: "base",
     });
+
+    console.log("Session token created successfully");
 
     // Build the new Onramp URL using updated params (addresses/assets + sessionToken)
     const url = new URL("https://pay.coinbase.com/onramp");
@@ -134,6 +154,7 @@ serve(async (req) => {
     url.searchParams.set("defaultNetwork", "base");
 
     console.log("Generated Coinbase onramp URL for user:", authData.user.id);
+    console.log("Final URL:", url.toString());
 
     return new Response(
       JSON.stringify({ success: true, onrampUrl: url.toString() }),
@@ -141,6 +162,7 @@ serve(async (req) => {
     );
   } catch (error) {
     console.error("Error in coinbase-onramp function:", error);
+    console.error("Error stack:", error.stack);
     return new Response(
       JSON.stringify({ success: false, error: error?.message ?? "Internal server error" }),
       { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },

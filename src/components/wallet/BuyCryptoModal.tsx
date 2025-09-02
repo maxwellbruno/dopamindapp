@@ -41,6 +41,12 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     }
 
     try {
+      console.log('Starting buy crypto process...', {
+        walletAddress,
+        amount: parseFloat(amount),
+        cryptoCurrency: selectedToken
+      });
+      
       toast.info('Connecting to Coinbase onramp...');
       
       // Call our edge function to get the Coinbase onramp URL
@@ -52,10 +58,20 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         }
       });
 
-      if (error || !data.success) {
+      console.log('Supabase function response:', { data, error });
+
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw new Error(`Supabase function error: ${error.message || 'Unknown error'}`);
+      }
+
+      if (!data || !data.success) {
+        console.error('Function returned error:', data);
         throw new Error(data?.error || 'Failed to generate onramp URL');
       }
 
+      console.log('Opening Coinbase URL:', data.onrampUrl);
+      
       // Redirect to Coinbase onramp
       window.open(data.onrampUrl, '_blank');
       
@@ -63,7 +79,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       onClose();
     } catch (error) {
       console.error('Error opening Coinbase onramp:', error);
-      toast.error('Failed to open Coinbase onramp. Please try again.');
+      toast.error(`Failed to open Coinbase onramp: ${error.message || 'Unknown error'}`);
     }
   };
 
