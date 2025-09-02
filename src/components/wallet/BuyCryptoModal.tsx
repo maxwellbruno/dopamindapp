@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { useWallets } from '@privy-io/react-auth';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BuyCryptoModalProps {
   isOpen: boolean;
@@ -40,27 +41,29 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     }
 
     try {
-      // Find the embedded wallet
-      const embeddedWallet = wallets.find(wallet => 
-        wallet.walletClientType === 'privy' || wallet.walletClientType === 'embedded'
-      );
+      toast.info('Connecting to Coinbase onramp...');
       
-      if (!embeddedWallet) {
-        toast.error('Embedded wallet not found');
-        return;
+      // Call our edge function to get the Coinbase onramp URL
+      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
+        body: {
+          walletAddress,
+          amount: parseFloat(amount),
+          cryptoCurrency: selectedToken
+        }
+      });
+
+      if (error || !data.success) {
+        throw new Error(data?.error || 'Failed to generate onramp URL');
       }
 
-      toast.info('Opening Coinbase onramp...');
+      // Redirect to Coinbase onramp
+      window.open(data.onrampUrl, '_blank');
       
-      // Use Privy's funding interface - Privy handles Coinbase onramp automatically
-      // when configured with the appropriate credentials in the Privy dashboard
-      await embeddedWallet.fund();
-      
-      toast.success('Funding interface opened successfully!');
+      toast.success('Redirected to Coinbase onramp!');
       onClose();
     } catch (error) {
-      console.error('Error opening funding interface:', error);
-      toast.error('Failed to open funding interface. Please try again.');
+      console.error('Error opening Coinbase onramp:', error);
+      toast.error('Failed to open Coinbase onramp. Please try again.');
     }
   };
 
@@ -141,13 +144,13 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Buy with Privy
+              Buy with Coinbase
             </Button>
           </div>
 
           {/* Disclaimer */}
           <div className="text-xs text-text-secondary bg-soft-gray rounded p-3">
-            <p><strong>Note:</strong> This uses Privy's secure funding interface. Transactions are processed on Base network.</p>
+            <p><strong>Note:</strong> This redirects you to Coinbase onramp for secure funding. Transactions are processed on Base network.</p>
           </div>
         </div>
       </DialogContent>
