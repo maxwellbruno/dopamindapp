@@ -40,9 +40,9 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     }
 
     try {
-      // Use Privy's embedded wallet for onramp
+      // Find the embedded wallet
       const embeddedWallet = wallets.find(wallet => 
-        wallet.walletClientType === 'privy'
+        wallet.walletClientType === 'privy' || wallet.walletClientType === 'embedded'
       );
       
       if (!embeddedWallet) {
@@ -50,18 +50,17 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         return;
       }
 
-      toast.info('Opening funding interface...');
+      toast.info('Opening Coinbase onramp...');
       
-      // For now, we'll use a simple approach - in production you would integrate with Privy's onramp
-      // This is a placeholder that shows the user they can fund via external services
-      const message = `To buy ${selectedToken} worth $${amount}, please use external services like Coinbase, Binance, or other fiat onramps to send tokens to your wallet address: ${walletAddress}`;
+      // Use Privy's funding interface - Privy handles Coinbase onramp automatically
+      // when configured with the appropriate credentials in the Privy dashboard
+      await embeddedWallet.fund();
       
-      toast.success('Instructions provided! Check your notifications.');
-      
+      toast.success('Funding interface opened successfully!');
       onClose();
     } catch (error) {
-      console.error('Error in buy crypto:', error);
-      toast.error('Please use external services to fund your wallet');
+      console.error('Error opening funding interface:', error);
+      toast.error('Failed to open funding interface. Please try again.');
     }
   };
 
