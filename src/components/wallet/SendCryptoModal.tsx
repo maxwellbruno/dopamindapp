@@ -92,7 +92,7 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
           params: [{
             from: walletAddress,
             to: recipientAddress,
-            value: parseEther(amount).toString(16)
+            value: '0x' + parseEther(amount).toString(16)
           }]
         });
         toast.success(`Transaction sent! Hash: ${txHash.slice(0, 10)}...`);

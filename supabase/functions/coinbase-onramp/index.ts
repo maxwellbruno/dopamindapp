@@ -18,21 +18,51 @@ function base64UrlEncode(data: ArrayBuffer | Uint8Array): string {
 }
 
 async function importPkcs8EcPrivateKey(pem: string): Promise<CryptoKey> {
-  // Expect PKCS#8 PEM: -----BEGIN PRIVATE KEY----- ... -----END PRIVATE KEY-----
-  const pemContents = pem
-    .replace(/\r/g, '')
-    .replace(/\n/g, '\n')
-    .replace(/-----BEGIN PRIVATE KEY-----/g, '')
-    .replace(/-----END PRIVATE KEY-----/g, '')
+  // Accept multiple formats and normalize newlines
+  // - PKCS#8 PEM (-----BEGIN PRIVATE KEY-----)
+  // - Headerless base64 PKCS#8
+  // - Env-stored PEM with escaped \n
+  const normalized = (pem || '')
+    .trim()
+    // Convert escaped newlines ("\n") into real newlines
+    .replace(/\\n/g, '\n')
+    .replace(/\r/g, '');
+
+  // If the secret looks like JSON (JWK), try importing as JWK
+  if (normalized.startsWith('{')) {
+    try {
+      const jwk = JSON.parse(normalized);
+      return await crypto.subtle.importKey(
+        'jwk',
+        jwk,
+        { name: 'ECDSA', namedCurve: 'P-256' },
+        false,
+        ['sign']
+      );
+    } catch (e) {
+      console.warn('Failed to import EC key as JWK, will try PEM/base64. Error:', e);
+    }
+  }
+
+  // Strip PEM headers if present and remove whitespace
+  const base64 = normalized
+    .replace(/-----BEGIN [^-]+-----/g, '')
+    .replace(/-----END [^-]+-----/g, '')
     .replace(/\s+/g, '');
-  const binaryDer = Uint8Array.from(atob(pemContents), (c) => c.charCodeAt(0));
-  return await crypto.subtle.importKey(
-    "pkcs8",
-    binaryDer,
-    { name: "ECDSA", namedCurve: "P-256" },
-    false,
-    ["sign"],
-  );
+
+  try {
+    const binaryDer = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+    return await crypto.subtle.importKey(
+      'pkcs8',
+      binaryDer,
+      { name: 'ECDSA', namedCurve: 'P-256' },
+      false,
+      ['sign']
+    );
+  } catch (e) {
+    console.error('Failed to import EC private key. Length:', base64.length);
+    throw new Error('Invalid Coinbase private key format. Please provide a PKCS#8 PEM (BEGIN PRIVATE KEY) or a valid JWK for P-256.');
+  }
 }
 
 async function createSessionToken({
