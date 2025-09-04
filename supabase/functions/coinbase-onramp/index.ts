@@ -122,11 +122,19 @@ serve(async (req) => {
     console.log("Credentials check:", {
       hasAppId: !!appId,
       hasKeyId: !!keyId,
-      hasPrivateKey: !!privateKey
+      hasPrivateKey: !!privateKey,
+      appIdLength: appId?.length,
+      keyIdLength: keyId?.length,
+      privateKeyLength: privateKey?.length
     });
     
     if (!appId || !keyId || !privateKey) {
-      throw new Error("Coinbase onramp credentials not configured");
+      console.error("Missing Coinbase credentials:", {
+        missingAppId: !appId,
+        missingKeyId: !keyId,
+        missingPrivateKey: !privateKey
+      });
+      throw new Error("Coinbase onramp credentials not configured. Please check your Supabase secrets.");
     }
 
     console.log("Creating session token...");
@@ -163,9 +171,23 @@ serve(async (req) => {
   } catch (error) {
     console.error("Error in coinbase-onramp function:", error);
     console.error("Error stack:", error.stack);
+    
+    // Return more detailed error information
+    const errorMessage = error?.message || "Internal server error";
+    const errorDetails = {
+      success: false,
+      error: errorMessage,
+      timestamp: new Date().toISOString()
+    };
+    
+    console.error("Returning error:", errorDetails);
+    
     return new Response(
-      JSON.stringify({ success: false, error: error?.message ?? "Internal server error" }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      JSON.stringify(errorDetails),
+      { 
+        status: error?.message?.includes("credentials") ? 503 : 400, 
+        headers: { ...corsHeaders, "Content-Type": "application/json" } 
+      },
     );
   }
 });

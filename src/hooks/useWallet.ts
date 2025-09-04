@@ -161,11 +161,24 @@ useEffect(() => {
 useEffect(() => {
   const sync = async () => {
     try {
+      console.log("Syncing Privy wallets:", {
+        privyWallets: privyWallets?.map(w => ({ 
+          address: w.address, 
+          clientType: w.walletClientType
+        })),
+        privyAuthenticated,
+        userId: user?.id
+      });
+      
       const embedded = (privyWallets || []).find((w: any) =>
         w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
       ) as any;
       const address: string | undefined = embedded?.address;
+      
+      console.log("Found embedded wallet:", { address, embedded: !!embedded });
+      
       if (user && address && wallet?.address !== address) {
+        console.log("Updating wallet address:", { old: wallet?.address, new: address });
         // Immediately reflect embedded wallet in UI
         setWallet({
           address,
@@ -178,6 +191,7 @@ useEffect(() => {
           privyDid: (privyUser as any)?.id,
           provider: 'privy',
         });
+        console.log("Wallet synced successfully");
       }
     } catch (e) {
       console.warn('Wallet sync skipped', e);

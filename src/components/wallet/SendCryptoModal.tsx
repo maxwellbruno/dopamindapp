@@ -82,12 +82,24 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
         return;
       }
 
+      // Get the wallet provider from Privy
+      const walletProvider = await embeddedWallet.getEthereumProvider();
+      
       if (selectedToken === 'ETH') {
-        // For now, show success message - in production this would send real transaction
-        toast.success(`${amount} ETH would be sent to ${recipientAddress.slice(0, 6)}...${recipientAddress.slice(-4)}`);
+        // Send ETH transaction
+        const txHash = await walletProvider.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: walletAddress,
+            to: recipientAddress,
+            value: parseEther(amount).toString(16)
+          }]
+        });
+        toast.success(`Transaction sent! Hash: ${txHash.slice(0, 10)}...`);
       } else {
-        // For tokens, we need to interact with contracts (placeholder for now)
-        toast.success(`${amount} ${selectedToken} would be sent to ${recipientAddress.slice(0, 6)}...${recipientAddress.slice(-4)}`);
+        // For tokens, we need to interact with contracts
+        toast.error('Token transfers not yet implemented');
+        return;
       }
       
       onClose();
@@ -171,7 +183,7 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
 
           <div className="bg-mint-green/10 rounded-lg p-4 border border-mint-green/20">
             <p className="text-sm text-text-secondary">
-              <strong>Note:</strong> This demonstrates the send functionality. Real transactions will be processed on Base network using Privy's wallet infrastructure.
+              <strong>Note:</strong> Transactions are processed on Base network. Make sure you have enough ETH for gas fees.
             </p>
           </div>
 
