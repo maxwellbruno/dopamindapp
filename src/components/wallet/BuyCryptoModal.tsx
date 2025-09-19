@@ -37,6 +37,8 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
     try {
       toast.info('Opening funding options...');
+      
+      // Use Privy's fundWallet with proper Base network configuration
       await fundWallet(walletAddress, {
         chain: base
       });
