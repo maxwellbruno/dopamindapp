@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
-import { useWallets } from '@privy-io/react-auth';
-import { supabase } from '@/integrations/supabase/client';
+import { useFundWallet } from '@privy-io/react-auth';
+import { base } from 'viem/chains';
 
 interface BuyCryptoModalProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 }) => {
   const [selectedToken, setSelectedToken] = useState('ETH');
   const [amount, setAmount] = useState('');
-  const { wallets } = useWallets();
+  const { fundWallet } = useFundWallet();
 
   const tokens = [
     { value: 'ETH', label: 'Ethereum (ETH)', price: '$3,200' },
@@ -35,51 +35,23 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       return;
     }
 
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error('Please enter a valid amount');
-      return;
-    }
+    // Amount is optional; Privy funding modal will collect it if needed
 
     try {
-      console.log('Starting buy crypto process...', {
-        walletAddress,
-        amount: parseFloat(amount),
-        cryptoCurrency: selectedToken
-      });
-      
-      toast.info('Connecting to Coinbase onramp...');
-      
-      // Call our edge function to get the Coinbase onramp URL
-      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
-        body: {
-          walletAddress,
-          amount: parseFloat(amount),
-          cryptoCurrency: selectedToken
+      toast.info('Opening funding options...');
+      await fundWallet(walletAddress, {
+        chain: base,
+        card: { preferredProvider: 'coinbase' },
+        defaultFundingMethod: 'card',
+        uiConfig: {
+          receiveFundsTitle: 'Fund your wallet',
+          receiveFundsSubtitle: 'Use Coinbase or other enabled methods'
         }
       });
-
-      console.log('Supabase function response:', { data, error });
-
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw new Error(`Supabase function error: ${error.message || 'Unknown error'}`);
-      }
-
-      if (!data || !data.success) {
-        console.error('Function returned error:', data);
-        throw new Error(data?.error || 'Failed to generate onramp URL');
-      }
-
-      console.log('Opening Coinbase URL:', data.onrampUrl);
-      
-      // Redirect to Coinbase onramp
-      window.open(data.onrampUrl, '_blank');
-      
-      toast.success('Redirected to Coinbase onramp!');
       onClose();
-    } catch (error) {
-      console.error('Error opening Coinbase onramp:', error);
-      toast.error(`Failed to open Coinbase onramp: ${error.message || 'Unknown error'}`);
+    } catch (error: any) {
+      console.error('Error opening Privy funding:', error);
+      toast.error(`Failed to open funding: ${error?.message || 'Unknown error'}`);
     }
   };
 
@@ -156,7 +128,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
             </Button>
             <Button
               onClick={handleBuyCrypto}
-              disabled={!walletAddress || !amount}
+              disabled={!walletAddress}
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
@@ -166,7 +138,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
           {/* Disclaimer */}
           <div className="text-xs text-text-secondary bg-soft-gray rounded p-3">
-            <p><strong>Note:</strong> This redirects you to Coinbase onramp for secure funding. Transactions are processed on Base network.</p>
+            <p><strong>Note:</strong> This opens Privy's funding modal (Coinbase, card, or exchange) for secure funding on the Base network.</p>
           </div>
         </div>
       </DialogContent>
