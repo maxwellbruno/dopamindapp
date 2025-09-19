@@ -29,24 +29,16 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     { value: 'USDT', label: 'Tether USD (USDT)', price: '$1.00' },
   ];
 
-  const handleBuyCrypto = async () => {
+  const handleFundWallet = async () => {
     if (!walletAddress) {
       toast.error('Please connect your wallet first');
       return;
     }
 
-    // Amount is optional; Privy funding modal will collect it if needed
-
     try {
       toast.info('Opening funding options...');
       await fundWallet(walletAddress, {
-        chain: base,
-        card: { preferredProvider: 'coinbase' },
-        defaultFundingMethod: 'card',
-        uiConfig: {
-          receiveFundsTitle: 'Add funds to your Dopamine wallet',
-          receiveFundsSubtitle: 'Choose your preferred funding method'
-        }
+        chain: base
       });
       onClose();
     } catch (error: any) {
@@ -67,7 +59,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-mint-green" />
-            Buy Crypto
+            Add Crypto
           </DialogTitle>
         </DialogHeader>
         
@@ -127,12 +119,12 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               Cancel
             </Button>
             <Button
-              onClick={handleBuyCrypto}
+              onClick={handleFundWallet}
               disabled={!walletAddress}
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Buy with Coinbase
+              Fund Wallet
             </Button>
           </div>
 
