@@ -44,8 +44,8 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         card: { preferredProvider: 'coinbase' },
         defaultFundingMethod: 'card',
         uiConfig: {
-          receiveFundsTitle: 'Fund your wallet',
-          receiveFundsSubtitle: 'Use Coinbase or other enabled methods'
+          receiveFundsTitle: 'Add funds to your Dopamine wallet',
+          receiveFundsSubtitle: 'Choose your preferred funding method'
         }
       });
       onClose();
@@ -103,8 +103,8 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
             </div>
 
             {amount && (
-              <div className="bg-soft-gray rounded-lg p-3">
-                <p className="text-sm text-text-secondary">You'll receive approximately:</p>
+              <div className="bg-light-gray rounded-lg p-3">
+                <p className="text-sm text-cool-gray">You'll receive approximately:</p>
                 <p className="font-semibold text-lg">
                   {calculateEstimate().toFixed(6)} {selectedToken}
                 </p>
@@ -116,8 +116,8 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           {walletAddress && (
             <div className="bg-mint-green/10 rounded-lg p-4 border border-mint-green/20">
               <h4 className="font-semibold text-sm text-mint-green mb-2">Destination Wallet</h4>
-              <p className="font-mono text-xs text-text-secondary break-all">{walletAddress}</p>
-              <p className="text-sm text-text-secondary mt-1">Base Network</p>
+              <p className="font-mono text-xs text-cool-gray break-all">{walletAddress}</p>
+              <p className="text-sm text-cool-gray mt-1">Base Network</p>
             </div>
           )}
 
@@ -137,7 +137,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           </div>
 
           {/* Disclaimer */}
-          <div className="text-xs text-text-secondary bg-soft-gray rounded p-3">
+          <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
             <p><strong>Note:</strong> This opens Privy's funding modal (Coinbase, card, or exchange) for secure funding on the Base network.</p>
           </div>
         </div>
