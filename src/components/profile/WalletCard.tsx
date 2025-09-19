@@ -3,6 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Wallet, Send, ArrowDownLeft, ShoppingCart, Coins } from 'lucide-react';
+import { formatBalance } from '@/lib/utils';
 
 interface WalletCardProps {
   walletAddress?: string;
@@ -78,7 +79,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
                   </div>
                   <span className="font-medium">Ethereum</span>
                 </div>
-                <span className="font-semibold">{ethBalance} ETH</span>
+                <span className="font-semibold">{formatBalance(ethBalance)} ETH</span>
               </div>
 
               <div className="flex justify-between items-center p-3 bg-soft-gray rounded-lg">
@@ -88,7 +89,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
                   </div>
                   <span className="font-medium">Tether USD</span>
                 </div>
-                <span className="font-semibold">{usdtBalance} USDT</span>
+                <span className="font-semibold">{formatBalance(usdtBalance, 4)} USDT</span>
               </div>
 
               <div className="flex justify-between items-center p-3 bg-gradient-to-r from-mint-green/10 to-calming-blue/10 rounded-lg border border-mint-green/20">
@@ -98,7 +99,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
                   </div>
                   <span className="font-medium">DOPAMINE</span>
                 </div>
-                <span className="font-semibold text-mint-green">{dopamineBalance} DOP</span>
+                <span className="font-semibold text-mint-green">{formatBalance(dopamineBalance)} DOP</span>
               </div>
             </div>
 
