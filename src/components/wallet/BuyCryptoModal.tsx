@@ -4,11 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ShoppingCart, CreditCard, Building2, Wallet2 } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
 import { useFundWallet } from '@privy-io/react-auth';
 import { base } from 'viem/chains';
-import { supabase } from '@/integrations/supabase/client';
 
 interface BuyCryptoModalProps {
   isOpen: boolean;
@@ -30,56 +29,6 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     { value: 'USDT', label: 'Tether USD (USDT)', price: '$1.00' },
   ];
 
-  const openOnramp = async (source: 'card' | 'exchange') => {
-    if (!walletAddress) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-    try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const accessToken = sessionData?.session?.access_token;
-      if (!accessToken) throw new Error('Not authenticated');
-
-      const resp = await fetch('https://brgycopmuuanrrqmrdmf.functions.supabase.co/coinbase-onramp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          walletAddress,
-          amount: Number(amount || 0) || 50,
-          cryptoCurrency: selectedToken,
-          fiatCurrency: 'USD',
-        }),
-      });
-      const data = await resp.json();
-      if (!resp.ok || !data?.onrampUrl) {
-        throw new Error(data?.error || 'Failed to start funding');
-      }
-      // Try opening in a new tab; fallback to same tab
-      const win = window.open(data.onrampUrl, '_blank', 'noopener');
-      if (!win) {
-        window.location.href = data.onrampUrl;
-      }
-    } catch (e: any) {
-      console.error('Onramp open failed:', e);
-      toast.error(e?.message || 'Could not start funding');
-    }
-  };
-
-  const handleCardFunding = () => openOnramp('card');
-  const handleExchangeFunding = () => openOnramp('exchange');
-  const handleTransferFromWallet = async () => {
-    if (!walletAddress) return toast.error('No wallet connected');
-    try {
-      await navigator.clipboard.writeText(walletAddress);
-      toast.success('Wallet address copied');
-    } catch {
-      toast.info('Address: ' + walletAddress);
-    }
-  };
-
   const handleFundWallet = async () => {
     if (!walletAddress) {
       toast.error('Please connect your wallet first');
@@ -87,12 +36,29 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     }
 
     try {
-      toast.info('Opening funding options...');
+      toast.info('Opening Privy funding options...');
       
       // Use Privy's fundWallet with proper Base network configuration
-      await fundWallet(walletAddress, {
+      // This will open Privy's native funding modal with all the methods you enabled
+      const config: any = {
         chain: base
-      });
+      };
+      
+      // Add amount if specified (must be string)
+      if (amount) {
+        config.amount = amount.toString();
+      }
+      
+      // Add asset preference if specified
+      if (selectedToken === 'ETH') {
+        config.asset = 'native-currency';
+      } else if (selectedToken === 'USDT') {
+        config.asset = 'USDC'; // Privy typically uses USDC instead of USDT
+      }
+      
+      await fundWallet(walletAddress, config);
+      
+      // Close our modal since Privy will handle the funding flow
       onClose();
     } catch (error: any) {
       console.error('Error opening Privy funding:', error);
@@ -120,7 +86,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           {/* Amount Input */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (USD)</Label>
+              <Label htmlFor="amount">Amount (USD) - Optional</Label>
               <Input
                 id="amount"
                 type="number"
@@ -132,7 +98,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="token">Token to Buy</Label>
+              <Label htmlFor="token">Token to Buy - Optional</Label>
               <Select value={selectedToken} onValueChange={setSelectedToken}>
                 <SelectTrigger>
                   <SelectValue />
@@ -155,22 +121,6 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
                 </p>
               </div>
             )}
-          </div>
-
-          {/* Funding Methods */}
-          <div className="space-y-2">
-            <Label>Funding methods</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <Button variant="outline" onClick={handleCardFunding} className="justify-start">
-                <CreditCard className="h-4 w-4 mr-2" /> Pay with card
-              </Button>
-              <Button variant="outline" onClick={handleExchangeFunding} className="justify-start">
-                <Building2 className="h-4 w-4 mr-2" /> Transfer from an exchange
-              </Button>
-              <Button variant="outline" onClick={handleTransferFromWallet} className="justify-start">
-                <Wallet2 className="h-4 w-4 mr-2" /> Transfer from wallet
-              </Button>
-            </div>
           </div>
 
           {/* Wallet Address Info */}
@@ -199,7 +149,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
           {/* Disclaimer */}
           <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
-            <p><strong>Note:</strong> This opens Privy's funding modal (Coinbase, card, or exchange) for secure funding on the Base network.</p>
+            <p><strong>Note:</strong> This opens Privy's funding modal with your enabled methods: Pay with card, Transfer from exchange, and Transfer from external wallet on Base network.</p>
           </div>
         </div>
       </DialogContent>
