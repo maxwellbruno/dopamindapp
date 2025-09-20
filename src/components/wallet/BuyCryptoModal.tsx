@@ -39,27 +39,24 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       toast.info('Opening Privy funding options...');
       
       // Use Privy's fundWallet with proper Base network configuration
-      // Build config per Privy EVM docs
-      const usdcOnBase = '0x833589fCD6EDB6E08F4c7C32D4f71B54BDeA02913';
-      const fundingConfig: any = {
-        address: walletAddress,
-        chain: base,
+      // This will open Privy's native funding modal with all the methods you enabled
+      const config: any = {
+        chain: base
       };
       
+      // Add amount if specified (must be string)
       if (amount) {
-        fundingConfig.amount = amount.toString();
+        config.amount = amount.toString();
       }
       
-      // For native ETH on Base, omit asset to fund native currency
-      if (selectedToken === 'USDT') {
-        // Map USDT option to USDC on Base (Privy-supported stablecoin)
-        fundingConfig.asset = { erc20: usdcOnBase };
+      // Add asset preference if specified
+      if (selectedToken === 'ETH') {
+        config.asset = 'native-currency';
+      } else if (selectedToken === 'USDT') {
+        config.asset = 'USDC'; // Privy typically uses USDC instead of USDT
       }
       
-      // Prefer Coinbase provider to match your dashboard setup
-      fundingConfig.card = { preferredProvider: 'coinbase' };
-      
-      await fundWallet(fundingConfig);
+      await fundWallet(walletAddress, config);
       
       // Close our modal since Privy will handle the funding flow
       onClose();
