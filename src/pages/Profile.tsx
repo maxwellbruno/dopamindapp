@@ -149,7 +149,7 @@ const Profile: React.FC = () => {
               <WalletCard
                 walletAddress={wallet?.address}
                 ethBalance={balances.eth}
-                usdtBalance={balances.usdt}
+                usdcBalance={balances.usdc}
                 dopamineBalance={balances.dopamine}
                 onConnect={handleWalletConnect}
                 onSend={handleSendCrypto}
@@ -186,7 +186,7 @@ const Profile: React.FC = () => {
         onClose={() => setSendModalOpen(false)}
         walletAddress={wallet?.address}
         ethBalance={balances.eth}
-        usdtBalance={balances.usdt}
+        usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
       />
       

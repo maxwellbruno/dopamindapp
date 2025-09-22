@@ -14,7 +14,7 @@ interface SendCryptoModalProps {
   onClose: () => void;
   walletAddress?: string;
   ethBalance: string;
-  usdtBalance: string;
+  usdcBalance: string;
   dopamineBalance: string;
 }
 
@@ -23,7 +23,7 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
   onClose,
   walletAddress,
   ethBalance,
-  usdtBalance,
+  usdcBalance,
   dopamineBalance
 }) => {
   const [recipientAddress, setRecipientAddress] = useState('');
@@ -35,7 +35,7 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
   const getMaxBalance = () => {
     switch (selectedToken) {
       case 'ETH': return ethBalance;
-      case 'USDT': return usdtBalance;
+      case 'USDC': return usdcBalance;
       case 'DOPAMINE': return dopamineBalance;
       default: return '0.00';
     }
@@ -136,7 +136,7 @@ const SendCryptoModal: React.FC<SendCryptoModalProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="ETH">ETH (Balance: {ethBalance})</SelectItem>
-                <SelectItem value="USDT">USDT (Balance: {usdtBalance})</SelectItem>
+                <SelectItem value="USDC">USDC (Balance: {usdcBalance})</SelectItem>
                 <SelectItem value="DOPAMINE">DOPAMINE (Balance: {dopamineBalance})</SelectItem>
               </SelectContent>
             </Select>

@@ -12,7 +12,7 @@ interface WalletData {
 
 interface TokenBalances {
   eth: string;
-  usdt: string;
+  usdc: string;
   dopamine: string;
 }
 
@@ -21,7 +21,7 @@ export const useWallet = () => {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const [balances, setBalances] = useState<TokenBalances>({
     eth: '0.00',
-    usdt: '0.00',
+    usdc: '0.00',
     dopamine: '0.00'
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -116,8 +116,8 @@ const connectWallet = async () => {
   }
 };
 
-  // Token contract addresses on Base network
-  const USDT_CONTRACT = '0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2'; // USDT on Base
+// Token contract addresses on Base network
+  const USDC_CONTRACT = '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913'; // USDC on Base
   const DOPAMINE_CONTRACT = '0x0000000000000000000000000000000000000000'; // Placeholder - replace with actual DOPAMINE token contract
 
   // Create Base network client
@@ -142,7 +142,7 @@ const connectWallet = async () => {
       // In production, replace with actual token contract calls
       setBalances({
         eth: formatEther(ethBalance),
-        usdt: '0.00', // Placeholder - will be fetched from USDT contract
+        usdc: '0.00', // Placeholder - will be fetched from USDC contract
         dopamine: '0.00' // Placeholder - will be fetched from DOPAMINE contract
       });
     } catch (error) {

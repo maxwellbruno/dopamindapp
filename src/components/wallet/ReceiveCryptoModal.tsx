@@ -91,7 +91,7 @@ const ReceiveCryptoModal: React.FC<ReceiveCryptoModalProps> = ({
             <h4 className="font-semibold text-sm">Network Information</h4>
             <div className="text-sm text-text-secondary space-y-1">
               <p><span className="font-medium">Network:</span> Base Mainnet</p>
-              <p><span className="font-medium">Supported Tokens:</span> ETH, USDT, DOPAMINE</p>
+              <p><span className="font-medium">Supported Tokens:</span> ETH, USDC, DOPAMINE</p>
               <p><span className="font-medium">Chain ID:</span> 8453</p>
             </div>
           </div>

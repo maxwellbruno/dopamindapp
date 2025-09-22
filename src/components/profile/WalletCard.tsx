@@ -8,7 +8,7 @@ import { formatBalance } from '@/lib/utils';
 interface WalletCardProps {
   walletAddress?: string;
   ethBalance?: string;
-  usdtBalance?: string;
+  usdcBalance?: string;
   dopamineBalance?: string;
   onConnect: () => void;
   onSend: () => void;
@@ -20,7 +20,7 @@ interface WalletCardProps {
 const WalletCard: React.FC<WalletCardProps> = ({
   walletAddress,
   ethBalance = "0.00",
-  usdtBalance = "0.00",
+  usdcBalance = "0.00",
   dopamineBalance = "0.00",
   onConnect,
   onSend,
@@ -85,11 +85,11 @@ const WalletCard: React.FC<WalletCardProps> = ({
               <div className="flex justify-between items-center p-3 bg-soft-gray rounded-lg">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs font-bold">USDT</span>
+                    <span className="text-white text-xs font-bold">USDC</span>
                   </div>
-                  <span className="font-medium">Tether USD</span>
+                  <span className="font-medium">USD Coin</span>
                 </div>
-                <span className="font-semibold">{formatBalance(usdtBalance, 4)} USDT</span>
+                <span className="font-semibold">{formatBalance(usdcBalance, 4)} USDC</span>
               </div>
 
               <div className="flex justify-between items-center p-3 bg-gradient-to-r from-mint-green/10 to-calming-blue/10 rounded-lg border border-mint-green/20">

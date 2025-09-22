@@ -26,7 +26,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
   const tokens = [
     { value: 'ETH', label: 'Ethereum (ETH)', price: '$3,200' },
-    { value: 'USDT', label: 'Tether USD (USDT)', price: '$1.00' },
+    { value: 'USDC', label: 'USD Coin (USDC)', price: '$1.00' },
   ];
 
   const handleFundWallet = async () => {
@@ -41,12 +41,13 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       // Build Privy funding config per docs
       const config: any = {
         chain: base,
-        card: { preferredProvider: 'coinbase' }
+        card: { preferredProvider: 'coinbase' },
+        exchange: { preferredProvider: 'coinbase' }
       };
       
       // Only pass amount when funding with a stablecoin (interpreted as asset amount, not USD)
-      if (selectedToken === 'USDT') {
-        config.asset = 'USDC'; // map USDT selection to USDC on Base for Coinbase Onramp
+      if (selectedToken === 'USDC') {
+        config.asset = 'USDC';
         if (amount) {
           config.amount = amount.toString(); // amount in USDC units (e.g., '100' == 100 USDC)
         }
