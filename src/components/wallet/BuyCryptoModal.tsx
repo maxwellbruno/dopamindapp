@@ -39,28 +39,22 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       toast.info('Opening Privy funding options...');
       
       // Build Privy funding config per docs
-      const options: any = {
+      const config: any = {
         chain: base,
         card: { preferredProvider: 'coinbase' },
-        exchange: { preferredProvider: 'coinbase' },
+        exchange: { preferredProvider: 'coinbase' }
       };
       
+      // Only pass amount when funding with a stablecoin (interpreted as asset amount, not USD)
       if (selectedToken === 'USDC') {
-        options.asset = 'USDC';
-        options.amount = (amount && amount !== '') ? amount.toString() : '15';
-      } else {
-        // ETH on Base; if amount provided, use it, otherwise a small default
+        config.asset = 'USDC';
         if (amount) {
-          options.amount = amount.toString();
-        } else {
-          options.amount = '0.01';
+          config.amount = amount.toString(); // amount in USDC units (e.g., '100' == 100 USDC)
         }
       }
+      // For ETH, omit asset and amount so Privy defaults to native-currency with dashboard amount
       
-      await fundWallet({
-        address: walletAddress,
-        ...options,
-      });
+      await fundWallet(walletAddress, config);
       
       // Close our modal since Privy will handle the funding flow
       onClose();
@@ -90,7 +84,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           {/* Amount Input */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (token units) - Optional</Label>
+              <Label htmlFor="amount">Amount (USD) - Optional</Label>
               <Input
                 id="amount"
                 type="number"
@@ -117,6 +111,14 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               </Select>
             </div>
 
+            {amount && (
+              <div className="bg-light-gray rounded-lg p-3">
+                <p className="text-sm text-cool-gray">You'll receive approximately:</p>
+                <p className="font-semibold text-lg">
+                  {calculateEstimate().toFixed(6)} {selectedToken}
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Wallet Address Info */}
