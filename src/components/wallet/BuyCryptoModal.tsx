@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { useFundWallet } from '@privy-io/react-auth';
 import { base } from 'viem/chains';
 
+
 interface BuyCryptoModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -35,31 +36,38 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       return;
     }
 
-    try {
-      toast.info('Opening Privy funding options...');
-      
-      // Build Privy funding config per docs (remove invalid `exchange` key)
-      const config: any = {
-        chain: base,
-        card: { preferredProvider: 'coinbase' }
-      };
-      
-      // Only pass amount when funding with a stablecoin (interpreted as asset amount, not USD)
-      if (selectedToken === 'USDC') {
-        config.asset = 'USDC';
-        if (amount) {
-          config.amount = amount.toString(); // amount in USDC units (e.g., '100' == 100 USDC)
+      try {
+        // Validate amount and enforce minimums
+        if (!amount) {
+          toast.error('Please enter an amount to add');
+          return;
         }
+        const amt = parseFloat(amount);
+        const min = selectedToken === 'ETH' ? 0.000333 : 1;
+        if (isNaN(amt) || amt < min) {
+          toast.error(`Minimum is ${min} ${selectedToken}`);
+          return;
+        }
+
+        toast.info('Opening Coinbase Onramp...');
+
+        const config: any = {
+          chain: base,
+          amount: amount.toString(),
+          card: { preferredProvider: 'coinbase' },
+          defaultFundingMethod: 'card',
+        };
+
+        if (selectedToken === 'USDC') {
+          config.asset = 'USDC';
+        }
+
+        onClose();
+        await fundWallet(walletAddress, config);
+      } catch (error: any) {
+        console.error('Error opening Privy funding:', error);
+        toast.error(`Failed to open funding: ${error?.message || 'Unknown error'}`);
       }
-      // For ETH, omit asset and amount so Privy defaults to native-currency with dashboard amount
-      
-      // Close our modal before opening Privy's flow to avoid overlay conflicts
-      onClose();
-      await fundWallet(walletAddress, config);
-    } catch (error: any) {
-      console.error('Error opening Privy funding:', error);
-      toast.error(`Failed to open funding: ${error?.message || 'Unknown error'}`);
-    }
   };
 
   const calculateEstimate = () => {
