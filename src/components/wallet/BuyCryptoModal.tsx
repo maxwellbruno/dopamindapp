@@ -63,9 +63,9 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   };
 
   const calculateEstimate = () => {
-    if (!amount || !selectedToken) return 0;
-    const tokenPrice = selectedToken === 'ETH' ? 3200 : 1;
-    return parseFloat(amount) / tokenPrice;
+    if (!amount) return 0;
+    const val = parseFloat(amount);
+    return isNaN(val) ? 0 : val;
   };
 
   return (
@@ -82,19 +82,23 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           {/* Amount Input */}
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="amount">Amount (USD) - Optional</Label>
+              <Label htmlFor="amount">
+                Amount ({selectedToken === 'ETH' ? 'ETH' : 'USDC'}) — {selectedToken === 'ETH' ? 'min 0.000333 ETH' : 'min 1 USDC'}
+              </Label>
               <Input
                 id="amount"
                 type="number"
-                placeholder="100"
+                placeholder={selectedToken === 'ETH' ? '0.000333' : '10'}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                min="1"
+                min={selectedToken === 'ETH' ? '0.000333' : '1'}
+                step={selectedToken === 'ETH' ? '0.000001' : '0.01'}
+                required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="token">Token to Buy - Optional</Label>
+              <Label htmlFor="token">Token to Add</Label>
               <Select value={selectedToken} onValueChange={setSelectedToken}>
                 <SelectTrigger>
                   <SelectValue />
