@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Wallet, Send, ArrowDownLeft, ShoppingCart, Coins } from 'lucide-react';
+import { Wallet, Send, ShoppingCart, Coins } from 'lucide-react';
 import { formatBalance } from '@/lib/utils';
 
 interface WalletCardProps {
@@ -104,7 +104,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
             </div>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-3 gap-2 pt-4">
+            <div className="grid grid-cols-2 gap-2 pt-4">
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -115,15 +115,6 @@ const WalletCard: React.FC<WalletCardProps> = ({
                 <span className="text-xs">Send</span>
               </Button>
               
-              <Button 
-                variant="outline" 
-                size="sm" 
-                onClick={onReceive}
-                className="flex flex-col items-center gap-1 h-auto py-3"
-              >
-                <ArrowDownLeft className="h-4 w-4" />
-                <span className="text-xs">Receive</span>
-              </Button>
               
               <Button 
                 variant="outline" 
@@ -132,7 +123,7 @@ const WalletCard: React.FC<WalletCardProps> = ({
                 className="flex flex-col items-center gap-1 h-auto py-3"
               >
                 <ShoppingCart className="h-4 w-4" />
-                <span className="text-xs">Buy</span>
+                <span className="text-xs">Add Funds</span>
               </Button>
             </div>
           </>

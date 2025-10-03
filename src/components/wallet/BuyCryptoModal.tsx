@@ -38,11 +38,10 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     try {
       toast.info('Opening Privy funding options...');
       
-      // Build Privy funding config per docs
+      // Build Privy funding config per docs (remove invalid `exchange` key)
       const config: any = {
         chain: base,
-        card: { preferredProvider: 'coinbase' },
-        exchange: { preferredProvider: 'coinbase' }
+        card: { preferredProvider: 'coinbase' }
       };
       
       // Only pass amount when funding with a stablecoin (interpreted as asset amount, not USD)
@@ -54,10 +53,9 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       }
       // For ETH, omit asset and amount so Privy defaults to native-currency with dashboard amount
       
-      await fundWallet(walletAddress, config);
-      
-      // Close our modal since Privy will handle the funding flow
+      // Close our modal before opening Privy's flow to avoid overlay conflicts
       onClose();
+      await fundWallet(walletAddress, config);
     } catch (error: any) {
       console.error('Error opening Privy funding:', error);
       toast.error(`Failed to open funding: ${error?.message || 'Unknown error'}`);
@@ -76,7 +74,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5 text-mint-green" />
-            Add Crypto
+            Add Funds
           </DialogTitle>
         </DialogHeader>
         
@@ -141,7 +139,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Fund Wallet
+              Add Funds
             </Button>
           </div>
 
