@@ -3,11 +3,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
-import { useFundWallet } from '@privy-io/react-auth';
-import { base } from 'viem/chains';
+import { supabase } from '@/integrations/supabase/client';
 
 
 interface BuyCryptoModalProps {
@@ -21,14 +19,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   onClose,
   walletAddress
 }) => {
-  const [selectedToken, setSelectedToken] = useState('ETH');
   const [amount, setAmount] = useState('');
-  const { fundWallet } = useFundWallet();
-
-  const tokens = [
-    { value: 'ETH', label: 'Ethereum (ETH)', price: '$3,200' },
-    { value: 'USDC', label: 'USD Coin (USDC)', price: '$1.00' },
-  ];
 
   const handleFundWallet = async () => {
     if (!walletAddress) {
@@ -36,38 +27,47 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       return;
     }
 
-      try {
-        // Validate amount and enforce minimums
-        if (!amount) {
-          toast.error('Please enter an amount to add');
-          return;
-        }
-        const amt = parseFloat(amount);
-        const min = selectedToken === 'ETH' ? 0.000333 : 1;
-        if (isNaN(amt) || amt < min) {
-          toast.error(`Minimum is ${min} ${selectedToken}`);
-          return;
-        }
+    // Validate amount and enforce minimums for ETH on Base
+    if (!amount) {
+      toast.error('Please enter an amount to add');
+      return;
+    }
+    const amt = parseFloat(amount);
+    if (isNaN(amt) || amt < 0.000333) {
+      toast.error('Minimum is 0.000333 ETH');
+      return;
+    }
 
-        toast.info('Opening Coinbase Onramp...');
+    // Open a window immediately to avoid popup blockers
+    const popup = window.open('about:blank', '_blank', 'noopener,noreferrer');
 
-        const config: any = {
-          chain: base,
-          amount: amount.toString(),
-          card: { preferredProvider: 'coinbase' },
-          defaultFundingMethod: 'card',
-        };
+    try {
+      onClose();
 
-        if (selectedToken === 'USDC') {
-          config.asset = 'USDC';
-        }
+      // Create a Coinbase Onramp session via our Edge Function
+      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
+        body: {
+          walletAddress,
+          amount: amt.toString(),
+          cryptoCurrency: 'ETH',
+          fiatCurrency: 'USD',
+        },
+      });
 
-        onClose();
-        await fundWallet(walletAddress, config);
-      } catch (error: any) {
-        console.error('Error opening Privy funding:', error);
-        toast.error(`Failed to open funding: ${error?.message || 'Unknown error'}`);
+      if (error || !data?.onrampUrl) {
+        throw new Error(error?.message || 'Failed to create onramp session');
       }
+
+      if (popup) {
+        popup.location.href = data.onrampUrl;
+      } else {
+        window.location.href = data.onrampUrl;
+      }
+    } catch (error) {
+      console.error('Funding error:', error);
+      if (popup && !popup.closed) popup.close();
+      toast.error('Unable to open Coinbase Onramp. Please try again.');
+    }
   };
 
   const calculateEstimate = () => {
@@ -103,22 +103,6 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
                 step={selectedToken === 'ETH' ? '0.000001' : '0.01'}
                 required
               />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="token">Token to Add</Label>
-              <Select value={selectedToken} onValueChange={setSelectedToken}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {tokens.map((token) => (
-                    <SelectItem key={token.value} value={token.value}>
-                      {token.label} - {token.price}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
             </div>
 
             {amount && (
