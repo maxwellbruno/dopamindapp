@@ -11,7 +11,6 @@ import SettingsCard from '../components/profile/SettingsCard';
 import WalletCard from '../components/profile/WalletCard';
 import RewardsCard from '../components/profile/RewardsCard';
 import SendCryptoModal from '../components/wallet/SendCryptoModal';
-import ReceiveCryptoModal from '../components/wallet/ReceiveCryptoModal';
 import BuyCryptoModal from '../components/wallet/BuyCryptoModal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -34,7 +33,6 @@ const Profile: React.FC = () => {
 
   // Modal states
   const [sendModalOpen, setSendModalOpen] = useState(false);
-  const [receiveModalOpen, setReceiveModalOpen] = useState(false);
   const [buyModalOpen, setBuyModalOpen] = useState(false);
 
   useEffect(() => {
@@ -109,14 +107,6 @@ const Profile: React.FC = () => {
     setSendModalOpen(true);
   };
 
-  const handleReceiveCrypto = () => {
-    if (!isConnected) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-    setReceiveModalOpen(true);
-  };
-
   const handleBuyCrypto = () => {
     if (!isConnected) {
       toast.error('Please connect your wallet first');
@@ -153,7 +143,6 @@ const Profile: React.FC = () => {
                 dopamineBalance={balances.dopamine}
                 onConnect={handleWalletConnect}
                 onSend={handleSendCrypto}
-                onReceive={handleReceiveCrypto}
                 onBuy={handleBuyCrypto}
                 isConnected={isConnected}
               />
@@ -188,12 +177,6 @@ const Profile: React.FC = () => {
         ethBalance={balances.eth}
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
-      />
-      
-      <ReceiveCryptoModal
-        isOpen={receiveModalOpen}
-        onClose={() => setReceiveModalOpen(false)}
-        walletAddress={wallet?.address}
       />
       
       <BuyCryptoModal

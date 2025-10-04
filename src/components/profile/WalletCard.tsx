@@ -12,7 +12,6 @@ interface WalletCardProps {
   dopamineBalance?: string;
   onConnect: () => void;
   onSend: () => void;
-  onReceive: () => void;
   onBuy: () => void;
   isConnected: boolean;
 }
@@ -24,7 +23,6 @@ const WalletCard: React.FC<WalletCardProps> = ({
   dopamineBalance = "0.00",
   onConnect,
   onSend,
-  onReceive,
   onBuy,
   isConnected
 }) => {
