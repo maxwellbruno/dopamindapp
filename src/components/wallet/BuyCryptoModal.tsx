@@ -91,16 +91,16 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="amount">
-                Amount ({selectedToken === 'ETH' ? 'ETH' : 'USDC'}) — {selectedToken === 'ETH' ? 'min 0.000333 ETH' : 'min 1 USDC'}
+                Amount (ETH) — min 0.000333 ETH
               </Label>
               <Input
                 id="amount"
                 type="number"
-                placeholder={selectedToken === 'ETH' ? '0.000333' : '10'}
+                placeholder="0.000333"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                min={selectedToken === 'ETH' ? '0.000333' : '1'}
-                step={selectedToken === 'ETH' ? '0.000001' : '0.01'}
+                min="0.000333"
+                step="0.000001"
                 required
               />
             </div>
@@ -109,7 +109,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               <div className="bg-light-gray rounded-lg p-3">
                 <p className="text-sm text-cool-gray">You'll receive approximately:</p>
                 <p className="font-semibold text-lg">
-                  {calculateEstimate().toFixed(6)} {selectedToken}
+                  {calculateEstimate().toFixed(6)} ETH
                 </p>
               </div>
             )}
@@ -141,7 +141,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
           {/* Disclaimer */}
           <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
-            <p><strong>Note:</strong> This opens Privy's funding modal with your enabled methods: Pay with card, Transfer from exchange, and Transfer from external wallet on Base network.</p>
+            <p><strong>Note:</strong> This opens Coinbase Onramp in a new tab for ETH on Base. You can pay with card or transfer from Coinbase.</p>
           </div>
         </div>
       </DialogContent>
