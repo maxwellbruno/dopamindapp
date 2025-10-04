@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
+import { useFundWallet } from '@privy-io/react-auth';
+import { base } from 'viem/chains';
 
 
 interface BuyCryptoModalProps {
@@ -20,6 +21,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   walletAddress
 }) => {
   const [amount, setAmount] = useState('');
+  const { fundWallet } = useFundWallet();
 
   const handleFundWallet = async () => {
     if (!walletAddress) {
@@ -27,7 +29,6 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       return;
     }
 
-    // Validate amount and enforce minimums for ETH on Base
     if (!amount) {
       toast.error('Please enter an amount to add');
       return;
@@ -38,35 +39,19 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
       return;
     }
 
-    // Open a window immediately to avoid popup blockers
-    const popup = window.open('about:blank', '_blank', 'noopener,noreferrer');
-
     try {
+      // Close this modal so the Privy funding UI is clearly visible
       onClose();
 
-      // Create a Coinbase Onramp session via our Edge Function
-      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
-        body: {
-          walletAddress,
-          amount: amt.toString(),
-          cryptoCurrency: 'ETH',
-          fiatCurrency: 'USD',
-        },
+      // Open Privy's funding modal with ETH on Base
+      await fundWallet(walletAddress, {
+        chain: base,
+        amount: amt.toString(),
+        // asset defaults to 'native-currency' (ETH)
       });
-
-      if (error || !data?.onrampUrl) {
-        throw new Error(error?.message || 'Failed to create onramp session');
-      }
-
-      if (popup) {
-        popup.location.href = data.onrampUrl;
-      } else {
-        window.location.href = data.onrampUrl;
-      }
     } catch (error) {
       console.error('Funding error:', error);
-      if (popup && !popup.closed) popup.close();
-      toast.error('Unable to open Coinbase Onramp. Please try again.');
+      toast.error('Unable to open funding options. Please try again.');
     }
   };
 
@@ -141,7 +126,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
           {/* Disclaimer */}
           <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
-            <p><strong>Note:</strong> This opens Coinbase Onramp in a new tab for ETH on Base. You can pay with card or transfer from Coinbase.</p>
+            <p><strong>Note:</strong> This opens the Privy funding modal for ETH on Base with options to Pay with card, Transfer from an exchange, Transfer from wallet, or Receive funds.</p>
           </div>
         </div>
       </DialogContent>
