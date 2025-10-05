@@ -21,7 +21,16 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   walletAddress
 }) => {
   const [amount, setAmount] = useState('');
-  const { fundWallet } = useFundWallet();
+  const { fundWallet } = useFundWallet({
+    onUserExited: ({ fundingMethod, chain, address, balance }) => {
+      console.log('Funding flow exited', {
+        fundingMethod,
+        chain: (chain as any)?.id ?? chain,
+        address,
+        balance,
+      });
+    },
+  });
 
   const handleFundWallet = async () => {
     if (!walletAddress) {
@@ -40,15 +49,15 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     }
 
     try {
-      // Close this modal so the Privy funding UI is clearly visible
-      onClose();
-
-      // Open Privy's funding modal with ETH on Base
+      // Open Privy's funding modal with ETH on Base (Coinbase preferred)
       await fundWallet(walletAddress, {
         chain: base,
         amount: amt.toString(),
+        card: { preferredProvider: 'coinbase' },
         // asset defaults to 'native-currency' (ETH)
       });
+      // Close after opening to preserve user gesture
+      onClose();
     } catch (error) {
       console.error('Funding error:', error);
       toast.error('Unable to open funding options. Please try again.');
