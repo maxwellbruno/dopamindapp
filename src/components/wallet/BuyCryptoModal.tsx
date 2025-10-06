@@ -5,8 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
-import { useFundWallet } from '@privy-io/react-auth';
-import { base } from 'viem/chains';
+import { supabase } from '@/integrations/supabase/client';
 
 
 interface BuyCryptoModalProps {
@@ -21,46 +20,59 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   walletAddress
 }) => {
   const [amount, setAmount] = useState('');
-  const { fundWallet } = useFundWallet({
-    onUserExited: ({ fundingMethod, chain, address, balance }) => {
-      console.log('Funding flow exited', {
-        fundingMethod,
-        chain: (chain as any)?.id ?? chain,
-        address,
-        balance,
-      });
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFundWallet = async () => {
     if (!walletAddress) {
-      toast.error('Please connect your wallet first');
+      toast.error('No wallet connected');
       return;
     }
 
-    if (!amount) {
-      toast.error('Please enter an amount to add');
-      return;
-    }
     const amt = parseFloat(amount);
-    if (isNaN(amt) || amt < 0.000333) {
-      toast.error('Minimum is 0.000333 ETH');
+    if (isNaN(amt) || amt <= 0) {
+      toast.error('Please enter a valid amount');
       return;
     }
 
+    setIsLoading(true);
     try {
-      // Open Privy's funding modal with ETH on Base (Coinbase preferred)
-      await fundWallet(walletAddress, {
-        chain: base,
-        amount: amt.toString(),
-        card: { preferredProvider: 'coinbase' },
-        // asset defaults to 'native-currency' (ETH)
+      // Get the current session
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        toast.error('Please log in to add funds');
+        return;
+      }
+
+      // Call the coinbase-onramp edge function
+      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
+        body: {
+          walletAddress,
+          amount: amt,
+          cryptoCurrency: 'ETH',
+          fiatCurrency: 'USD'
+        }
       });
-      // Close after opening to preserve user gesture
-      onClose();
+
+      if (error) {
+        console.error('Coinbase onramp error:', error);
+        toast.error('Failed to initialize Coinbase Onramp. Please try again.');
+        return;
+      }
+
+      if (data?.success && data?.onrampUrl) {
+        // Open Coinbase Onramp in a new window
+        window.open(data.onrampUrl, '_blank', 'noopener,noreferrer');
+        toast.success('Opening Coinbase Onramp...');
+        onClose();
+      } else {
+        toast.error('Failed to get onramp URL');
+      }
     } catch (error) {
       console.error('Funding error:', error);
-      toast.error('Unable to open funding options. Please try again.');
+      toast.error('Unable to open Coinbase Onramp. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -125,17 +137,16 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
             </Button>
             <Button
               onClick={handleFundWallet}
-              disabled={!walletAddress}
+              disabled={!walletAddress || isLoading}
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Add Funds
+              {isLoading ? 'Opening Coinbase...' : 'Add Funds'}
             </Button>
           </div>
 
-          {/* Disclaimer */}
           <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
-            <p><strong>Note:</strong> This opens the Privy funding modal for ETH on Base with options to Pay with card, Transfer from an exchange, Transfer from wallet, or Receive funds.</p>
+            <p><strong>Note:</strong> This opens Coinbase Onramp where you can add funds using card payment or transfer from an exchange.</p>
           </div>
         </div>
       </DialogContent>
