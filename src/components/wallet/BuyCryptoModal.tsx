@@ -23,6 +23,10 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleFundWallet = async () => {
+    console.log('🚀 handleFundWallet called');
+    console.log('Wallet address:', walletAddress);
+    console.log('Amount:', amount);
+    
     if (!walletAddress) {
       toast.error('No wallet connected');
       return;
@@ -38,12 +42,15 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
     try {
       // Get the current session
       const { data: { session } } = await supabase.auth.getSession();
+      console.log('Session exists:', !!session);
       
       if (!session) {
         toast.error('Please log in to add funds');
         return;
       }
 
+      console.log('Calling coinbase-onramp edge function...');
+      
       // Call the coinbase-onramp edge function
       const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
         body: {
@@ -54,23 +61,31 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         }
       });
 
+      console.log('Edge function response:', { data, error });
+
       if (error) {
         console.error('Coinbase onramp error:', error);
-        toast.error('Failed to initialize Coinbase Onramp. Please try again.');
+        toast.error(`Failed to initialize Coinbase Onramp: ${error.message}`);
         return;
       }
 
       if (data?.success && data?.onrampUrl) {
+        console.log('Opening Coinbase URL:', data.onrampUrl);
         // Open Coinbase Onramp in a new window
-        window.open(data.onrampUrl, '_blank', 'noopener,noreferrer');
-        toast.success('Opening Coinbase Onramp...');
-        onClose();
+        const popup = window.open(data.onrampUrl, '_blank', 'noopener,noreferrer');
+        if (!popup) {
+          toast.error('Pop-up blocked. Please allow pop-ups for this site.');
+        } else {
+          toast.success('Opening Coinbase Onramp...');
+          onClose();
+        }
       } else {
+        console.error('Invalid response from edge function:', data);
         toast.error('Failed to get onramp URL');
       }
     } catch (error) {
       console.error('Funding error:', error);
-      toast.error('Unable to open Coinbase Onramp. Please try again.');
+      toast.error(`Unable to open Coinbase Onramp: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
