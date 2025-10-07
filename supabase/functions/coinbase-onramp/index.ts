@@ -127,17 +127,26 @@ serve(async (req) => {
 
     console.log("Supabase client created");
 
-    // Verify user
-    const authHeader = req.headers.get("Authorization");
-    console.log("Auth header present:", !!authHeader);
-    if (!authHeader) throw new Error("No authorization header");
+// Optional auth: proceed even without Supabase session
+const authHeader = req.headers.get("Authorization");
+console.log("Auth header present:", !!authHeader);
 
+let userId: string | null = null;
+if (authHeader) {
+  try {
     const token = authHeader.replace("Bearer ", "");
     const { data: authData, error: authError } = await supabase.auth.getUser(token);
     console.log("Auth verification result:", { hasUser: !!authData?.user, authError });
-    if (authError || !authData?.user) throw new Error(`Unauthorized: ${authError?.message || 'No user'}`);
+    if (authData?.user) userId = authData.user.id;
+    else console.warn("Proceeding without authenticated user:", authError?.message);
+  } catch (e) {
+    console.warn("Auth verification exception, proceeding public:", (e as any)?.message);
+  }
+} else {
+  console.warn("No authorization header. Proceeding as public request.");
+}
 
-    const requestBody = await req.json();
+const requestBody = await req.json();
     console.log("Request body:", requestBody);
     
     const { walletAddress, amount, cryptoCurrency, fiatCurrency = "USD" } = requestBody;
@@ -191,7 +200,7 @@ serve(async (req) => {
     url.searchParams.set("presetFiatAmount", String(amount));
     url.searchParams.set("defaultNetwork", "base");
 
-    console.log("Generated Coinbase onramp URL for user:", authData.user.id);
+    console.log("Generated Coinbase onramp URL for user:", userId ?? 'anonymous');
     console.log("Final URL:", url.toString());
 
     return new Response(
