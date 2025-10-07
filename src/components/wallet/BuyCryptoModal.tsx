@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ShoppingCart } from 'lucide-react';
 import { toast } from 'sonner';
-import { supabase } from '@/integrations/supabase/client';
-
+import { useFundWallet } from '@privy-io/react-auth';
+import { base } from 'viem/chains';
 
 interface BuyCryptoModalProps {
   isOpen: boolean;
@@ -22,11 +22,13 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
   const [amount, setAmount] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const { fundWallet } = useFundWallet();
+
   const handleFundWallet = async () => {
-    console.log('🚀 handleFundWallet called');
+    console.log('🟦 fundWallet via Privy modal');
     console.log('Wallet address:', walletAddress);
     console.log('Amount:', amount);
-    
+
     if (!walletAddress) {
       toast.error('No wallet connected');
       return;
@@ -40,52 +42,19 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
     setIsLoading(true);
     try {
-      // Get the current session
-      const { data: { session } } = await supabase.auth.getSession();
-      console.log('Session exists:', !!session);
-      
-      if (!session) {
-        toast.error('Please log in to add funds');
-        return;
-      }
-
-      console.log('Calling coinbase-onramp edge function...');
-      
-      // Call the coinbase-onramp edge function
-      const { data, error } = await supabase.functions.invoke('coinbase-onramp', {
-        body: {
-          walletAddress,
-          amount: amt,
-          cryptoCurrency: 'ETH',
-          fiatCurrency: 'USD'
+      await fundWallet(walletAddress, {
+        chain: base,
+        amount: String(amt),
+        card: { preferredProvider: 'coinbase' },
+        uiConfig: {
+          receiveFundsTitle: `Receive ${amt} ETH`,
+          receiveFundsSubtitle: 'Scan this code or copy your wallet address to receive funds on Base.'
         }
       });
-
-      console.log('Edge function response:', { data, error });
-
-      if (error) {
-        console.error('Coinbase onramp error:', error);
-        toast.error(`Failed to initialize Coinbase Onramp: ${error.message}`);
-        return;
-      }
-
-      if (data?.success && data?.onrampUrl) {
-        console.log('Opening Coinbase URL:', data.onrampUrl);
-        // Open Coinbase Onramp in a new window
-        const popup = window.open(data.onrampUrl, '_blank', 'noopener,noreferrer');
-        if (!popup) {
-          toast.error('Pop-up blocked. Please allow pop-ups for this site.');
-        } else {
-          toast.success('Opening Coinbase Onramp...');
-          onClose();
-        }
-      } else {
-        console.error('Invalid response from edge function:', data);
-        toast.error('Failed to get onramp URL');
-      }
-    } catch (error) {
-      console.error('Funding error:', error);
-      toast.error(`Unable to open Coinbase Onramp: ${error.message}`);
+      // Keep modal open; Privy will render over the app. You can close it after the flow.
+    } catch (error: any) {
+      console.error('Privy fundWallet error:', error);
+      toast.error(`Unable to start funding: ${error?.message || 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -156,12 +125,12 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
               className="flex-1 bg-mint-green text-white hover:bg-mint-green/90"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
-              {isLoading ? 'Opening Coinbase...' : 'Add Funds'}
+              {isLoading ? 'Opening funding...' : 'Add Funds'}
             </Button>
           </div>
 
           <div className="text-xs text-cool-gray bg-light-gray rounded p-3">
-            <p><strong>Note:</strong> This opens Coinbase Onramp where you can add funds using card payment or transfer from an exchange.</p>
+            <p><strong>Note:</strong> This opens the Privy funding modal (Pay with card via Coinbase, Transfer from an exchange, Transfer from wallet, or Receive funds).</p>
           </div>
         </div>
       </DialogContent>
