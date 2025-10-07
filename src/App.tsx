@@ -161,6 +161,22 @@ const App = () => (
         embeddedWallets: {
           createOnLogin: 'users-without-wallets',
         },
+        supportedChains: [
+          {
+            id: 8453,
+            name: 'Base',
+            network: 'base',
+            nativeCurrency: {
+              name: 'Ether',
+              symbol: 'ETH',
+              decimals: 18,
+            },
+            rpcUrls: {
+              default: { http: ['https://mainnet.base.org'] },
+              public: { http: ['https://mainnet.base.org'] },
+            },
+          },
+        ],
       }}
     >
       <TooltipProvider>
