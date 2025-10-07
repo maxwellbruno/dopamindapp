@@ -11,13 +11,14 @@ import SettingsCard from '../components/profile/SettingsCard';
 import WalletCard from '../components/profile/WalletCard';
 import RewardsCard from '../components/profile/RewardsCard';
 import SendCryptoModal from '../components/wallet/SendCryptoModal';
-import BuyCryptoModal from '../components/wallet/BuyCryptoModal';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
 import { useWallet } from '@/hooks/useWallet';
 import { useRewards } from '@/hooks/useRewards';
 import { toast } from 'sonner';
+import { useFundWallet } from '@privy-io/react-auth';
+import { base } from 'viem/chains';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
@@ -33,7 +34,8 @@ const Profile: React.FC = () => {
 
   // Modal states
   const [sendModalOpen, setSendModalOpen] = useState(false);
-  const [buyModalOpen, setBuyModalOpen] = useState(false);
+  
+  const { fundWallet } = useFundWallet();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -107,12 +109,21 @@ const Profile: React.FC = () => {
     setSendModalOpen(true);
   };
 
-  const handleBuyCrypto = () => {
-    if (!isConnected) {
+  const handleBuyCrypto = async () => {
+    if (!isConnected || !wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
-    setBuyModalOpen(true);
+    
+    try {
+      await fundWallet(wallet.address, {
+        chain: base,
+        card: { preferredProvider: 'coinbase' }
+      });
+    } catch (error: any) {
+      console.error('Fund wallet error:', error);
+      toast.error(`Unable to open funding: ${error?.message || 'Unknown error'}`);
+    }
   };
 
   const handleClaimReward = async (rewardId: string) => {
@@ -177,12 +188,6 @@ const Profile: React.FC = () => {
         ethBalance={balances.eth}
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
-      />
-      
-      <BuyCryptoModal
-        isOpen={buyModalOpen}
-        onClose={() => setBuyModalOpen(false)}
-        walletAddress={wallet?.address}
       />
     </div>
   );
