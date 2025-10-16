@@ -34,6 +34,10 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@dopamind" />
     <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- CSP to allow Coinbase Onramp and Privy iframes -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; connect-src 'self' https: wss:; img-src 'self' https: data: blob:; style-src 'self' 'unsafe-inline' https:; frame-src https://pay.coinbase.com https://commerce.coinbase.com https://onramp.coinbase.com https://*.coinbase.com https://*.wallet.coinbase.com https://auth.privy.io https://*.privy.io https://*.lovable.app https://*.lovableproject.com; child-src https://onramp.coinbase.com https://*.coinbase.com https://auth.privy.io https://*.privy.io;"> 
+    <link rel="preconnect" href="https://onramp.coinbase.com">
+    <link rel="preconnect" href="https://auth.privy.io">
   </head>
 
   <body>
