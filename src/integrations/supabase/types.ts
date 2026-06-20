@@ -7,7 +7,7 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instanciate createClient with right options
+  // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "13.0.4"
@@ -285,39 +285,36 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      check_weekly_rewards: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      check_weekly_rewards: { Args: never; Returns: undefined }
       get_user_focus_stats: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: Database["public"]["CompositeTypes"]["focus_stats"]
+        SetofOptions: {
+          from: "*"
+          to: "focus_stats"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
       get_user_subscription: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
+          cancel_at_period_end: boolean
+          current_period_end: string
           plan_id: string
           status: string
-          current_period_end: string
-          cancel_at_period_end: boolean
         }[]
       }
-      increment_mood_entries_count: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      increment_mood_entries_count: { Args: never; Returns: undefined }
       update_task_streak: {
-        Args: { task_type_param: string; completion_date?: string }
+        Args: { completion_date?: string; task_type_param: string }
         Returns: undefined
       }
       update_user_stats_on_session_complete: {
         Args: { session_duration: number }
         Returns: undefined
       }
-      user_has_active_subscription: {
-        Args: Record<PropertyKey, never>
-        Returns: boolean
-      }
+      user_has_active_subscription: { Args: never; Returns: boolean }
     }
     Enums: {
       [_ in never]: never
