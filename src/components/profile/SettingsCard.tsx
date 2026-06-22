@@ -36,14 +36,13 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
   useEffect(() => {
     const root = window.document.documentElement;
     const themeToApply = isEditing ? tempSettings.theme : settings.theme;
-    const canUseDarkMode = subscriptionTier === 'pro' || subscriptionTier === 'elite';
 
-    if (canUseDarkMode && themeToApply === 'dark') {
+    if (themeToApply === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [isEditing, tempSettings.theme, settings.theme, subscriptionTier]);
+  }, [isEditing, tempSettings.theme, settings.theme]);
 
 
   return (
