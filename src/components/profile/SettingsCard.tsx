@@ -36,14 +36,13 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
   useEffect(() => {
     const root = window.document.documentElement;
     const themeToApply = isEditing ? tempSettings.theme : settings.theme;
-    const canUseDarkMode = subscriptionTier === 'pro' || subscriptionTier === 'elite';
 
-    if (canUseDarkMode && themeToApply === 'dark') {
+    if (themeToApply === 'dark') {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [isEditing, tempSettings.theme, settings.theme, subscriptionTier]);
+  }, [isEditing, tempSettings.theme, settings.theme]);
 
 
   return (
@@ -139,40 +138,23 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
         <div>
           <Label htmlFor="theme" className="text-text-dark font-semibold flex items-center gap-2">
             Dark Mode
-            {subscriptionTier === 'free' && isEditing && <Lock className="h-4 w-4 text-gray-400" />}
           </Label>
           {isEditing ? (
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <div className="flex items-center space-x-2 mt-1">
-                  <Switch
-                    id="theme"
-                    checked={
-                      (subscriptionTier === 'free')
-                        ? false
-                        : tempSettings.theme === 'dark'
-                    }
-                    disabled={subscriptionTier === 'free'}
-                    onCheckedChange={checked => {
-                      if (subscriptionTier !== 'free') {
-                        setTempSettings(prev => ({
-                          ...prev,
-                          theme: checked ? 'dark' : 'light'
-                        }));
-                      }
-                    }}
-                  />
-                  <span className="text-text-light capitalize select-none">
-                    {subscriptionTier !== 'free' ? tempSettings.theme : 'Light'}
-                  </span>
-                </div>
-              </TooltipTrigger>
-              {subscriptionTier === 'free' && (
-                <TooltipContent>
-                  <p>Upgrade to Pro to unlock Dark Mode.</p>
-                </TooltipContent>
-              )}
-            </Tooltip>
+            <div className="flex items-center space-x-2 mt-1">
+              <Switch
+                id="theme"
+                checked={tempSettings.theme === 'dark'}
+                onCheckedChange={checked => {
+                  setTempSettings(prev => ({
+                    ...prev,
+                    theme: checked ? 'dark' : 'light'
+                  }));
+                }}
+              />
+              <span className="text-text-light capitalize select-none">
+                {tempSettings.theme}
+              </span>
+            </div>
           ) : (
             <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3 capitalize">{settings.theme}</div>
           )}
