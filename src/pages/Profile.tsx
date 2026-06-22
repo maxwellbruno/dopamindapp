@@ -39,12 +39,13 @@ const Profile: React.FC = () => {
 
   useEffect(() => {
     const root = window.document.documentElement;
-    if (settings.theme === 'dark') {
+    const canUseDarkMode = tier === 'pro' || tier === 'elite';
+    if (settings.theme === 'dark' && canUseDarkMode) {
       root.classList.add('dark');
     } else {
       root.classList.remove('dark');
     }
-  }, [settings.theme]);
+  }, [settings.theme, tier]);
   
   const { data: profileData } = useQuery({
     queryKey: ['profileStats', user?.id],
