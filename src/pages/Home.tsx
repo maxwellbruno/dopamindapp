@@ -14,6 +14,7 @@ import AIChatCard from '../components/home/AIChatCard';
 import DailyInsightCard from '../components/home/DailyInsightCard';
 import QuickActions from '../components/home/QuickActions';
 import PremiumFeatures from '../components/home/PremiumFeatures';
+import TalkToTherapist from '../components/home/TalkToTherapist';
 
 interface Session {
   date: string;
