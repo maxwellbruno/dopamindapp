@@ -30,6 +30,8 @@ import BrainwaveDetail from './pages/BrainwaveDetail';
 import BinauralDetail from './pages/BinauralDetail';
 import AISoundscape from './pages/AISoundscape';
 import TermsAndConditions from './pages/TermsAndConditions';
+import Therapists from './pages/Therapists';
+import TherapistDetail from './pages/TherapistDetail';
 import { PrivyProvider } from '@privy-io/react-auth';
 import NameSetupDialog from './components/NameSetupDialog';
 
@@ -138,6 +140,8 @@ const AppContent: React.FC = () => {
           <Route path="/binaural/:hz" element={<BinauralDetail />} />
           <Route path="/meditation/guided" element={<GuidedMeditation />} />
           <Route path="/ai-soundscape" element={<AISoundscape />} />
+          <Route path="/therapists" element={<Therapists />} />
+          <Route path="/therapists/:id" element={<TherapistDetail />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
