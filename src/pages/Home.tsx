@@ -183,6 +183,8 @@ const Home: React.FC = () => {
             </div>
           </div>
 
+          <TalkToTherapist />
+
           {!isPremium ? (
             <div className="animate-fade-in-up mt-6" style={{ animationDelay: '0.6s' }}>
               <PremiumUpgradePrompt 
