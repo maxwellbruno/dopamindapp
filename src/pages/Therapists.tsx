@@ -44,10 +44,16 @@ const Therapists: React.FC = () => {
             >
               <ArrowLeft className="w-5 h-5 text-text-dark" />
             </button>
-            <div>
+            <div className="flex-1">
               <h1 className="text-2xl font-bold text-text-dark">Talk to a Real Therapist</h1>
               <p className="text-text-light text-sm">Browse licensed, verified professionals</p>
             </div>
+            <button
+              onClick={() => navigate('/therapists/apply')}
+              className="ml-2 px-3 py-2 rounded-2xl bg-mint-green text-white text-xs font-semibold hover:scale-[1.02] transition-transform whitespace-nowrap"
+            >
+              Become a therapist
+            </button>
           </div>
 
           {/* Search & filters */}
