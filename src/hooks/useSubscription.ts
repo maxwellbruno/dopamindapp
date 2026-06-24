@@ -108,10 +108,11 @@ const { data, error } = await supabase.functions.invoke('create-subscription', {
         !!subscription?.current_period_end &&
         new Date(subscription.current_period_end) > new Date();
 
-      const updatePayload: Record<string, unknown> = {
+      const updatePayload: { cancel_at_period_end: boolean; updated_at: string; status?: string } = {
         cancel_at_period_end: true,
         updated_at: new Date().toISOString(),
       };
+
       if (!hasFuturePeriodEnd) {
         updatePayload.status = 'canceled';
       }
