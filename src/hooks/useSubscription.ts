@@ -102,18 +102,28 @@ const { data, error } = await supabase.functions.invoke('create-subscription', {
     mutationFn: async () => {
       if (!subscription?.plan_id) throw new Error('No active subscription');
 
-      // In a real implementation, you'd call Paystack API to cancel
-      // For now, we'll just mark it as cancelled in our database
+      // If there's no future billing period end, cancel immediately.
+      // Otherwise mark to cancel at the end of the current period.
+      const hasFuturePeriodEnd =
+        !!subscription?.current_period_end &&
+        new Date(subscription.current_period_end) > new Date();
+
+      const updatePayload: Record<string, unknown> = {
+        cancel_at_period_end: true,
+        updated_at: new Date().toISOString(),
+      };
+      if (!hasFuturePeriodEnd) {
+        updatePayload.status = 'canceled';
+      }
+
       const { error } = await supabase
         .from('subscriptions')
-        .update({ 
-          cancel_at_period_end: true,
-          updated_at: new Date().toISOString()
-        })
+        .update(updatePayload)
         .eq('user_id', user?.id);
 
       if (error) throw error;
     },
+
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['subscription'] });
       toast({
