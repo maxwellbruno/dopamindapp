@@ -32,6 +32,7 @@ import AISoundscape from './pages/AISoundscape';
 import TermsAndConditions from './pages/TermsAndConditions';
 import Therapists from './pages/Therapists';
 import TherapistDetail from './pages/TherapistDetail';
+import BecomeTherapist from './pages/BecomeTherapist';
 import { PrivyProvider } from '@privy-io/react-auth';
 import NameSetupDialog from './components/NameSetupDialog';
 
@@ -142,6 +143,7 @@ const AppContent: React.FC = () => {
           <Route path="/ai-soundscape" element={<AISoundscape />} />
           <Route path="/therapists" element={<Therapists />} />
           <Route path="/therapists/:id" element={<TherapistDetail />} />
+          <Route path="/therapists/apply" element={<BecomeTherapist />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
