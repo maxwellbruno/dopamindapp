@@ -190,6 +190,93 @@ export type Database = {
           },
         ]
       }
+      therapist_applications: {
+        Row: {
+          additional_document_path: string | null
+          bio: string
+          created_at: string
+          credentials: string
+          email: string
+          full_name: string
+          government_id_path: string
+          id: string
+          kyc_selfie_path: string
+          kyc_status: string
+          languages: string
+          license_document_path: string
+          license_number: string
+          license_state: string
+          linkedin_url: string | null
+          location: string
+          phone: string | null
+          price_range: string
+          profile_picture_path: string
+          session_types: string[]
+          specialties: string[]
+          status: Database["public"]["Enums"]["therapist_application_status"]
+          title: string
+          updated_at: string
+          user_id: string
+          years_of_experience: number
+        }
+        Insert: {
+          additional_document_path?: string | null
+          bio: string
+          created_at?: string
+          credentials: string
+          email: string
+          full_name: string
+          government_id_path: string
+          id?: string
+          kyc_selfie_path: string
+          kyc_status?: string
+          languages: string
+          license_document_path: string
+          license_number: string
+          license_state: string
+          linkedin_url?: string | null
+          location: string
+          phone?: string | null
+          price_range: string
+          profile_picture_path: string
+          session_types?: string[]
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["therapist_application_status"]
+          title: string
+          updated_at?: string
+          user_id: string
+          years_of_experience?: number
+        }
+        Update: {
+          additional_document_path?: string | null
+          bio?: string
+          created_at?: string
+          credentials?: string
+          email?: string
+          full_name?: string
+          government_id_path?: string
+          id?: string
+          kyc_selfie_path?: string
+          kyc_status?: string
+          languages?: string
+          license_document_path?: string
+          license_number?: string
+          license_state?: string
+          linkedin_url?: string | null
+          location?: string
+          phone?: string | null
+          price_range?: string
+          profile_picture_path?: string
+          session_types?: string[]
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["therapist_application_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number
+        }
+        Relationships: []
+      }
       user_stats: {
         Row: {
           current_streak: number
@@ -317,7 +404,14 @@ export type Database = {
       user_has_active_subscription: { Args: never; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      therapist_application_status:
+        | "draft"
+        | "submitted"
+        | "kyc_pending"
+        | "kyc_passed"
+        | "kyc_failed"
+        | "approved"
+        | "rejected"
     }
     CompositeTypes: {
       focus_stats: {
@@ -449,6 +543,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      therapist_application_status: [
+        "draft",
+        "submitted",
+        "kyc_pending",
+        "kyc_passed",
+        "kyc_failed",
+        "approved",
+        "rejected",
+      ],
+    },
   },
 } as const
