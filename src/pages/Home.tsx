@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
 import PremiumUpgradePrompt from '../components/PremiumUpgradePrompt';
 import PricingModal from '../components/PricingModal';
 import AiChat from '../components/AiChat';
@@ -15,6 +17,7 @@ import DailyInsightCard from '../components/home/DailyInsightCard';
 import QuickActions from '../components/home/QuickActions';
 import PremiumFeatures from '../components/home/PremiumFeatures';
 import TalkToTherapist from '../components/home/TalkToTherapist';
+
 
 interface Session {
   date: string;
