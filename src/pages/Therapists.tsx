@@ -33,6 +33,11 @@ const Therapists: React.FC = () => {
   }, [searchQuery, selectedSpecialty]);
 
   return (
+    <RequireTier
+      tier="pro"
+      feature="Find a Real Therapist"
+      description="Browsing our directory of licensed, verified therapists is a Pro feature. Upgrade to connect with real human professionals."
+    >
     <div className="min-h-screen bg-light-gray">
       <div className="px-4 pt-6 pb-28 md:pt-0">
         <div className="max-w-md md:max-w-4xl lg:max-w-6xl mx-auto">
