@@ -45,9 +45,23 @@ const Home: React.FC = () => {
 
   // Get current data from localStorage with proper typing
   const sessions: Session[] = JSON.parse(localStorage.getItem('dopamind_sessions') || '[]');
-  const moods: MoodEntry[] = JSON.parse(localStorage.getItem('dopamind_moods') || '[]');
   const stats = JSON.parse(localStorage.getItem('dopamind_stats') || '{"totalFocusMinutes": 0, "currentStreak": 0, "moodEntries": 0}');
-  
+
+  // Fetch mood entries from Supabase
+  const { data: moods = [] } = useQuery({
+    queryKey: ['mood_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('mood_entries')
+        .select('intensity, date')
+        .order('date', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
+
   // Calculate today's focus time from sessions
   const today = new Date().toDateString();
   const todaySessions = sessions.filter((session: Session) => {
@@ -94,7 +108,7 @@ const Home: React.FC = () => {
 
   // Calculate average mood from mood entries
   const averageMood = moods.length > 0 
-    ? moods.reduce((sum: number, mood: MoodEntry) => sum + (mood.value || 0), 0) / moods.length 
+    ? moods.reduce((sum: number, mood) => sum + (mood.intensity || 0), 0) / moods.length 
     : 0;
 
   const getMoodLabel = (value: number) => {
@@ -104,6 +118,7 @@ const Home: React.FC = () => {
     if (value >= 2) return 'Okay';
     return 'Needs Attention';
   };
+
 
   const getGreeting = () => {
     const hour = currentTime.getHours();
