@@ -214,6 +214,7 @@ const Therapists: React.FC = () => {
         </div>
       </div>
     </div>
+    </RequireTier>
   );
 };
 
