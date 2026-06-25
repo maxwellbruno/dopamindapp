@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Star, Calendar, MapPin, Languages, BadgeCheck, Search, Video, Phone, MessageSquare, Building2 } from 'lucide-react';
 import { therapists, therapistSpecialties } from '@/data/therapists';
 import { Input } from '@/components/ui/input';
+import RequireTier from '@/components/RequireTier';
 
 const sessionTypeIcons: Record<string, React.ReactNode> = {
   Video: <Video className="w-3 h-3" />,
