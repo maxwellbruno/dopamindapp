@@ -35,6 +35,8 @@ import TherapistDetail from './pages/TherapistDetail';
 import BecomeTherapist from './pages/BecomeTherapist';
 import { PrivyProvider } from '@privy-io/react-auth';
 import NameSetupDialog from './components/NameSetupDialog';
+import OAuthConsent from './pages/OAuthConsent';
+
 
 const queryClient = new QueryClient();
 
@@ -145,7 +147,9 @@ const AppContent: React.FC = () => {
           <Route path="/therapists/:id" element={<TherapistDetail />} />
           <Route path="/therapists/apply" element={<BecomeTherapist />} />
           <Route path="/terms" element={<TermsAndConditions />} />
+          <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
           <Route path="*" element={<NotFound />} />
+
         </Routes>
       </main>
       <BottomNav />
