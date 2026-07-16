@@ -12,7 +12,7 @@ const BottomNav: React.FC = () => {
   const navItems = [
     { path: '/home', icon: '🏠', label: 'Home' },
     { path: '/focus', icon: '🎯', label: 'Focus' },
-    { path: '/mood', icon: '😊', label: 'Mood' },
+    { path: '/mood', icon: '📊', label: 'Track' },
     { path: '/profile', icon: '👤', label: 'Profile' },
   ];
 

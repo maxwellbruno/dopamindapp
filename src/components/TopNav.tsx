@@ -9,7 +9,7 @@ const TopNav: React.FC = () => {
   const navItems = [
     { path: '/home', label: 'Home' },
     { path: '/focus', label: 'Focus' },
-    { path: '/mood', label: 'Mood' },
+    { path: '/mood', label: 'Track' },
     { path: '/profile', label: 'Profile' },
   ];
 
