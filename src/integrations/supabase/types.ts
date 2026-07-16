@@ -110,6 +110,36 @@ export type Database = {
         }
         Relationships: []
       }
+      sleep_entries: {
+        Row: {
+          created_at: string
+          date: string
+          hours: number
+          id: string
+          note: string | null
+          quality: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          hours: number
+          id?: string
+          note?: string | null
+          quality: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          hours?: number
+          id?: string
+          note?: string | null
+          quality?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           created_at: string
