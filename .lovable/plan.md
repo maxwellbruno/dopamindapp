@@ -1,91 +1,27 @@
+# Enable Supabase OAuth 2.1 + reconnect
 
-# Add MCP (Agent Integrations) to Mindfulnest
+This project is connected to an **external Supabase project** (`brgycopmuuanrrqmrdmf`), not Lovable Cloud. That means I can't flip the OAuth 2.1 authorization server on for you from here — it's a dashboard toggle on your Supabase account. Below is exactly what to do, and what I'll do after.
 
-Turn the app into a Model Context Protocol server so external AI assistants (Claude, ChatGPT, Cursor, Codex, and the Lovable agent) can call Mindfulnest tools **as the signed-in user**, with the same RLS rules the UI enforces.
+## What you do in Supabase
 
-## What the user gets
+1. Open the project dashboard: https://supabase.com/dashboard/project/brgycopmuuanrrqmrdmf
+2. Go to **Authentication → Sign In / Providers** (or **Auth → OAuth Server** depending on when your dashboard was updated).
+3. Find **"OAuth 2.1 authorization server"** (currently in preview).
+   - Toggle it **on**.
+   - Enable **Dynamic Client Registration (DCR)** in the same panel.
+   - Save.
+4. If you don't see the option at all, it hasn't been enabled on your project yet — open a Supabase support ticket that says: *"Please enable the OAuth 2.1 authorization server (with dynamic client registration) on project `brgycopmuuanrrqmrdmf`."* Ping me back once they confirm.
 
-External assistants can, per user:
+## What I do after you confirm it's on
 
-- **Mood** — list recent entries, get a single entry, log a new entry (intensity, note, date), delete an entry.
-- **Focus sessions** — list sessions, log a completed session (duration, type), fetch focus stats + current streak.
-- **Profile & rewards** — read display name, subscription tier/status, streaks, task streaks, and reward balances.
-- **Wallet (read-only)** — list wallet addresses and balances. No send/receive over MCP (money-moving stays in the app UI).
-- **Therapists** — search the public directory by specialty / language / location and fetch a therapist's details.
+1. Re-run `app_mcp_server--extract_mcp_manifest` so Lovable's connector list picks up the now-verifiable MCP server.
+2. Redeploy the `mcp` edge function with `supabase--deploy_edge_functions(["mcp"])` so it re-reads the freshly published OAuth discovery document.
+3. Walk you through the end-to-end test: connect from Claude (or the Lovable connector picker), approve the consent screen while signed in, and call `list_mood_entries` to confirm RLS scopes correctly to your user.
 
-Each user connects once via OAuth ("Add to Claude / ChatGPT / Lovable"), and every tool call runs as their Supabase user, so RLS still hides everyone else's data.
+## Notes
 
-## Prerequisite you have to do in Supabase (blocker)
+- No code changes are needed on my side — the MCP server, tools, consent route (`/.lovable/oauth/consent`), and OAuth issuer (`https://brgycopmuuanrrqmrdmf.supabase.co/auth/v1`) are already wired.
+- "Reconnect the project in Lovable" isn't a separate action for an external Supabase connection — once OAuth 2.1 is on in the dashboard, the MCP endpoint starts verifying tokens correctly on the next request. No relink step in the Lovable UI is required.
+- Nothing about your Privy login flow changes. `privy-supabase-link` already mints a Supabase session, so users hit the consent screen already signed in.
 
-This project uses an external Supabase (`brgycopmuuanrrqmrdmf`), so Lovable can't flip this on for you:
-
-1. Open Supabase dashboard → Authentication → enable **OAuth 2.1 authorization server** with **dynamic client registration**. If you don't see the option, open a Supabase support ticket to enable it on this project (it's in preview).
-2. Reconnect the project in Lovable so the capability is picked up.
-
-Until step 1 is done, the MCP endpoint will deploy and clients can discover it, but token verification will fail on connect. Everything else below can be built in parallel.
-
-## Auth model
-
-- MCP uses Supabase Auth as the OAuth 2.1 authorization server.
-- Your users already end up with a Supabase session today via `privy-supabase-link` (Privy → OTP → `supabase.auth.verifyOtp`), so the consent screen will Just Work — they hit "Approve" while signed in.
-- Tools receive the verified access token via `ToolContext.getToken()` and forward it to a per-request Supabase client (`Authorization: Bearer <token>`) so RLS runs as that user. No service-role key anywhere in MCP code.
-
-## Files to add / touch
-
-### Package + build wiring
-- `package.json` — add `@lovable.dev/mcp-js` (zod already installed).
-- `vite.config.ts` — add `mcpPlugin()` from `@lovable.dev/mcp-js/stacks/supabase/vite` to the plugins array. This regenerates `supabase/functions/mcp/index.ts` on every build.
-
-### MCP definition (all under `src/lib/mcp/`)
-- `src/lib/mcp/index.ts` — `defineMcp({...})` with name `mindfulnest-mcp`, `auth: auth.oauth.issuer({ issuer: https://${VITE_SUPABASE_PROJECT_ID}.supabase.co/auth/v1, acceptedAudiences: "authenticated" })`, and the tool list.
-- `src/lib/mcp/tools/list-mood-entries.ts` — read-only, paginated.
-- `src/lib/mcp/tools/get-mood-entry.ts` — read-only, by id.
-- `src/lib/mcp/tools/create-mood-entry.ts` — insert scoped to `user_id = getUserId()`.
-- `src/lib/mcp/tools/delete-mood-entry.ts` — destructive, `annotations.destructiveHint: true`.
-- `src/lib/mcp/tools/list-focus-sessions.ts`
-- `src/lib/mcp/tools/create-focus-session.ts` — also calls the existing `update_user_stats_on_session_complete` RPC.
-- `src/lib/mcp/tools/get-focus-stats.ts` — wraps `get_user_focus_stats` RPC.
-- `src/lib/mcp/tools/get-profile.ts` — user metadata, subscription (via `get_user_subscription` RPC), streaks (from `user_stats`), task streaks, reward totals.
-- `src/lib/mcp/tools/list-wallet.ts` — reads `user_wallets`.
-- `src/lib/mcp/tools/search-therapists.ts` — reads `therapist_applications` filtered by `status = 'approved'`, by specialty/language/location.
-- `src/lib/mcp/tools/get-therapist.ts`
-
-Every tool: narrow zod `inputSchema`, clear `title` + `description`, accurate `annotations` (`readOnlyHint`, `destructiveHint`, `idempotentHint`), compact serializable results, no logging of the access token.
-
-### OAuth consent route (needed by Supabase to approve a client)
-- `src/pages/OAuthConsent.tsx` — mounted at `/.lovable/oauth/consent`, uses `supabase.auth.oauth.getAuthorizationDetails / approveAuthorization / denyAuthorization`. If the user isn't signed in, it kicks them through the existing Privy login and returns to the same consent URL after login (the current app already renders `AuthScreen` for any unauthenticated route, so restoring the URL after Privy auth is enough — no `/login?next=` needed).
-- `src/App.tsx` — add `<Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />` to the authenticated routes.
-
-### Auto-generated (do NOT hand-edit)
-- `supabase/functions/mcp/index.ts` — emitted by the Vite plugin on every build. Deployed via `supabase--deploy_edge_functions(["mcp"])`.
-- `supabase/config.toml` — add `[functions.mcp] verify_jwt = false` so Supabase's edge runtime doesn't 401 before mcp-js's own OAuth verifier sees the bearer token.
-- `.lovable/mcp/manifest.json` — regenerated by `app_mcp_server--extract_mcp_manifest` after the MCP entry is saved.
-
-## What we're intentionally NOT doing
-
-- No wallet send / receive / buy tools over MCP — money-moving stays in the app UI.
-- No AI-soundscape or long generation tools — they exceed MCP's synchronous client timeout.
-- No therapist-application submit or KYC upload tools — file uploads + review workflow don't fit MCP calls well.
-- No `service_role` key in any tool. No widened `anon` RLS. No exposing per-user data publicly.
-
-## Tier gating (optional, matches app rules)
-
-Match the app's existing tier gates by checking subscription in the tool handler:
-
-- `search-therapists` / `get-therapist` — return `{ isError: true, "Requires Pro or Elite subscription" }` for free users, mirroring the `RequireTier` gate on `/therapists`.
-- Everything else — available to any signed-in user.
-
-## Post-build sequence
-
-1. Save all files above.
-2. Run `app_mcp_server--extract_mcp_manifest` to publish the tool catalog to Lovable's connector UI.
-3. Deploy `supabase--deploy_edge_functions(["mcp"])`.
-4. Publish the app so the MCP URL `https://brgycopmuuanrrqmrdmf.supabase.co/functions/v1/mcp` is reachable by external clients.
-5. Test end-to-end: connect from Claude / Lovable connectors, approve the consent screen while signed in, call `list_mood_entries` and confirm only that user's rows come back.
-
-## Technical notes (safe to skip)
-
-- Provider name in `defineMcp.name` is exactly `mindfulnest-mcp` so `providerOptions` keys and connector-UI matching stay stable.
-- The OAuth `issuer` uses the direct `supabase.co` host built from `import.meta.env.VITE_SUPABASE_PROJECT_ID` — inlined by Vite at build time, so `src/lib/mcp/index.ts` stays import-safe (no runtime env reads at module top level).
-- Tool handlers read `SUPABASE_URL` + `SUPABASE_PUBLISHABLE_KEY` inside the handler (not at module top level) so both build-time manifest extraction and Edge Function cold start succeed.
-- Deploying the `mcp` function does NOT require a database migration — no schema changes here.
+Reply once the toggle is on (or if you can't find it) and I'll run the manifest + redeploy steps.
