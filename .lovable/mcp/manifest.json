@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "sdk_version": "0.20.1",
+  "path": "/functions/v1/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://brgycopmuuanrrqmrdmf.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "mindfulnest-mcp",
+      "version": "0.1.0",
+      "title": "Mindfulnest"
+    },
+    "tools": [
+      {
+        "name": "list_mood_entries",
+        "title": "List mood entries",
+        "description": "List the signed-in user's recent mood entries, most recent first. Each entry has id, mood, intensity (1-10), note, date, and activities.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 20,
+              "description": "How many entries to return (max 100).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            },
+            "since": {
+              "description": "Optional ISO date (YYYY-MM-DD). Only return entries on or after this date.",
+              "type": "string"
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_mood_entry",
+        "title": "Get mood entry",
+        "description": "Fetch a single mood entry owned by the signed-in user by id.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "Mood entry UUID."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_mood_entry",
+        "title": "Log mood entry",
+        "description": "Log a new mood entry for the signed-in user. `mood` is a short label (e.g. 'happy', 'anxious', 'calm'), `intensity` is 1-10, `note` is optional free text, `date` defaults to today.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "mood": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "Mood label (e.g. happy, anxious, calm)."
+            },
+            "intensity": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 10,
+              "description": "Intensity from 1 (weak) to 10 (strong)."
+            },
+            "note": {
+              "description": "Optional note about how the user feels.",
+              "type": "string",
+              "maxLength": 2000
+            },
+            "date": {
+              "description": "ISO date (YYYY-MM-DD). Defaults to today.",
+              "type": "string"
+            },
+            "activities": {
+              "description": "Optional list of activities associated with the entry.",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "mood",
+            "intensity"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "delete_mood_entry",
+        "title": "Delete mood entry",
+        "description": "Permanently delete one of the signed-in user's mood entries by id.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "Mood entry UUID to delete."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_focus_sessions",
+        "title": "List focus sessions",
+        "description": "List the signed-in user's completed focus sessions, most recent first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "limit": {
+              "default": 20,
+              "description": "How many sessions to return (max 100).",
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_focus_session",
+        "title": "Log focus session",
+        "description": "Log a completed focus session for the signed-in user. `duration` is in minutes. Also updates streak and totals.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128,
+              "description": "Session label, e.g. 'Deep work', 'Study'."
+            },
+            "duration": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 600,
+              "description": "Session length in minutes (max 600)."
+            }
+          },
+          "required": [
+            "name",
+            "duration"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_focus_stats",
+        "title": "Get focus stats",
+        "description": "Return the signed-in user's focus totals: total sessions, total focus minutes, current streak, and today's session count.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_profile",
+        "title": "Get profile & subscription",
+        "description": "Return the signed-in user's profile summary: email (from token), subscription plan/status, wellness stats (total sessions, focus minutes, current streak, mood entries), task streaks, and total dopamine rewards.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_wallet",
+        "title": "List wallet addresses",
+        "description": "List the signed-in user's linked wallet addresses (Base network). Read-only — send, receive, and buy operations are not exposed over MCP; they stay in the Mindfulnest app.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": true
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "search_therapists",
+        "title": "Search therapist directory",
+        "description": "Search Mindfulnest's approved therapist directory. Optional filters: specialty (matches any of the therapist's specialties), language (substring match), location (substring match). Requires a Pro or Elite subscription, matching the app's therapist gate.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "specialty": {
+              "description": "Specialty to match, e.g. 'anxiety', 'trauma'.",
+              "type": "string"
+            },
+            "language": {
+              "description": "Language substring, e.g. 'English', 'Spanish'.",
+              "type": "string"
+            },
+            "location": {
+              "description": "Location substring, e.g. 'California', 'Lagos'.",
+              "type": "string"
+            },
+            "limit": {
+              "default": 10,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_therapist",
+        "title": "Get therapist details",
+        "description": "Fetch full public details for an approved therapist by id. Requires a Pro or Elite subscription.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$",
+              "description": "Therapist application UUID."
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
