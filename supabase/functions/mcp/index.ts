@@ -7,7 +7,7 @@ import { auth, defineMcp } from "npm:@lovable.dev/mcp-js@0.20.1";
 
 // src/lib/mcp/tools/list-mood-entries.ts
 import { defineTool } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z } from "npm:zod@^3.23.8";
+import { z } from "npm:zod@^4";
 
 // src/lib/mcp/supabase.ts
 import { createClient } from "npm:@supabase/supabase-js@^2.50.0";
@@ -60,7 +60,7 @@ var list_mood_entries_default = defineTool({
 
 // src/lib/mcp/tools/get-mood-entry.ts
 import { defineTool as defineTool2 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z2 } from "npm:zod@^3.23.8";
+import { z as z2 } from "npm:zod@^4";
 var get_mood_entry_default = defineTool2({
   name: "get_mood_entry",
   title: "Get mood entry",
@@ -80,7 +80,7 @@ var get_mood_entry_default = defineTool2({
 
 // src/lib/mcp/tools/create-mood-entry.ts
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z3 } from "npm:zod@^3.23.8";
+import { z as z3 } from "npm:zod@^4";
 var create_mood_entry_default = defineTool3({
   name: "create_mood_entry",
   title: "Log mood entry",
@@ -112,7 +112,7 @@ var create_mood_entry_default = defineTool3({
 
 // src/lib/mcp/tools/delete-mood-entry.ts
 import { defineTool as defineTool4 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z4 } from "npm:zod@^3.23.8";
+import { z as z4 } from "npm:zod@^4";
 var delete_mood_entry_default = defineTool4({
   name: "delete_mood_entry",
   title: "Delete mood entry",
@@ -131,7 +131,7 @@ var delete_mood_entry_default = defineTool4({
 
 // src/lib/mcp/tools/list-focus-sessions.ts
 import { defineTool as defineTool5 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z5 } from "npm:zod@^3.23.8";
+import { z as z5 } from "npm:zod@^4";
 var list_focus_sessions_default = defineTool5({
   name: "list_focus_sessions",
   title: "List focus sessions",
@@ -150,7 +150,7 @@ var list_focus_sessions_default = defineTool5({
 
 // src/lib/mcp/tools/create-focus-session.ts
 import { defineTool as defineTool6 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z6 } from "npm:zod@^3.23.8";
+import { z as z6 } from "npm:zod@^4";
 var create_focus_session_default = defineTool6({
   name: "create_focus_session",
   title: "Log focus session",
@@ -240,7 +240,7 @@ var list_wallet_default = defineTool9({
 
 // src/lib/mcp/tools/search-therapists.ts
 import { defineTool as defineTool10 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z7 } from "npm:zod@^3.23.8";
+import { z as z7 } from "npm:zod@^4";
 var search_therapists_default = defineTool10({
   name: "search_therapists",
   title: "Search therapist directory",
@@ -274,7 +274,7 @@ var search_therapists_default = defineTool10({
 
 // src/lib/mcp/tools/get-therapist.ts
 import { defineTool as defineTool11 } from "npm:@lovable.dev/mcp-js@0.20.1";
-import { z as z8 } from "npm:zod@^3.23.8";
+import { z as z8 } from "npm:zod@^4";
 var get_therapist_default = defineTool11({
   name: "get_therapist",
   title: "Get therapist details",
