@@ -209,7 +209,7 @@ const transactionResponse = await fetch('https://api.paystack.co/transaction/ini
         plan_id: planId,
         paystack_customer_id: customerData.data.customer_code,
         status: 'pending',
-      });
+      }, { onConflict: 'user_id' });
 
     if (subscriptionError) {
       console.error('Failed to store subscription:', subscriptionError);
