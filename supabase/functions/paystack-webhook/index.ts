@@ -196,7 +196,7 @@ async function handleChargeSuccess(supabaseClient: any, data: any) {
         current_period_end: trialEndDate.toISOString(),
         cancel_at_period_end: false,
         updated_at: new Date().toISOString(),
-      });
+      }, { onConflict: 'user_id' });
 
     if (error) {
       console.error('Failed to create trial subscription:', error);
