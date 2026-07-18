@@ -33,6 +33,8 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import Therapists from './pages/Therapists';
 import TherapistDetail from './pages/TherapistDetail';
 import BecomeTherapist from './pages/BecomeTherapist';
+import Wallet from './pages/Wallet';
+import Rewards from './pages/Rewards';
 import { PrivyProvider } from '@privy-io/react-auth';
 import NameSetupDialog from './components/NameSetupDialog';
 import OAuthConsent from './pages/OAuthConsent';
@@ -136,6 +138,8 @@ const AppContent: React.FC = () => {
           <Route path="/mood/all" element={<AllMoodEntries />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
+          <Route path="/wallet" element={<Wallet />} />
+          <Route path="/rewards" element={<Rewards />} />
           <Route path="/sound/:id" element={<SoundGenre />} />
           <Route path="/meditation/brainwaves" element={<Brainwaves />} />
           <Route path="/brainwave/:type" element={<BrainwaveDetail />} />
