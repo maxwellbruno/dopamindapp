@@ -1,5 +1,6 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { useLocalStorage } from '../hooks/useLocalStorage';
@@ -8,34 +9,21 @@ import UserInfo from '../components/profile/UserInfo';
 import SubscriptionCard from '../components/profile/SubscriptionCard';
 import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
-import WalletCard from '../components/profile/WalletCard';
-import RewardsCard from '../components/profile/RewardsCard';
-import SendCryptoModal from '../components/wallet/SendCryptoModal';
+import { Wallet as WalletIcon, Trophy, ChevronRight } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
-import { useWallet } from '@/hooks/useWallet';
-import { useRewards } from '@/hooks/useRewards';
-import { toast } from 'sonner';
-import { useFundWallet } from '@privy-io/react-auth';
-import { base } from 'viem/chains';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const { tier } = useSubscription();
-  const { wallet, balances, isLoading: walletLoading, connectWallet, isConnected } = useWallet();
-  const { taskStreaks, pendingRewards, totalDopamineEarned, claimReward, isLoading: rewardsLoading } = useRewards();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
     theme: 'light',
     customAffirmation: 'I am focused and productive'
   });
-
-  // Modal states
-  const [sendModalOpen, setSendModalOpen] = useState(false);
-  
-  const { fundWallet } = useFundWallet();
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -46,7 +34,7 @@ const Profile: React.FC = () => {
       root.classList.remove('dark');
     }
   }, [settings.theme, tier]);
-  
+
   const { data: profileData } = useQuery({
     queryKey: ['profileStats', user?.id],
     queryFn: async () => {
@@ -67,13 +55,12 @@ const Profile: React.FC = () => {
         .from('focus_sessions')
         .select('duration')
         .eq('user_id', user.id);
-      
+
       if (sessionsError) {
         console.error("Error fetching sessions", sessionsError);
         throw sessionsError;
       }
 
-      // Mood entries are not part of this task, so we'll leave it as is for now.
       const moodEntries = JSON.parse(localStorage.getItem('dopamind_mood_entries') || '[]').length;
 
       return {
@@ -91,84 +78,59 @@ const Profile: React.FC = () => {
   const stats = profileData?.stats || { totalFocusMinutes: 0, currentStreak: 0, moodEntries: 0 };
   const sessions = profileData?.sessions || [];
 
-  const handleWalletConnect = async () => {
-    try {
-      await connectWallet();
-      toast.success('Wallet connected successfully!');
-    } catch (error) {
-      toast.error('Failed to connect wallet');
-      console.error('Wallet connection error:', error);
-    }
-  };
-
-  const handleSendCrypto = () => {
-    if (!isConnected) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-    setSendModalOpen(true);
-  };
-
-  const handleBuyCrypto = async () => {
-    if (!isConnected || !wallet?.address) {
-      toast.error('Please connect your wallet first');
-      return;
-    }
-    
-    try {
-      await fundWallet(wallet.address, {
-        chain: base,
-        card: { preferredProvider: 'coinbase' }
-      });
-    } catch (error: any) {
-      console.error('Fund wallet error:', error);
-      toast.error(`Unable to open funding: ${error?.message || 'Unknown error'}`);
-    }
-  };
-
-  const handleClaimReward = async (rewardId: string) => {
-    try {
-      await claimReward(rewardId);
-      toast.success('Reward claimed successfully!');
-    } catch (error) {
-      toast.error('Failed to claim reward');
-      console.error('Claim reward error:', error);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-light-gray pb-20">
       <div className="px-4 pt-8">
         <div className="max-w-5xl mx-auto">
           <h1 className="text-2xl font-bold text-text-dark mb-6 text-center animate-fade-in-up">Profile</h1>
 
-          {/* Desktop layout: User/Subscription/Wallet > Stats/Settings/Rewards */}
           <div className="flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:gap-8">
             <div className="flex flex-col gap-6">
               <UserInfo subscriptionTier={tier} />
               <SubscriptionCard />
-              <WalletCard
-                walletAddress={wallet?.address}
-                ethBalance={balances.eth}
-                usdcBalance={balances.usdc}
-                dopamineBalance={balances.dopamine}
-                onConnect={handleWalletConnect}
-                onSend={handleSendCrypto}
-                onBuy={handleBuyCrypto}
-                isConnected={isConnected}
-              />
+
+              {/* Wallet & Rewards quick links */}
+              <div className="grid grid-cols-1 gap-3">
+                <button
+                  onClick={() => navigate('/wallet')}
+                  className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                  style={{ animationDelay: '0.3s' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-mint-green/10 flex items-center justify-center">
+                      <WalletIcon className="h-5 w-5 text-mint-green" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-text-dark">Wallet</p>
+                      <p className="text-sm text-text-secondary">View balances & transact</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
+                </button>
+
+                <button
+                  onClick={() => navigate('/rewards')}
+                  className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                  style={{ animationDelay: '0.35s' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-accent-gold/10 flex items-center justify-center">
+                      <Trophy className="h-5 w-5 text-accent-gold" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-text-dark">Rewards</p>
+                      <p className="text-sm text-text-secondary">Track streaks & claim DOPAMINE</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
+                </button>
+              </div>
             </div>
             <div className="flex flex-col gap-6">
               <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
-              <RewardsCard
-                taskStreaks={taskStreaks}
-                pendingRewards={pendingRewards}
-                totalDopamineEarned={totalDopamineEarned}
-                onClaimReward={handleClaimReward}
-              />
               <SettingsCard settings={settings} setSettings={setSettings} subscriptionTier={tier} />
               <div className="dopamind-card p-6 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                <Button 
+                <Button
                   onClick={logout}
                   className="w-full bg-mint-green text-white hover:bg-mint-green/90 rounded-xl"
                 >
@@ -179,16 +141,6 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Wallet Modals */}
-      <SendCryptoModal
-        isOpen={sendModalOpen}
-        onClose={() => setSendModalOpen(false)}
-        walletAddress={wallet?.address}
-        ethBalance={balances.eth}
-        usdcBalance={balances.usdc}
-        dopamineBalance={balances.dopamine}
-      />
     </div>
   );
 };
