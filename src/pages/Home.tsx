@@ -201,7 +201,9 @@ const Home: React.FC = () => {
             </div>
           </div>
 
-          <TalkToTherapist />
+          <div className="mt-8">
+            <TalkToTherapist />
+          </div>
 
           {!isPremium ? (
             <div className="animate-fade-in-up mt-6" style={{ animationDelay: '0.6s' }}>
