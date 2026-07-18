@@ -21,13 +21,18 @@ const handler = async (req: Request): Promise<Response> => {
 
     const body = await req.text();
     const signature = req.headers.get('x-paystack-signature');
+    const secret = Deno.env.get('PAYSTACK_SECRET_KEY') ?? '';
 
-    // Verify webhook signature
-    const hash = await crypto.subtle.digest(
-      'SHA-512',
-      new TextEncoder().encode(Deno.env.get('PAYSTACK_SECRET_KEY') + body)
+    // Verify webhook signature using HMAC-SHA512 (per Paystack spec)
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secret),
+      { name: 'HMAC', hash: 'SHA-512' },
+      false,
+      ['sign']
     );
-    const expectedSignature = Array.from(new Uint8Array(hash))
+    const sigBuf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(body));
+    const expectedSignature = Array.from(new Uint8Array(sigBuf))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('');
 
