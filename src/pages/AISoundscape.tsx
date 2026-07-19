@@ -3,29 +3,21 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: 'free' | 'pro' | 'elite';
-}
+import { useSubscription } from '@/hooks/useSubscription';
 
 const AISoundscape: React.FC = () => {
   const navigate = useNavigate();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { isElite, isLoading } = useSubscription();
 
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedAudio, setGeneratedAudio] = useState<string | null>(null);
 
-  if (!subscription.isElite) {
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center p-4">Loading…</div>;
+  }
+
+  if (!isElite) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="dopamind-card p-6 md:p-8 text-center max-w-sm md:max-w-md w-full">
@@ -41,6 +33,7 @@ const AISoundscape: React.FC = () => {
       </div>
     );
   }
+
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;

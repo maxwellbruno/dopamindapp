@@ -2,14 +2,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: "free" | "pro" | "elite";
-}
+import { useSubscription } from "@/hooks/useSubscription";
 
 const BRAINWAVE_DATA = [
   {
@@ -37,14 +30,13 @@ const BRAINWAVE_DATA = [
 
 const Brainwaves: React.FC = () => {
   const navigate = useNavigate();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { isElite, isLoading } = useSubscription();
 
-  if (!subscription.isElite) {
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center p-4">Loading…</div>;
+  }
+
+  if (!isElite) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="dopamind-card p-6 md:p-8 text-center max-w-sm md:max-w-md w-full">
