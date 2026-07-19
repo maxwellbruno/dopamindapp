@@ -3,14 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Download } from 'lucide-react';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-
-interface SubscriptionData {
-  isPro: boolean;
-  isElite: boolean;
-  subscriptionEnd: string | null;
-  tier: "free" | "pro" | "elite";
-}
+import { useSubscription } from '@/hooks/useSubscription';
 
 const GUIDED_MEDITATIONS = [
   { name: "Deep Relaxation - Body Scan Meditation", url: "https://cdn.pixabay.com/audio/2022/11/16/audio_120b1d03b8.mp3" },
@@ -27,14 +20,13 @@ const GUIDED_MEDITATIONS = [
 
 const GuidedMeditation: React.FC = () => {
   const navigate = useNavigate();
-  const [subscription] = useLocalStorage<SubscriptionData>('dopamind_subscription', {
-    isPro: false,
-    isElite: false,
-    subscriptionEnd: null,
-    tier: 'free'
-  });
+  const { isElite, isLoading } = useSubscription();
 
-  if (!subscription.isElite) {
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center p-4">Loading…</div>;
+  }
+
+  if (!isElite) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="dopamind-card p-6 md:p-8 text-center max-w-sm md:max-w-md w-full">
@@ -51,7 +43,7 @@ const GuidedMeditation: React.FC = () => {
     );
   }
 
-  const isElite = subscription.isElite;
+
 
   // Download track for offline
   function handleDownload(url: string, name: string) {
