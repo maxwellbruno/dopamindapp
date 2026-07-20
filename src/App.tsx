@@ -173,7 +173,7 @@ const App = () => (
           theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
         },
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          ethereum: { createOnLogin: 'users-without-wallets' },
         },
         supportedChains: [
           {

@@ -42,13 +42,15 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
 
     setIsLoading(true);
     try {
-      await fundWallet(walletAddress, {
-        chain: base,
-        amount: String(amt),
-        card: { preferredProvider: 'coinbase' },
-        uiConfig: {
-          receiveFundsTitle: `Receive ${amt} ETH`,
-          receiveFundsSubtitle: 'Scan this code or copy your wallet address to receive funds on Base.'
+      await fundWallet({
+        address: walletAddress,
+        options: {
+          chain: base,
+          amount: String(amt),
+          uiConfig: {
+            receiveFundsTitle: `Receive ${amt} ETH`,
+            receiveFundsSubtitle: 'Scan this code or copy your wallet address to receive funds on Base.'
+          }
         }
       });
       // Keep modal open; Privy will render over the app. You can close it after the flow.
