@@ -177,18 +177,17 @@ useEffect(() => {
         w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
       ) as any;
       const address: string | undefined = embedded?.address;
-      
+      const isValidAddr = (a?: string | null) => !!a && /^0x[a-fA-F0-9]{40}$/.test(a);
+
       console.log("Found embedded wallet:", { address, embedded: !!embedded });
-      
-      if (user && address && wallet?.address !== address) {
+
+      if (user && isValidAddr(address) && wallet?.address !== address) {
         console.log("Updating wallet address:", { old: wallet?.address, new: address });
-        // Immediately reflect embedded wallet in UI
         setWallet({
           address,
           privyDid: (privyUser as any)?.id,
           provider: 'privy',
         });
-        // Persist to Supabase in background
         await saveWallet({
           address,
           privyDid: (privyUser as any)?.id,
