@@ -39,8 +39,9 @@ const Wallet: React.FC = () => {
       return;
     }
     try {
-      await fundWallet(wallet.address, {
-        chain: base,
+      await fundWallet({
+        address: wallet.address,
+        options: { chain: base },
       });
     } catch (error: any) {
       console.error('Fund wallet error:', error);
