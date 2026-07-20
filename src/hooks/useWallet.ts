@@ -43,12 +43,15 @@ export const useWallet = () => {
         return;
       }
 
-      if (data) {
+      const isValidAddr = (a?: string | null) => !!a && /^0x[a-fA-F0-9]{40}$/.test(a);
+      if (data && isValidAddr(data.wallet_address)) {
         setWallet({
           address: data.wallet_address,
           privyDid: data.privy_did,
           provider: data.wallet_provider
         });
+      } else if (data) {
+        console.warn('Ignoring invalid stored wallet address:', data.wallet_address);
       }
     } catch (error) {
       console.error('Error fetching wallet:', error);
