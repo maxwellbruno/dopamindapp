@@ -93,12 +93,14 @@ const connectWallet = async () => {
       await privyLogin();
     }
 
-    // Find embedded wallet from Privy
+    // Find embedded wallet from Privy (v3: check useWallets AND linkedAccounts)
     const embedded = (privyWallets || []).find((w: any) =>
       w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
     ) as any;
-
-    const address: string | undefined = embedded?.address;
+    const linkedWallet = (privyUser as any)?.linkedAccounts?.find(
+      (a: any) => a?.type === 'wallet' && (a?.walletClientType === 'privy' || a?.connectorType === 'embedded')
+    );
+    const address: string | undefined = embedded?.address || linkedWallet?.address;
 
     if (!address) {
       throw new Error('No embedded wallet available from Privy');
