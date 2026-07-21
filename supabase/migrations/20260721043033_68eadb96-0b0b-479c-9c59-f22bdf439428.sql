@@ -1,0 +1,1 @@
+DELETE FROM public.user_wallets WHERE wallet_address IS NULL OR wallet_address !~ '^0x[a-fA-F0-9]{40}$';
