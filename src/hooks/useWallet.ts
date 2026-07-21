@@ -206,7 +206,7 @@ useEffect(() => {
     }
   };
   sync();
-}, [privyWallets, privyAuthenticated, user?.id]);
+}, [privyWallets, privyAuthenticated, privyUser, user?.id]);
 
 useEffect(() => {
   if (wallet?.address) {
