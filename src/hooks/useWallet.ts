@@ -176,7 +176,11 @@ useEffect(() => {
       const embedded = (privyWallets || []).find((w: any) =>
         w?.walletClientType === 'embedded' || w?.walletClientType === 'privy' || w?.isEmbedded
       ) as any;
-      const address: string | undefined = embedded?.address;
+      // Fallback for Privy v3 server-controlled embedded wallets that don't appear in useWallets()
+      const linkedWallet = (privyUser as any)?.linkedAccounts?.find(
+        (a: any) => a?.type === 'wallet' && (a?.walletClientType === 'privy' || a?.connectorType === 'embedded')
+      );
+      const address: string | undefined = embedded?.address || linkedWallet?.address;
       const isValidAddr = (a?: string | null) => !!a && /^0x[a-fA-F0-9]{40}$/.test(a);
 
       console.log("Found embedded wallet:", { address, embedded: !!embedded });
