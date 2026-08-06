@@ -47,6 +47,7 @@ const BuyCryptoModal: React.FC<BuyCryptoModalProps> = ({
         options: {
           chain: base,
           amount: String(amt),
+          defaultFundingMethod: 'manual',
           uiConfig: {
             receiveFundsTitle: `Receive ${amt} ETH`,
             receiveFundsSubtitle: 'Scan this code or copy your wallet address to receive funds on Base.'
