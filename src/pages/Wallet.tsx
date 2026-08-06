@@ -97,6 +97,13 @@ const Wallet: React.FC = () => {
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
       />
+
+      <FundOptionsModal
+        isOpen={fundOptionsOpen}
+        onClose={() => setFundOptionsOpen(false)}
+        onSelect={handleSelectFundMethod}
+      />
+
     </div>
   );
 };
