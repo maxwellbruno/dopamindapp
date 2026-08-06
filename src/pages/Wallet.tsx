@@ -50,7 +50,7 @@ const Wallet: React.FC = () => {
     const options: any = { chain: base };
     if (method === 'stripe' || method === 'moonpay') {
       options.card = { preferredProvider: method };
-затем    } else if (method === 'exchange') {
+} else if (method === 'exchange') {
       options.defaultFundingMethod = 'exchange';
     } else if (method === 'deposit') {
       options.defaultFundingMethod = 'wallet';
