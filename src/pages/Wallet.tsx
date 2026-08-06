@@ -37,11 +37,16 @@ const Wallet: React.FC = () => {
     setSendModalOpen(true);
   };
 
-  const handleBuyCrypto = async () => {
+  const handleBuyCrypto = () => {
     if (!isConnected || !wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
+    setFundingMethodOpen(true);
+  };
+
+  const handleTransferFromWallet = async () => {
+    if (!wallet?.address) return;
     try {
       await fundWallet({
         address: wallet.address,
@@ -51,6 +56,10 @@ const Wallet: React.FC = () => {
       console.error('Fund wallet error:', error);
       toast.error(`Unable to open funding: ${error?.message || 'Unknown error'}`);
     }
+  };
+
+  const handleReceiveFunds = () => {
+    setReceiveModalOpen(true);
   };
 
   return (
