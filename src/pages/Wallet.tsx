@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import WalletCard from '../components/profile/WalletCard';
 import SendCryptoModal from '../components/wallet/SendCryptoModal';
+import FundingMethodModal from '../components/wallet/FundingMethodModal';
+import ReceiveCryptoModal from '../components/wallet/ReceiveCryptoModal';
 import { useWallet } from '@/hooks/useWallet';
 import { toast } from 'sonner';
 import { useFundWallet } from '@privy-io/react-auth';
@@ -13,6 +15,8 @@ const Wallet: React.FC = () => {
   const navigate = useNavigate();
   const { wallet, balances, connectWallet, isConnected } = useWallet();
   const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [fundingMethodOpen, setFundingMethodOpen] = useState(false);
+  const [receiveModalOpen, setReceiveModalOpen] = useState(false);
   const { fundWallet } = useFundWallet();
 
   const handleWalletConnect = async () => {
@@ -33,11 +37,16 @@ const Wallet: React.FC = () => {
     setSendModalOpen(true);
   };
 
-  const handleBuyCrypto = async () => {
+  const handleBuyCrypto = () => {
     if (!isConnected || !wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
+    setFundingMethodOpen(true);
+  };
+
+  const handleTransferFromWallet = async () => {
+    if (!wallet?.address) return;
     try {
       await fundWallet({
         address: wallet.address,
@@ -47,6 +56,10 @@ const Wallet: React.FC = () => {
       console.error('Fund wallet error:', error);
       toast.error(`Unable to open funding: ${error?.message || 'Unknown error'}`);
     }
+  };
+
+  const handleReceiveFunds = () => {
+    setReceiveModalOpen(true);
   };
 
   return (
@@ -80,6 +93,19 @@ const Wallet: React.FC = () => {
         ethBalance={balances.eth}
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
+      />
+
+      <FundingMethodModal
+        isOpen={fundingMethodOpen}
+        onClose={() => setFundingMethodOpen(false)}
+        onTransferFromWallet={handleTransferFromWallet}
+        onReceiveFunds={handleReceiveFunds}
+      />
+
+      <ReceiveCryptoModal
+        isOpen={receiveModalOpen}
+        onClose={() => setReceiveModalOpen(false)}
+        walletAddress={wallet?.address}
       />
     </div>
   );
