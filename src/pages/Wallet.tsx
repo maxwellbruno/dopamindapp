@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import WalletCard from '../components/profile/WalletCard';
 import SendCryptoModal from '../components/wallet/SendCryptoModal';
-import FundOptionsModal, { FundMethod } from '../components/wallet/FundOptionsModal';
 import { useWallet } from '@/hooks/useWallet';
 import { toast } from 'sonner';
 import { useFundWallet } from '@privy-io/react-auth';
@@ -14,7 +13,6 @@ const Wallet: React.FC = () => {
   const navigate = useNavigate();
   const { wallet, balances, connectWallet, isConnected } = useWallet();
   const [sendModalOpen, setSendModalOpen] = useState(false);
-  const [fundOptionsOpen, setFundOptionsOpen] = useState(false);
   const { fundWallet } = useFundWallet();
 
   const handleWalletConnect = async () => {
@@ -35,35 +33,21 @@ const Wallet: React.FC = () => {
     setSendModalOpen(true);
   };
 
-  const handleBuyCrypto = () => {
+  const handleBuyCrypto = async () => {
     if (!isConnected || !wallet?.address) {
       toast.error('Please connect your wallet first');
       return;
     }
-    setFundOptionsOpen(true);
-  };
-
-  const handleSelectFundMethod = async (method: FundMethod) => {
-    if (!wallet?.address) return;
-    setFundOptionsOpen(false);
-
-    const options: any = { chain: base };
-    if (method === 'stripe' || method === 'moonpay') {
-      options.card = { preferredProvider: method };
-} else if (method === 'exchange') {
-      options.defaultFundingMethod = 'exchange';
-    } else if (method === 'deposit') {
-      options.defaultFundingMethod = 'wallet';
-    }
-
     try {
-      await fundWallet({ address: wallet.address, options });
+      await fundWallet({
+        address: wallet.address,
+        options: { chain: base },
+      });
     } catch (error: any) {
       console.error('Fund wallet error:', error);
       toast.error(`Unable to open funding: ${error?.message || 'Unknown error'}`);
     }
   };
-
 
   return (
     <div className="min-h-screen bg-light-gray pb-20">
@@ -97,13 +81,6 @@ const Wallet: React.FC = () => {
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
       />
-
-      <FundOptionsModal
-        isOpen={fundOptionsOpen}
-        onClose={() => setFundOptionsOpen(false)}
-        onSelect={handleSelectFundMethod}
-      />
-
     </div>
   );
 };
