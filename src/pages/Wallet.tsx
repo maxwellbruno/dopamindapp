@@ -15,6 +15,8 @@ const Wallet: React.FC = () => {
   const navigate = useNavigate();
   const { wallet, balances, connectWallet, isConnected } = useWallet();
   const [sendModalOpen, setSendModalOpen] = useState(false);
+  const [fundingMethodOpen, setFundingMethodOpen] = useState(false);
+  const [receiveModalOpen, setReceiveModalOpen] = useState(false);
   const { fundWallet } = useFundWallet();
 
   const handleWalletConnect = async () => {
