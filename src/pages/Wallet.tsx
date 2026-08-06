@@ -41,7 +41,18 @@ const Wallet: React.FC = () => {
     try {
       await fundWallet({
         address: wallet.address,
-        options: { chain: base },
+        options: {
+          chain: base,
+          // Coinbase Onramp is disabled for this Privy app, so the
+          // "Transfer from an exchange" path 500s and opens a blank popup.
+          // Route users straight to the working deposit-address (Relay) flow.
+          defaultFundingMethod: 'manual',
+          uiConfig: {
+            receiveFundsTitle: 'Deposit to your Dopamind wallet',
+            receiveFundsSubtitle:
+              'Send ETH or USDC on Base to this address from any exchange or wallet.',
+          },
+        },
       });
     } catch (error: any) {
       console.error('Fund wallet error:', error);
