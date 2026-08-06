@@ -94,6 +94,19 @@ const Wallet: React.FC = () => {
         usdcBalance={balances.usdc}
         dopamineBalance={balances.dopamine}
       />
+
+      <FundingMethodModal
+        isOpen={fundingMethodOpen}
+        onClose={() => setFundingMethodOpen(false)}
+        onTransferFromWallet={handleTransferFromWallet}
+        onReceiveFunds={handleReceiveFunds}
+      />
+
+      <ReceiveCryptoModal
+        isOpen={receiveModalOpen}
+        onClose={() => setReceiveModalOpen(false)}
+        walletAddress={wallet?.address}
+      />
     </div>
   );
 };
