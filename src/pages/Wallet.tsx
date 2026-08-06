@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import WalletCard from '../components/profile/WalletCard';
 import SendCryptoModal from '../components/wallet/SendCryptoModal';
+import FundingMethodModal from '../components/wallet/FundingMethodModal';
+import ReceiveCryptoModal from '../components/wallet/ReceiveCryptoModal';
 import { useWallet } from '@/hooks/useWallet';
 import { toast } from 'sonner';
 import { useFundWallet } from '@privy-io/react-auth';
