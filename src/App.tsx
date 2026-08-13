@@ -42,15 +42,17 @@ import OAuthConsent from './pages/OAuthConsent';
 
 const queryClient = new QueryClient();
 
-// No app-shell service worker: unregister any stale one so installed PWAs always
-// load fresh HTML/JS (stale caches break the Privy auth flow).
+// Register service worker for PWA
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations?.().then((regs) => {
-    regs.forEach((reg) => {
-      const url = reg.active?.scriptURL || '';
-      if (url.includes('/sw.js')) reg.unregister();
-    });
-  }).catch(() => {});
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
 }
 
 // Immediately apply stored theme before React renders (to avoid FOUC)
