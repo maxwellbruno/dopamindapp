@@ -53,6 +53,68 @@ export type Database = {
         }
         Relationships: []
       }
+      escrow_payments: {
+        Row: {
+          amount_cents: number
+          booking_id: string
+          client_user_id: string
+          created_at: string
+          currency: string
+          deposit_tx_hash: string | null
+          id: string
+          payout_tx_hash: string | null
+          platform_fee_cents: number
+          refund_tx_hash: string | null
+          released_at: string | null
+          status: string
+          therapist_payout_cents: number
+          therapist_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          booking_id: string
+          client_user_id: string
+          created_at?: string
+          currency?: string
+          deposit_tx_hash?: string | null
+          id?: string
+          payout_tx_hash?: string | null
+          platform_fee_cents: number
+          refund_tx_hash?: string | null
+          released_at?: string | null
+          status?: string
+          therapist_payout_cents: number
+          therapist_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          booking_id?: string
+          client_user_id?: string
+          created_at?: string
+          currency?: string
+          deposit_tx_hash?: string | null
+          id?: string
+          payout_tx_hash?: string | null
+          platform_fee_cents?: number
+          refund_tx_hash?: string | null
+          released_at?: string | null
+          status?: string
+          therapist_payout_cents?: number
+          therapist_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "escrow_payments_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       focus_sessions: {
         Row: {
           created_at: string
@@ -109,6 +171,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      session_messages: {
+        Row: {
+          body: string | null
+          booking_id: string
+          created_at: string
+          id: string
+          recipient_user_id: string
+          sender_user_id: string
+          voice_note_path: string | null
+          voice_note_seconds: number | null
+        }
+        Insert: {
+          body?: string | null
+          booking_id: string
+          created_at?: string
+          id?: string
+          recipient_user_id: string
+          sender_user_id: string
+          voice_note_path?: string | null
+          voice_note_seconds?: number | null
+        }
+        Update: {
+          body?: string | null
+          booking_id?: string
+          created_at?: string
+          id?: string
+          recipient_user_id?: string
+          sender_user_id?: string
+          voice_note_path?: string | null
+          voice_note_seconds?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sleep_entries: {
         Row: {
@@ -230,7 +333,7 @@ export type Database = {
           full_name: string
           government_id_path: string
           id: string
-          kyc_selfie_path: string
+          kyc_selfie_path: string | null
           kyc_status: string
           languages: string
           license_document_path: string
@@ -238,9 +341,15 @@ export type Database = {
           license_state: string
           linkedin_url: string | null
           location: string
+          persona_completed_at: string | null
+          persona_inquiry_id: string | null
+          persona_status: string | null
           phone: string | null
           price_range: string
           profile_picture_path: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
           session_types: string[]
           specialties: string[]
           status: Database["public"]["Enums"]["therapist_application_status"]
@@ -258,7 +367,7 @@ export type Database = {
           full_name: string
           government_id_path: string
           id?: string
-          kyc_selfie_path: string
+          kyc_selfie_path?: string | null
           kyc_status?: string
           languages: string
           license_document_path: string
@@ -266,9 +375,15 @@ export type Database = {
           license_state: string
           linkedin_url?: string | null
           location: string
+          persona_completed_at?: string | null
+          persona_inquiry_id?: string | null
+          persona_status?: string | null
           phone?: string | null
           price_range: string
           profile_picture_path: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           session_types?: string[]
           specialties?: string[]
           status?: Database["public"]["Enums"]["therapist_application_status"]
@@ -286,7 +401,7 @@ export type Database = {
           full_name?: string
           government_id_path?: string
           id?: string
-          kyc_selfie_path?: string
+          kyc_selfie_path?: string | null
           kyc_status?: string
           languages?: string
           license_document_path?: string
@@ -294,9 +409,15 @@ export type Database = {
           license_state?: string
           linkedin_url?: string | null
           location?: string
+          persona_completed_at?: string | null
+          persona_inquiry_id?: string | null
+          persona_status?: string | null
           phone?: string | null
           price_range?: string
           profile_picture_path?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
           session_types?: string[]
           specialties?: string[]
           status?: Database["public"]["Enums"]["therapist_application_status"]
@@ -304,6 +425,299 @@ export type Database = {
           updated_at?: string
           user_id?: string
           years_of_experience?: number
+        }
+        Relationships: []
+      }
+      therapist_bookings: {
+        Row: {
+          amount_cents: number
+          client_user_id: string
+          created_at: string
+          daily_room_name: string | null
+          daily_room_url: string | null
+          duration_minutes: number
+          ended_at: string | null
+          id: string
+          platform_fee_cents: number
+          scheduled_start: string
+          session_mode: string
+          started_at: string | null
+          status: string
+          therapist_id: string
+          therapist_user_id: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents: number
+          client_user_id: string
+          created_at?: string
+          daily_room_name?: string | null
+          daily_room_url?: string | null
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          platform_fee_cents?: number
+          scheduled_start: string
+          session_mode?: string
+          started_at?: string | null
+          status?: string
+          therapist_id: string
+          therapist_user_id: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          client_user_id?: string
+          created_at?: string
+          daily_room_name?: string | null
+          daily_room_url?: string | null
+          duration_minutes?: number
+          ended_at?: string | null
+          id?: string
+          platform_fee_cents?: number
+          scheduled_start?: string
+          session_mode?: string
+          started_at?: string | null
+          status?: string
+          therapist_id?: string
+          therapist_user_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_bookings_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapist_likes: {
+        Row: {
+          created_at: string
+          id: string
+          therapist_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          therapist_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          therapist_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_likes_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapist_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reporter_user_id: string
+          status: string
+          therapist_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reporter_user_id: string
+          status?: string
+          therapist_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reporter_user_id?: string
+          status?: string
+          therapist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_reports_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapist_reviews: {
+        Row: {
+          booking_id: string | null
+          client_user_id: string
+          created_at: string
+          id: string
+          rating: number
+          review: string | null
+          therapist_id: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id?: string | null
+          client_user_id: string
+          created_at?: string
+          id?: string
+          rating: number
+          review?: string | null
+          therapist_id: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string | null
+          client_user_id?: string
+          created_at?: string
+          id?: string
+          rating?: number
+          review?: string | null
+          therapist_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapist_reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "therapist_reviews_therapist_id_fkey"
+            columns: ["therapist_id"]
+            isOneToOne: false
+            referencedRelation: "therapists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      therapists: {
+        Row: {
+          application_id: string | null
+          avatar_url: string | null
+          bio: string
+          cancelled_sessions: number
+          completed_sessions: number
+          created_at: string
+          credentials: string
+          full_name: string
+          id: string
+          is_accepting_clients: boolean
+          is_published: boolean
+          languages: string
+          likes_count: number
+          location: string
+          payout_wallet_address: string | null
+          rate_cents_per_30min: number
+          rating_avg: number
+          rating_count: number
+          score: number
+          session_types: string[]
+          specialties: string[]
+          title: string
+          updated_at: string
+          user_id: string
+          years_of_experience: number
+        }
+        Insert: {
+          application_id?: string | null
+          avatar_url?: string | null
+          bio?: string
+          cancelled_sessions?: number
+          completed_sessions?: number
+          created_at?: string
+          credentials: string
+          full_name: string
+          id?: string
+          is_accepting_clients?: boolean
+          is_published?: boolean
+          languages?: string
+          likes_count?: number
+          location?: string
+          payout_wallet_address?: string | null
+          rate_cents_per_30min?: number
+          rating_avg?: number
+          rating_count?: number
+          score?: number
+          session_types?: string[]
+          specialties?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+          years_of_experience?: number
+        }
+        Update: {
+          application_id?: string | null
+          avatar_url?: string | null
+          bio?: string
+          cancelled_sessions?: number
+          completed_sessions?: number
+          created_at?: string
+          credentials?: string
+          full_name?: string
+          id?: string
+          is_accepting_clients?: boolean
+          is_published?: boolean
+          languages?: string
+          likes_count?: number
+          location?: string
+          payout_wallet_address?: string | null
+          rate_cents_per_30min?: number
+          rating_avg?: number
+          rating_count?: number
+          score?: number
+          session_types?: string[]
+          specialties?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "therapists_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "therapist_applications"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -422,7 +836,18 @@ export type Database = {
           status: string
         }[]
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       increment_mood_entries_count: { Args: never; Returns: undefined }
+      recompute_therapist_score: {
+        Args: { _therapist_id: string }
+        Returns: undefined
+      }
       update_task_streak: {
         Args: { completion_date?: string; task_type_param: string }
         Returns: undefined
@@ -434,6 +859,7 @@ export type Database = {
       user_has_active_subscription: { Args: never; Returns: boolean }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       therapist_application_status:
         | "draft"
         | "submitted"
@@ -442,6 +868,7 @@ export type Database = {
         | "kyc_failed"
         | "approved"
         | "rejected"
+        | "pending_review"
     }
     CompositeTypes: {
       focus_stats: {
@@ -574,6 +1001,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       therapist_application_status: [
         "draft",
         "submitted",
@@ -582,6 +1010,7 @@ export const Constants = {
         "kyc_failed",
         "approved",
         "rejected",
+        "pending_review",
       ],
     },
   },
