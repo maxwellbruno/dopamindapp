@@ -1,10 +1,15 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Star, Calendar, MapPin, Languages, BadgeCheck, Search, Video, Phone, MessageSquare, Building2 } from 'lucide-react';
-import { therapists, therapistSpecialties } from '@/data/therapists';
+import { useQuery } from '@tanstack/react-query';
+import {
+  ArrowLeft, Star, Calendar, MapPin, Languages, BadgeCheck, Search,
+  Video, Phone, MessageSquare, Building2, Heart, Sparkles, Gauge,
+} from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import RequireTier from '@/components/RequireTier';
+import { supabase } from '@/integrations/supabase/client';
+import type { TherapistRow } from '@/hooks/useTherapistProfile';
+import { formatUsd } from '@/lib/escrow';
 
 const sessionTypeIcons: Record<string, React.ReactNode> = {
   Video: <Video className="w-3 h-3" />,
@@ -13,31 +18,44 @@ const sessionTypeIcons: Record<string, React.ReactNode> = {
   Chat: <MessageSquare className="w-3 h-3" />,
 };
 
-const Therapists: React.FC = () => {
+const TherapistsInner: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSpecialty, setSelectedSpecialty] = useState<string>('All');
 
-  const filteredTherapists = useMemo(() => {
-    return therapists.filter((therapist) => {
+  const { data: therapists = [], isLoading } = useQuery({
+    queryKey: ['therapists-directory'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('therapists')
+        .select('*')
+        .eq('is_published', true)
+        .order('score', { ascending: false })
+        .order('rating_avg', { ascending: false });
+      if (error) throw error;
+      return (data ?? []) as TherapistRow[];
+    },
+  });
+
+  const specialties = useMemo(
+    () => Array.from(new Set(therapists.flatMap((t) => t.specialties ?? []))).sort(),
+    [therapists],
+  );
+
+  const filtered = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return therapists.filter((t) => {
       const matchesSearch =
-        searchQuery.trim() === '' ||
-        therapist.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        therapist.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        therapist.specialties.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase()));
-
-      const matchesSpecialty = selectedSpecialty === 'All' || therapist.specialties.includes(selectedSpecialty);
-
+        q === '' ||
+        t.full_name.toLowerCase().includes(q) ||
+        t.title.toLowerCase().includes(q) ||
+        (t.specialties ?? []).some((s) => s.toLowerCase().includes(q));
+      const matchesSpecialty = selectedSpecialty === 'All' || (t.specialties ?? []).includes(selectedSpecialty);
       return matchesSearch && matchesSpecialty;
     });
-  }, [searchQuery, selectedSpecialty]);
+  }, [therapists, searchQuery, selectedSpecialty]);
 
   return (
-    <RequireTier
-      tier="pro"
-      feature="Find a Real Therapist"
-      description="Browsing our directory of licensed, verified therapists is a Pro feature. Upgrade to connect with real human professionals."
-    >
     <div className="min-h-screen bg-light-gray">
       <div className="px-4 pt-6 pb-28 md:pt-0">
         <div className="max-w-md md:max-w-4xl lg:max-w-6xl mx-auto">
@@ -52,7 +70,7 @@ const Therapists: React.FC = () => {
             </button>
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-text-dark">Talk to a Real Therapist</h1>
-              <p className="text-text-light text-sm">Browse licensed, verified professionals</p>
+              <p className="text-text-light text-sm">Verified professionals, from {formatUsd(1000)} / 30 min</p>
             </div>
             <button
               onClick={() => navigate('/therapists/apply')}
@@ -74,65 +92,61 @@ const Therapists: React.FC = () => {
                 className="pl-10 py-6 rounded-2xl border-2 border-gray-100 bg-white text-text-dark placeholder:text-cool-gray focus:border-deep-blue"
               />
             </div>
-            <div className="flex flex-wrap gap-2">
-              <button
-                onClick={() => setSelectedSpecialty('All')}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-                  selectedSpecialty === 'All'
-                    ? 'bg-deep-blue text-white'
-                    : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'
-                }`}
-              >
-                All
-              </button>
-              {therapistSpecialties.map((specialty) => (
-                <button
-                  key={specialty}
-                  onClick={() => setSelectedSpecialty(specialty)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
-                    selectedSpecialty === specialty
-                      ? 'bg-deep-blue text-white'
-                      : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'
-                  }`}
-                >
-                  {specialty}
-                </button>
-              ))}
-            </div>
+            {specialties.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                {['All', ...specialties].map((specialty) => (
+                  <button
+                    key={specialty}
+                    onClick={() => setSelectedSpecialty(specialty)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                      selectedSpecialty === specialty
+                        ? 'bg-deep-blue text-white'
+                        : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'
+                    }`}
+                  >
+                    {specialty}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Results */}
           <div className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            {filteredTherapists.length === 0 && (
+            {isLoading && (
               <div className="dopamind-card p-8 text-center">
-                <p className="text-text-dark font-medium mb-1">No therapists found</p>
-                <p className="text-text-light text-sm">Try a different search term or specialty filter.</p>
+                <p className="text-text-light text-sm">Loading therapists...</p>
               </div>
             )}
 
-            {filteredTherapists.map((therapist) => (
-              <div
-                key={therapist.id}
-                className="dopamind-card p-5 transition-all hover:shadow-lg"
-              >
+            {!isLoading && filtered.length === 0 && (
+              <div className="dopamind-card p-8 text-center">
+                <p className="text-text-dark font-medium mb-1">No therapists available yet</p>
+                <p className="text-text-light text-sm">
+                  Verified therapists appear here once their identity and credentials are approved.
+                </p>
+              </div>
+            )}
+
+            {filtered.map((therapist, index) => (
+              <div key={therapist.id} className="dopamind-card p-5 transition-all hover:shadow-lg">
+                {index === 0 && selectedSpecialty === 'All' && searchQuery === '' && (
+                  <div className="inline-flex items-center gap-1 text-[11px] font-bold text-deep-blue bg-deep-blue/10 rounded-full px-2.5 py-1 mb-3">
+                    <Sparkles className="w-3 h-3" /> Top recommended
+                  </div>
+                )}
                 <div className="flex items-start space-x-4">
                   <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-light-gray to-white border border-gray-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {therapist.imageUrl ? (
-                      <img
-                        src={therapist.imageUrl}
-                        alt={therapist.name}
-                        className="w-full h-full object-cover"
-                      />
+                    {therapist.avatar_url ? (
+                      <img src={therapist.avatar_url} alt={`${therapist.full_name}, ${therapist.title}`} className="w-full h-full object-cover" />
                     ) : (
                       <span className="text-2xl">👤</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-0.5">
-                      <h3 className="text-base font-bold text-text-dark truncate">{therapist.name}</h3>
-                      {therapist.verified && (
-                        <BadgeCheck className="w-5 h-5 text-mint-green flex-shrink-0 ml-2" aria-label="Verified therapist" />
-                      )}
+                      <h3 className="text-base font-bold text-text-dark truncate">{therapist.full_name}</h3>
+                      <BadgeCheck className="w-5 h-5 text-mint-green flex-shrink-0 ml-2" aria-label="Verified therapist" />
                     </div>
                     <p className="text-sm font-medium text-mint-green mb-1">{therapist.title}</p>
                     <p className="text-xs text-text-light mb-2">{therapist.credentials}</p>
@@ -140,25 +154,35 @@ const Therapists: React.FC = () => {
                     <div className="flex flex-wrap items-center gap-3 text-xs text-text-light mb-3">
                       <span className="flex items-center">
                         <Star className="w-3.5 h-3.5 text-yellow-500 mr-1" />
-                        <span className="font-semibold text-text-dark">{therapist.rating}</span>
-                        <span className="ml-1">({therapist.reviewCount} reviews)</span>
+                        <span className="font-semibold text-text-dark">{therapist.rating_avg?.toFixed(1) ?? '0.0'}</span>
+                        <span className="ml-1">({therapist.rating_count} reviews)</span>
                       </span>
                       <span className="flex items-center">
-                        <MapPin className="w-3.5 h-3.5 mr-1" />
-                        {therapist.location}
+                        <Gauge className="w-3.5 h-3.5 mr-1" />
+                        Score {Math.round(therapist.score)}/100
                       </span>
+                      <span className="flex items-center">
+                        <Heart className="w-3.5 h-3.5 mr-1" />
+                        {therapist.likes_count}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-text-light mb-3">
+                      {therapist.location && (
+                        <span className="flex items-center">
+                          <MapPin className="w-3.5 h-3.5 mr-1" />
+                          {therapist.location}
+                        </span>
+                      )}
                       <span className="flex items-center">
                         <Calendar className="w-3.5 h-3.5 mr-1" />
-                        {therapist.yearsOfExperience} yrs exp
+                        {therapist.years_of_experience} yrs exp
                       </span>
                     </div>
 
                     <div className="flex flex-wrap gap-2 mb-3">
-                      {therapist.specialties.map((specialty) => (
-                        <span
-                          key={specialty}
-                          className="text-xs font-medium text-deep-blue bg-deep-blue/10 rounded-full px-2.5 py-1"
-                        >
+                      {(therapist.specialties ?? []).map((specialty) => (
+                        <span key={specialty} className="text-xs font-medium text-deep-blue bg-deep-blue/10 rounded-full px-2.5 py-1">
                           {specialty}
                         </span>
                       ))}
@@ -167,29 +191,32 @@ const Therapists: React.FC = () => {
                     <p className="text-sm text-text-light mb-4 line-clamp-2">{therapist.bio}</p>
 
                     <div className="flex flex-wrap items-center gap-2 mb-4">
-                      {therapist.sessionTypes.map((type) => (
-                        <span
-                          key={type}
-                          className="inline-flex items-center text-xs font-medium text-text-dark bg-light-gray rounded-full px-2.5 py-1"
-                        >
+                      {(therapist.session_types ?? []).map((type) => (
+                        <span key={type} className="inline-flex items-center text-xs font-medium text-text-dark bg-light-gray rounded-full px-2.5 py-1">
                           <span className="mr-1">{sessionTypeIcons[type]}</span>
                           {type}
                         </span>
                       ))}
-                      <span className="inline-flex items-center text-xs font-medium text-text-dark bg-light-gray rounded-full px-2.5 py-1">
-                        <Languages className="w-3 h-3 mr-1" />
-                        {therapist.languages.join(', ')}
-                      </span>
+                      {therapist.languages && (
+                        <span className="inline-flex items-center text-xs font-medium text-text-dark bg-light-gray rounded-full px-2.5 py-1">
+                          <Languages className="w-3 h-3 mr-1" />
+                          {therapist.languages}
+                        </span>
+                      )}
                     </div>
 
                     <div className="flex items-center justify-between pt-3 border-t border-gray-100">
                       <div>
-                        <p className="text-xs text-text-light">Next available</p>
-                        <p className="text-sm font-semibold text-text-dark">{therapist.nextAvailable}</p>
+                        <p className="text-xs text-text-light">Availability</p>
+                        <p className="text-sm font-semibold text-text-dark">
+                          {therapist.is_accepting_clients ? 'Accepting clients' : 'Fully booked'}
+                        </p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-text-light">Rate</p>
-                        <p className="text-sm font-semibold text-text-dark">{therapist.priceRange}</p>
+                        <p className="text-sm font-semibold text-text-dark">
+                          {formatUsd(therapist.rate_cents_per_30min)} / 30 min
+                        </p>
                       </div>
                     </div>
 
@@ -208,14 +235,23 @@ const Therapists: React.FC = () => {
           {/* Disclaimer */}
           <div className="mt-8 p-4 bg-white rounded-2xl border border-gray-200 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
             <p className="text-xs text-text-light leading-relaxed">
-              <strong className="text-text-dark">Important:</strong> Dopamind is a wellness tool and does not provide therapy or medical treatment. Therapists listed here are independent professionals. Always consult a qualified healthcare provider for medical or mental health concerns.
+              <strong className="text-text-dark">Important:</strong> Dopamind is a wellness tool and does not provide therapy or medical treatment. Therapists listed here are independent professionals. Dopamind charges a 15% platform fee on each session. Always consult a qualified healthcare provider for medical or mental health concerns.
             </p>
           </div>
         </div>
       </div>
     </div>
-    </RequireTier>
   );
 };
+
+const Therapists: React.FC = () => (
+  <RequireTier
+    tier="pro"
+    feature="Find a Real Therapist"
+    description="Browsing our directory of licensed, verified therapists is a Pro feature. Upgrade to connect with real human professionals."
+  >
+    <TherapistsInner />
+  </RequireTier>
+);
 
 export default Therapists;
