@@ -24,6 +24,24 @@ verify_jwt = true
 [functions.mcp]
 verify_jwt = false
 
+[functions.persona-create-inquiry]
+verify_jwt = true
+
+[functions.persona-webhook]
+verify_jwt = false
+
+[functions.book-therapy-session]
+verify_jwt = true
+
+[functions.confirm-escrow-deposit]
+verify_jwt = true
+
+[functions.release-escrow]
+verify_jwt = true
+
+[functions.create-daily-room]
+verify_jwt = true
+
 
 [secrets]
 PAYSTACK_PUBLIC_KEY = "pk_test_9ecd61b54dae039b80266f1fb7aa4bd1f"
