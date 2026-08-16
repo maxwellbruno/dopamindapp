@@ -329,18 +329,12 @@ const BecomeTherapistInner: React.FC = () => {
                 <h2 className="text-sm font-bold text-text-dark uppercase tracking-wide">Identity verification (KYC)</h2>
               </div>
               <p className="text-xs text-text-light">
-                To protect our community, every therapist must pass KYC before being listed.
-                Upload a clear selfie of yourself holding your government-issued ID next to your face.
+                To protect our community, every therapist must pass identity verification (KYC) with our
+                verification partner Persona before being listed. After you submit this application you will be
+                taken to Persona to scan your government ID and take a live selfie. Once you pass, our clinical
+                team manually reviews your practice license and certifications before approving your listing.
               </p>
-              <FileUpload
-                id="kycSelfie"
-                accept="image/png,image/jpeg"
-                file={uploads.kycSelfie}
-                onChange={(f) => setFile('kycSelfie', f)}
-                icon={<Camera className="w-4 h-4" />}
-                label="KYC selfie with ID"
-                required
-              />
+
               <label className="flex items-start gap-3 cursor-pointer pt-1">
                 <input
                   type="checkbox"
