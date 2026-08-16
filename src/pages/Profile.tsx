@@ -124,7 +124,63 @@ const Profile: React.FC = () => {
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-secondary" />
                 </button>
+
+                <button
+                  onClick={() => navigate('/sessions')}
+                  className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                  style={{ animationDelay: '0.4s' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-deep-blue/10 flex items-center justify-center">
+                      <CalendarClock className="h-5 w-5 text-deep-blue" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-text-dark">Therapy sessions</p>
+                      <p className="text-sm text-text-secondary">Your bookings, chats & calls</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
+                </button>
+
+                {therapist && (
+                  <button
+                    onClick={() => navigate('/therapist-dashboard')}
+                    className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                    style={{ animationDelay: '0.45s' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-mint-green/10 flex items-center justify-center">
+                        <Stethoscope className="h-5 w-5 text-mint-green" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-text-dark">Therapist dashboard</p>
+                        <p className="text-sm text-text-secondary">Earnings, clients & availability</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-text-secondary" />
+                  </button>
+                )}
+
+                {isAdmin && (
+                  <button
+                    onClick={() => navigate('/admin/therapist-applications')}
+                    className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                    style={{ animationDelay: '0.5s' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-deep-blue/10 flex items-center justify-center">
+                        <ShieldCheck className="h-5 w-5 text-deep-blue" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-text-dark">Therapist applications</p>
+                        <p className="text-sm text-text-secondary">Review KYC & approve therapists</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-text-secondary" />
+                  </button>
+                )}
               </div>
+
             </div>
             <div className="flex flex-col gap-6">
               <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
