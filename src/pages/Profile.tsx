@@ -9,15 +9,19 @@ import UserInfo from '../components/profile/UserInfo';
 import SubscriptionCard from '../components/profile/SubscriptionCard';
 import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
-import { Wallet as WalletIcon, Trophy, ChevronRight } from 'lucide-react';
+import { Wallet as WalletIcon, Trophy, ChevronRight, CalendarClock, Stethoscope, ShieldCheck } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useTherapistProfile } from '@/hooks/useTherapistProfile';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { tier } = useSubscription();
+  const { therapist } = useTherapistProfile();
+  const { isAdmin } = useIsAdmin();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
@@ -124,7 +128,63 @@ const Profile: React.FC = () => {
                   </div>
                   <ChevronRight className="h-5 w-5 text-text-secondary" />
                 </button>
+
+                <button
+                  onClick={() => navigate('/sessions')}
+                  className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                  style={{ animationDelay: '0.4s' }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-deep-blue/10 flex items-center justify-center">
+                      <CalendarClock className="h-5 w-5 text-deep-blue" />
+                    </div>
+                    <div className="text-left">
+                      <p className="font-semibold text-text-dark">Therapy sessions</p>
+                      <p className="text-sm text-text-secondary">Your bookings, chats & calls</p>
+                    </div>
+                  </div>
+                  <ChevronRight className="h-5 w-5 text-text-secondary" />
+                </button>
+
+                {therapist && (
+                  <button
+                    onClick={() => navigate('/therapist-dashboard')}
+                    className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                    style={{ animationDelay: '0.45s' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-mint-green/10 flex items-center justify-center">
+                        <Stethoscope className="h-5 w-5 text-mint-green" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-text-dark">Therapist dashboard</p>
+                        <p className="text-sm text-text-secondary">Earnings, clients & availability</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-text-secondary" />
+                  </button>
+                )}
+
+                {isAdmin && (
+                  <button
+                    onClick={() => navigate('/admin/therapist-applications')}
+                    className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
+                    style={{ animationDelay: '0.5s' }}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-deep-blue/10 flex items-center justify-center">
+                        <ShieldCheck className="h-5 w-5 text-deep-blue" />
+                      </div>
+                      <div className="text-left">
+                        <p className="font-semibold text-text-dark">Therapist applications</p>
+                        <p className="text-sm text-text-secondary">Review KYC & approve therapists</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-text-secondary" />
+                  </button>
+                )}
               </div>
+
             </div>
             <div className="flex flex-col gap-6">
               <StatsCard stats={stats} sessions={sessions} dailyFocusGoal={settings.dailyFocusGoal} />
