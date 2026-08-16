@@ -101,19 +101,17 @@ const BecomeTherapistInner: React.FC = () => {
     if (!uploads.profilePicture) { toast.error('Upload a professional profile picture.'); return; }
     if (!uploads.licenseDocument) { toast.error('Upload your professional license document.'); return; }
     if (!uploads.governmentId) { toast.error('Upload a government-issued ID.'); return; }
-    if (!uploads.kycSelfie) { toast.error('Upload a KYC selfie holding your ID.'); return; }
 
     setSubmitting(true);
     try {
-      const [profilePath, licensePath, idPath, kycPath, addlPath] = await Promise.all([
+      const [profilePath, licensePath, idPath, addlPath] = await Promise.all([
         uploadFile(uploads.profilePicture, 'profile'),
         uploadFile(uploads.licenseDocument, 'license'),
         uploadFile(uploads.governmentId, 'gov-id'),
-        uploadFile(uploads.kycSelfie, 'kyc-selfie'),
         uploads.additionalDocument ? uploadFile(uploads.additionalDocument, 'additional') : Promise.resolve(null),
       ]);
 
-      const { error } = await supabase.from('therapist_applications').insert({
+      const { data: inserted, error } = await supabase.from('therapist_applications').insert({
         user_id: user.id,
         full_name: form.fullName,
         email: form.email,
@@ -134,15 +132,15 @@ const BecomeTherapistInner: React.FC = () => {
         license_document_path: licensePath,
         government_id_path: idPath,
         additional_document_path: addlPath,
-        kyc_selfie_path: kycPath,
         kyc_status: 'pending',
         status: 'kyc_pending',
-      });
+      }).select('id').single();
 
       if (error) throw error;
 
+      setApplicationId(inserted.id);
       setSubmitted(true);
-      toast.success('Application submitted! KYC review will begin shortly.');
+      toast.success('Application submitted! Complete identity verification next.');
     } catch (err: any) {
       console.error(err);
       toast.error(err?.message || 'Failed to submit application.');
@@ -150,6 +148,28 @@ const BecomeTherapistInner: React.FC = () => {
       setSubmitting(false);
     }
   };
+
+  const startKyc = async () => {
+    if (!applicationId) return;
+    setKycLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('persona-create-inquiry', {
+        body: { applicationId },
+      });
+      if (error || data?.error) throw new Error(data?.error ?? error?.message);
+      if (data?.url) {
+        window.open(data.url, '_blank', 'noopener');
+        toast.success('Identity verification opened in a new tab.');
+      } else {
+        throw new Error('No verification link returned.');
+      }
+    } catch (err: any) {
+      toast.error(err?.message ?? 'Could not start identity verification.');
+    } finally {
+      setKycLoading(false);
+    }
+  };
+
 
   if (submitted) {
     return (
