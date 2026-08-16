@@ -61,6 +61,9 @@ const BecomeTherapistInner: React.FC = () => {
   const [uploads, setUploads] = useState<UploadState>(initialUploads);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [applicationId, setApplicationId] = useState<string | null>(null);
+  const [kycLoading, setKycLoading] = useState(false);
+
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) =>
     setForm((p) => ({ ...p, [key]: value }));
