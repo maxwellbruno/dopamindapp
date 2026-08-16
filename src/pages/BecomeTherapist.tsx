@@ -185,15 +185,24 @@ const BecomeTherapistInner: React.FC = () => {
               </div>
               <h2 className="text-xl font-bold text-text-dark mb-2">Application received</h2>
               <p className="text-sm text-text-light mb-6">
-                Thanks, {form.fullName.split(' ')[0] || 'there'}. Our clinical team will run KYC and
-                verify your credentials. You will hear back by email within 3–5 business days.
+                Thanks, {form.fullName.split(' ')[0] || 'there'}. Next, verify your identity with Persona.
+                Once you pass KYC, our clinical team manually reviews your license and certifications and you
+                will hear back within 3–5 business days.
               </p>
+              <button
+                onClick={startKyc}
+                disabled={kycLoading}
+                className="w-full bg-deep-blue text-white font-semibold rounded-2xl py-3 mb-3 disabled:opacity-60"
+              >
+                {kycLoading ? 'Opening Persona...' : 'Start identity verification'}
+              </button>
               <button
                 onClick={() => navigate('/therapists')}
                 className="w-full bg-mint-green text-white font-semibold rounded-2xl py-3 hover:scale-[1.01] transition-transform"
               >
                 Back to therapists
               </button>
+
             </div>
           </div>
         </div>
