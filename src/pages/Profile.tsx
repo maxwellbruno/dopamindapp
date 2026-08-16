@@ -9,15 +9,19 @@ import UserInfo from '../components/profile/UserInfo';
 import SubscriptionCard from '../components/profile/SubscriptionCard';
 import StatsCard from '../components/profile/StatsCard';
 import SettingsCard from '../components/profile/SettingsCard';
-import { Wallet as WalletIcon, Trophy, ChevronRight } from 'lucide-react';
+import { Wallet as WalletIcon, Trophy, ChevronRight, CalendarClock, Stethoscope, ShieldCheck } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useTherapistProfile } from '@/hooks/useTherapistProfile';
+import { useIsAdmin } from '@/hooks/useIsAdmin';
 
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { tier } = useSubscription();
+  const { therapist } = useTherapistProfile();
+  const { isAdmin } = useIsAdmin();
   const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
     dailyFocusGoal: 120,
     reminderTime: '09:00',
