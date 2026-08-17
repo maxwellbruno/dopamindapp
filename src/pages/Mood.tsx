@@ -323,7 +323,32 @@ const Track: React.FC = () => {
                 </>
               )}
             </TabsContent>
+
+            <TabsContent value="water">
+              <WaterTracker
+                entries={waterEntries}
+                onLog={(amount) => addWaterMutation.mutate(amount)}
+                submitting={addWaterMutation.isPending}
+              />
+            </TabsContent>
+
+            <TabsContent value="meals">
+              <MealTracker
+                entries={mealEntries}
+                onLog={(entry) => addMealMutation.mutate(entry)}
+                submitting={addMealMutation.isPending}
+              />
+            </TabsContent>
+
+            <TabsContent value="exercise">
+              <ExerciseTracker
+                entries={exerciseEntries}
+                onLog={(entry) => addExerciseMutation.mutate(entry)}
+                submitting={addExerciseMutation.isPending}
+              />
+            </TabsContent>
           </Tabs>
+
         </div>
       </div>
     </div>
