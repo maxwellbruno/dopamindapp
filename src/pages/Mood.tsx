@@ -14,6 +14,9 @@ import RecentEntriesList from '@/components/mood/RecentEntriesList';
 import SleepForm from '@/components/sleep/SleepForm';
 import TrackSleepPrompt from '@/components/sleep/TrackSleepPrompt';
 import RecentSleepList, { SleepEntry } from '@/components/sleep/RecentSleepList';
+import WaterTracker, { WaterEntry } from '@/components/water/WaterTracker';
+import MealTracker, { MealEntry } from '@/components/meals/MealTracker';
+import ExerciseTracker, { ExerciseEntry } from '@/components/exercise/ExerciseTracker';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
 import { useToast } from "@/components/ui/use-toast";
@@ -66,6 +69,107 @@ const Track: React.FC = () => {
     },
     enabled: !!user,
   });
+
+  const { data: waterEntries = [] } = useQuery<WaterEntry[]>({
+    queryKey: ['water_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('water_entries')
+        .select('id, date, amount_ml, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as WaterEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const { data: mealEntries = [] } = useQuery<MealEntry[]>({
+    queryKey: ['meal_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('meal_entries')
+        .select('id, date, meal_type, description, brain_food_rating, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as MealEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const { data: exerciseEntries = [] } = useQuery<ExerciseEntry[]>({
+    queryKey: ['exercise_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('exercise_entries')
+        .select('id, date, activity, duration_minutes, intensity, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as ExerciseEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const addWaterMutation = useMutation({
+    mutationFn: async (amountMl: number) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('water_entries').insert([{
+        user_id: user.id,
+        amount_ml: amountMl,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['water_entries', user?.id] });
+      toast({ title: "Success", description: "Water logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log water: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+  const addMealMutation = useMutation({
+    mutationFn: async (entry: { meal_type: string; description: string; brain_food_rating: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('meal_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['meal_entries', user?.id] });
+      toast({ title: "Success", description: "Your meal has been logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log meal: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+  const addExerciseMutation = useMutation({
+    mutationFn: async (entry: { activity: string; duration_minutes: number; intensity: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('exercise_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercise_entries', user?.id] });
+      toast({ title: "Success", description: "Your workout has been logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log exercise: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+
 
   const addMoodMutation = useMutation({
     mutationFn: async (newEntry: {
@@ -160,10 +264,14 @@ const Track: React.FC = () => {
           <h1 className="text-2xl font-bold text-deep-blue text-center mb-6 animate-fade-in-up">Track</h1>
 
           <Tabs defaultValue="mood" className="w-full">
-            <TabsList className="grid grid-cols-2 w-full mb-6">
-              <TabsTrigger value="mood">😊 Mood</TabsTrigger>
-              <TabsTrigger value="sleep">😴 Sleep</TabsTrigger>
+            <TabsList className="grid grid-cols-5 w-full mb-6 h-auto">
+              <TabsTrigger value="mood" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">😊</span>Mood</TabsTrigger>
+              <TabsTrigger value="sleep" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">😴</span>Sleep</TabsTrigger>
+              <TabsTrigger value="water" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">💧</span>Water</TabsTrigger>
+              <TabsTrigger value="meals" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">🥗</span>Meals</TabsTrigger>
+              <TabsTrigger value="exercise" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">🏃</span>Exercise</TabsTrigger>
             </TabsList>
+
 
             <TabsContent value="mood">
               {showForm ? (
@@ -215,7 +323,32 @@ const Track: React.FC = () => {
                 </>
               )}
             </TabsContent>
+
+            <TabsContent value="water">
+              <WaterTracker
+                entries={waterEntries}
+                onLog={(amount) => addWaterMutation.mutate(amount)}
+                submitting={addWaterMutation.isPending}
+              />
+            </TabsContent>
+
+            <TabsContent value="meals">
+              <MealTracker
+                entries={mealEntries}
+                onLog={(entry) => addMealMutation.mutate(entry)}
+                submitting={addMealMutation.isPending}
+              />
+            </TabsContent>
+
+            <TabsContent value="exercise">
+              <ExerciseTracker
+                entries={exerciseEntries}
+                onLog={(entry) => addExerciseMutation.mutate(entry)}
+                submitting={addExerciseMutation.isPending}
+              />
+            </TabsContent>
           </Tabs>
+
         </div>
       </div>
     </div>
