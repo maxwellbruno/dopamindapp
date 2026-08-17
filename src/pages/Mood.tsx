@@ -70,6 +70,107 @@ const Track: React.FC = () => {
     enabled: !!user,
   });
 
+  const { data: waterEntries = [] } = useQuery<WaterEntry[]>({
+    queryKey: ['water_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('water_entries')
+        .select('id, date, amount_ml, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as WaterEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const { data: mealEntries = [] } = useQuery<MealEntry[]>({
+    queryKey: ['meal_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('meal_entries')
+        .select('id, date, meal_type, description, brain_food_rating, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as MealEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const { data: exerciseEntries = [] } = useQuery<ExerciseEntry[]>({
+    queryKey: ['exercise_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('exercise_entries')
+        .select('id, date, activity, duration_minutes, intensity, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as ExerciseEntry[];
+    },
+    enabled: !!user,
+  });
+
+  const addWaterMutation = useMutation({
+    mutationFn: async (amountMl: number) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('water_entries').insert([{
+        user_id: user.id,
+        amount_ml: amountMl,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['water_entries', user?.id] });
+      toast({ title: "Success", description: "Water logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log water: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+  const addMealMutation = useMutation({
+    mutationFn: async (entry: { meal_type: string; description: string; brain_food_rating: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('meal_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['meal_entries', user?.id] });
+      toast({ title: "Success", description: "Your meal has been logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log meal: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+  const addExerciseMutation = useMutation({
+    mutationFn: async (entry: { activity: string; duration_minutes: number; intensity: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('exercise_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['exercise_entries', user?.id] });
+      toast({ title: "Success", description: "Your workout has been logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log exercise: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+
+
   const addMoodMutation = useMutation({
     mutationFn: async (newEntry: {
       mood: string;
