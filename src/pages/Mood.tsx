@@ -264,10 +264,14 @@ const Track: React.FC = () => {
           <h1 className="text-2xl font-bold text-deep-blue text-center mb-6 animate-fade-in-up">Track</h1>
 
           <Tabs defaultValue="mood" className="w-full">
-            <TabsList className="grid grid-cols-2 w-full mb-6">
-              <TabsTrigger value="mood">😊 Mood</TabsTrigger>
-              <TabsTrigger value="sleep">😴 Sleep</TabsTrigger>
+            <TabsList className="grid grid-cols-5 w-full mb-6 h-auto">
+              <TabsTrigger value="mood" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">😊</span>Mood</TabsTrigger>
+              <TabsTrigger value="sleep" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">😴</span>Sleep</TabsTrigger>
+              <TabsTrigger value="water" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">💧</span>Water</TabsTrigger>
+              <TabsTrigger value="meals" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">🥗</span>Meals</TabsTrigger>
+              <TabsTrigger value="exercise" className="flex-col gap-0.5 py-2 px-1 text-[10px]"><span className="text-base">🏃</span>Exercise</TabsTrigger>
             </TabsList>
+
 
             <TabsContent value="mood">
               {showForm ? (
