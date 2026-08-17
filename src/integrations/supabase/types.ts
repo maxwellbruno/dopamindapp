@@ -115,6 +115,39 @@ export type Database = {
           },
         ]
       }
+      exercise_entries: {
+        Row: {
+          activity: string
+          created_at: string
+          date: string
+          duration_minutes: number
+          id: string
+          intensity: number
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          created_at?: string
+          date?: string
+          duration_minutes: number
+          id?: string
+          intensity?: number
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          created_at?: string
+          date?: string
+          duration_minutes?: number
+          id?: string
+          intensity?: number
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           created_at: string
@@ -135,6 +168,39 @@ export type Database = {
           duration?: number
           id?: string
           name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      meal_entries: {
+        Row: {
+          brain_food_rating: number
+          created_at: string
+          date: string
+          description: string
+          id: string
+          meal_type: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          brain_food_rating?: number
+          created_at?: string
+          date?: string
+          description: string
+          id?: string
+          meal_type: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          brain_food_rating?: number
+          created_at?: string
+          date?: string
+          description?: string
+          id?: string
+          meal_type?: string
+          note?: string | null
           user_id?: string
         }
         Relationships: []
@@ -808,6 +874,33 @@ export type Database = {
           user_id?: string
           wallet_address?: string | null
           wallet_provider?: string | null
+        }
+        Relationships: []
+      }
+      water_entries: {
+        Row: {
+          amount_ml: number
+          created_at: string
+          date: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_ml: number
+          created_at?: string
+          date?: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_ml?: number
+          created_at?: string
+          date?: string
+          id?: string
+          note?: string | null
+          user_id?: string
         }
         Relationships: []
       }
