@@ -175,6 +175,8 @@ export type Database = {
       meal_entries: {
         Row: {
           brain_food_rating: number
+          brain_foods: string[]
+          brain_herbs: string[]
           created_at: string
           date: string
           description: string
@@ -182,9 +184,12 @@ export type Database = {
           meal_type: string
           note: string | null
           user_id: string
+          wellness_teas: string[]
         }
         Insert: {
           brain_food_rating?: number
+          brain_foods?: string[]
+          brain_herbs?: string[]
           created_at?: string
           date?: string
           description: string
@@ -192,9 +197,12 @@ export type Database = {
           meal_type: string
           note?: string | null
           user_id: string
+          wellness_teas?: string[]
         }
         Update: {
           brain_food_rating?: number
+          brain_foods?: string[]
+          brain_herbs?: string[]
           created_at?: string
           date?: string
           description?: string
@@ -202,6 +210,7 @@ export type Database = {
           meal_type?: string
           note?: string | null
           user_id?: string
+          wellness_teas?: string[]
         }
         Relationships: []
       }
@@ -388,6 +397,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      supplement_entries: {
+        Row: {
+          amount: string | null
+          brand: string | null
+          created_at: string
+          frequency: string
+          id: string
+          name: string
+          note: string | null
+          taken_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: string | null
+          brand?: string | null
+          created_at?: string
+          frequency?: string
+          id?: string
+          name: string
+          note?: string | null
+          taken_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: string | null
+          brand?: string | null
+          created_at?: string
+          frequency?: string
+          id?: string
+          name?: string
+          note?: string | null
+          taken_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       therapist_applications: {
         Row: {
