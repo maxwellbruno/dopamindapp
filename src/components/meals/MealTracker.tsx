@@ -10,6 +10,9 @@ export interface MealEntry {
   description: string;
   brain_food_rating: number;
   note: string | null;
+  brain_foods?: string[] | null;
+  brain_herbs?: string[] | null;
+  wellness_teas?: string[] | null;
 }
 
 export const mealTypes = [
@@ -27,9 +30,103 @@ const brainRatings = [
   { value: 5, emoji: '🧠', label: 'Brain food' },
 ];
 
+const BRAIN_FOODS = [
+  'Fatty fish',
+  'Eggs',
+  'Avocado',
+  'Nuts and seeds',
+  'Berries',
+  'Leafy greens',
+  'Beans/lentils',
+  'Whole grains',
+];
+const OTHER_FOOD = 'Other nutrient-dense foods';
+
+const BRAIN_HERBS = ['Turmeric', 'Ginger', 'Rosemary', 'Basil', 'Cinnamon', 'Peppermint'];
+const OTHER_HERB = 'Other herbs';
+
+const WELLNESS_TEAS = ['Chamomile', 'Peppermint', 'Ginger', 'Green tea', 'Rooibos', 'Hibiscus'];
+const OTHER_TEA = 'Other herbal teas';
+
+interface ChipGroupProps {
+  label: string;
+  options: string[];
+  otherLabel: string;
+  selected: string[];
+  setSelected: (v: string[]) => void;
+  otherValue: string;
+  setOtherValue: (v: string) => void;
+  placeholder: string;
+}
+
+const ChipGroup: React.FC<ChipGroupProps> = ({
+  label,
+  options,
+  otherLabel,
+  selected,
+  setSelected,
+  otherValue,
+  setOtherValue,
+  placeholder,
+}) => {
+  const [showOther, setShowOther] = useState(false);
+  const toggle = (opt: string) =>
+    setSelected(selected.includes(opt) ? selected.filter((s) => s !== opt) : [...selected, opt]);
+
+  return (
+    <div className="mb-4">
+      <label className="block text-sm font-semibold text-deep-blue mb-2">{label}</label>
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt) => (
+          <button
+            key={opt}
+            type="button"
+            onClick={() => toggle(opt)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+              selected.includes(opt)
+                ? 'bg-mint-green/20 border-mint-green text-deep-blue'
+                : 'border-gray-200 text-deep-blue/70 hover:bg-gray-50'
+            }`}
+          >
+            {opt}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => setShowOther((s) => !s)}
+          className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+            showOther || otherValue.trim()
+              ? 'bg-mint-green/20 border-mint-green text-deep-blue'
+              : 'border-gray-200 text-deep-blue/70 hover:bg-gray-50'
+          }`}
+        >
+          {otherLabel}
+        </button>
+      </div>
+      {(showOther || otherValue.trim()) && (
+        <Input
+          value={otherValue}
+          onChange={(e) => setOtherValue(e.target.value)}
+          placeholder={placeholder}
+          className="mt-2"
+          maxLength={120}
+        />
+      )}
+    </div>
+  );
+};
+
 interface Props {
   entries: MealEntry[];
-  onLog: (entry: { meal_type: string; description: string; brain_food_rating: number; note: string | null }) => void;
+  onLog: (entry: {
+    meal_type: string;
+    description: string;
+    brain_food_rating: number;
+    note: string | null;
+    brain_foods: string[];
+    brain_herbs: string[];
+    wellness_teas: string[];
+  }) => void;
   submitting: boolean;
 }
 
@@ -40,11 +137,35 @@ const MealTracker: React.FC<Props> = ({ entries, onLog, submitting }) => {
   const [rating, setRating] = useState(3);
   const [note, setNote] = useState('');
 
+  const [foods, setFoods] = useState<string[]>([]);
+  const [otherFood, setOtherFood] = useState('');
+  const [herbs, setHerbs] = useState<string[]>([]);
+  const [otherHerb, setOtherHerb] = useState('');
+  const [teas, setTeas] = useState<string[]>([]);
+  const [otherTea, setOtherTea] = useState('');
+
+  const withOther = (list: string[], other: string) =>
+    other.trim() ? [...list, other.trim()] : list;
+
   const submit = () => {
-    onLog({ meal_type: mealType, description: description.trim(), brain_food_rating: rating, note: note || null });
+    onLog({
+      meal_type: mealType,
+      description: description.trim(),
+      brain_food_rating: rating,
+      note: note || null,
+      brain_foods: withOther(foods, otherFood),
+      brain_herbs: withOther(herbs, otherHerb),
+      wellness_teas: withOther(teas, otherTea),
+    });
     setDescription('');
     setNote('');
     setRating(3);
+    setFoods([]);
+    setOtherFood('');
+    setHerbs([]);
+    setOtherHerb('');
+    setTeas([]);
+    setOtherTea('');
     setShowForm(false);
   };
 
@@ -98,6 +219,39 @@ const MealTracker: React.FC<Props> = ({ entries, onLog, submitting }) => {
           ))}
         </div>
 
+        <ChipGroup
+          label="Brain foods"
+          options={BRAIN_FOODS}
+          otherLabel={OTHER_FOOD}
+          selected={foods}
+          setSelected={setFoods}
+          otherValue={otherFood}
+          setOtherValue={setOtherFood}
+          placeholder="Name the nutrient-dense food"
+        />
+
+        <ChipGroup
+          label="Brain herbs"
+          options={BRAIN_HERBS}
+          otherLabel={OTHER_HERB}
+          selected={herbs}
+          setSelected={setHerbs}
+          otherValue={otherHerb}
+          setOtherValue={setOtherHerb}
+          placeholder="Name the herb"
+        />
+
+        <ChipGroup
+          label="Relaxation & wellness teas"
+          options={WELLNESS_TEAS}
+          otherLabel={OTHER_TEA}
+          selected={teas}
+          setSelected={setTeas}
+          otherValue={otherTea}
+          setOtherValue={setOtherTea}
+          placeholder="Name the herbal tea"
+        />
+
         <label className="block text-sm font-semibold text-deep-blue mb-2">Note (optional)</label>
         <Textarea
           value={note}
@@ -136,6 +290,11 @@ const MealTracker: React.FC<Props> = ({ entries, onLog, submitting }) => {
           {entries.slice(0, 10).map((entry) => {
             const m = mealTypes.find((t) => t.value === entry.meal_type);
             const r = brainRatings.find((b) => b.value === entry.brain_food_rating);
+            const tags = [
+              ...(entry.brain_foods ?? []),
+              ...(entry.brain_herbs ?? []),
+              ...(entry.wellness_teas ?? []),
+            ];
             return (
               <div key={entry.id} className="border-b border-gray-100 pb-3 last:border-b-0">
                 <div className="flex items-center justify-between mb-1">
@@ -148,6 +307,15 @@ const MealTracker: React.FC<Props> = ({ entries, onLog, submitting }) => {
                   <span className="text-xs text-deep-blue">{new Date(entry.date).toLocaleDateString()}</span>
                 </div>
                 <p className="text-sm text-deep-blue truncate">{entry.description}</p>
+                {tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {tags.map((t) => (
+                      <span key={t} className="px-2 py-0.5 rounded-full bg-mint-green/15 text-[10px] text-deep-blue">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
