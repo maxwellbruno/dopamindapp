@@ -370,6 +370,11 @@ const Track: React.FC = () => {
                 onLog={(entry) => addMealMutation.mutate(entry)}
                 submitting={addMealMutation.isPending}
               />
+              <SupplementTracker
+                entries={supplementEntries}
+                onLog={(entry) => addSupplementMutation.mutate(entry)}
+                submitting={addSupplementMutation.isPending}
+              />
             </TabsContent>
 
             <TabsContent value="exercise">
