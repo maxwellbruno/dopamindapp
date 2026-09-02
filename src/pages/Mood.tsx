@@ -16,6 +16,7 @@ import TrackSleepPrompt from '@/components/sleep/TrackSleepPrompt';
 import RecentSleepList, { SleepEntry } from '@/components/sleep/RecentSleepList';
 import WaterTracker, { WaterEntry } from '@/components/water/WaterTracker';
 import MealTracker, { MealEntry } from '@/components/meals/MealTracker';
+import SupplementTracker, { SupplementEntry } from '@/components/meals/SupplementTracker';
 import ExerciseTracker, { ExerciseEntry } from '@/components/exercise/ExerciseTracker';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import MinimalSpinner from '@/components/ui/MinimalSpinner';
