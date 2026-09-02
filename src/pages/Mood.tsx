@@ -91,13 +91,28 @@ const Track: React.FC = () => {
       if (!user) return [];
       const { data, error } = await supabase
         .from('meal_entries')
-        .select('id, date, meal_type, description, brain_food_rating, note')
+        .select('id, date, meal_type, description, brain_food_rating, note, brain_foods, brain_herbs, wellness_teas')
         .order('date', { ascending: false });
       if (error) throw new Error(error.message);
       return (data ?? []) as MealEntry[];
     },
     enabled: !!user,
   });
+
+  const { data: supplementEntries = [] } = useQuery<SupplementEntry[]>({
+    queryKey: ['supplement_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('supplement_entries')
+        .select('id, name, brand, amount, frequency, taken_at')
+        .order('taken_at', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as SupplementEntry[];
+    },
+    enabled: !!user,
+  });
+
 
   const { data: exerciseEntries = [] } = useQuery<ExerciseEntry[]>({
     queryKey: ['exercise_entries', user?.id],
