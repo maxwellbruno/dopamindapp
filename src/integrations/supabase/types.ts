@@ -288,6 +288,36 @@ export type Database = {
           },
         ]
       }
+      shower_entries: {
+        Row: {
+          created_at: string
+          date: string
+          duration_minutes: number
+          id: string
+          note: string | null
+          shower_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          duration_minutes: number
+          id?: string
+          note?: string | null
+          shower_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          duration_minutes?: number
+          id?: string
+          note?: string | null
+          shower_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       sleep_entries: {
         Row: {
           created_at: string
