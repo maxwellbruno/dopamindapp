@@ -15,6 +15,7 @@ import SleepForm from '@/components/sleep/SleepForm';
 import TrackSleepPrompt from '@/components/sleep/TrackSleepPrompt';
 import RecentSleepList, { SleepEntry } from '@/components/sleep/RecentSleepList';
 import WaterTracker, { WaterEntry } from '@/components/water/WaterTracker';
+import ShowerTracker, { ShowerEntry } from '@/components/water/ShowerTracker';
 import MealTracker, { MealEntry } from '@/components/meals/MealTracker';
 import SupplementTracker, { SupplementEntry } from '@/components/meals/SupplementTracker';
 import ExerciseTracker, { ExerciseEntry } from '@/components/exercise/ExerciseTracker';
@@ -85,6 +86,20 @@ const Track: React.FC = () => {
     enabled: !!user,
   });
 
+  const { data: showerEntries = [] } = useQuery<ShowerEntry[]>({
+    queryKey: ['shower_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('shower_entries')
+        .select('id, date, shower_type, duration_minutes, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as ShowerEntry[];
+    },
+    enabled: !!user,
+  });
+
   const { data: mealEntries = [] } = useQuery<MealEntry[]>({
     queryKey: ['meal_entries', user?.id],
     queryFn: async () => {
@@ -144,6 +159,25 @@ const Track: React.FC = () => {
     },
     onError: (error: Error) => {
       toast({ title: "Error", description: `Failed to log water: ${error.message}`, variant: "destructive" });
+    },
+  });
+
+  const addShowerMutation = useMutation({
+    mutationFn: async (entry: { shower_type: 'cold' | 'hot'; duration_minutes: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('shower_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shower_entries', user?.id] });
+      toast({ title: "Success", description: "Shower logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log shower: ${error.message}`, variant: "destructive" });
     },
   });
 
@@ -361,6 +395,11 @@ const Track: React.FC = () => {
                 entries={waterEntries}
                 onLog={(amount) => addWaterMutation.mutate(amount)}
                 submitting={addWaterMutation.isPending}
+              />
+              <ShowerTracker
+                entries={showerEntries}
+                onLog={(entry) => addShowerMutation.mutate(entry)}
+                submitting={addShowerMutation.isPending}
               />
             </TabsContent>
 
