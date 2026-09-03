@@ -9,7 +9,7 @@ import ConsentSection from '@/components/terms/ConsentSection';
 
 const TermsAndConditions: React.FC = () => {
   return (
-    <div className="min-h-screen bg-light-gray dark:bg-deep-blue">
+    <div className="min-h-screen bg-light-gray dark:bg-background">
       <div className="px-4 py-8">
         <div className="max-w-4xl mx-auto">
           <TermsHeader />

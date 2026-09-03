@@ -74,7 +74,7 @@ const SessionTimer: React.FC<SessionTimerProps> = ({
             </Button>
             <Button 
               onClick={resetTimer}
-              className="bg-deep-blue text-white rounded-2xl px-8 h-12 hover:bg-deep-blue/90"
+              className="bg-navy text-white rounded-2xl px-8 h-12 hover:bg-navy/90"
             >
               Reset
             </Button>

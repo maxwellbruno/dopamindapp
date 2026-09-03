@@ -29,7 +29,7 @@ const TalkToTherapist: React.FC = () => {
           </div>
           <button
             onClick={() => navigate('/therapists')}
-            className="bg-deep-blue text-white font-semibold rounded-2xl px-5 py-2.5 hover:scale-[1.02] transition-transform"
+            className="bg-navy text-white font-semibold rounded-2xl px-5 py-2.5 hover:scale-[1.02] transition-transform"
           >
             Find a therapist
           </button>

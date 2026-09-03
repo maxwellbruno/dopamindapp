@@ -98,7 +98,7 @@ const PWAInstallPrompt: React.FC = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 backdrop-blur-sm">
-      <div className="bg-white dark:bg-deep-blue rounded-t-3xl p-6 max-w-sm w-full mx-4 mb-0 shadow-2xl animate-slide-up">
+      <div className="bg-white dark:bg-background rounded-t-3xl p-6 max-w-sm w-full mx-4 mb-0 shadow-2xl animate-slide-up">
         <button
           onClick={handleDismiss}
           className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"

@@ -95,7 +95,7 @@ const handleUpgrade = async (planId: 'pro' | 'elite', options?: { trial?: boolea
     onClick={() => handleUpgrade('pro')}
     disabled={isCreatingSubscription}
     variant="outline"
-    className="w-full !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white"
+    className="w-full !bg-white !border-deep-blue !text-deep-blue hover:!bg-navy hover:!text-white"
   >
     {isCreatingSubscription ? 'Processing...' : 'Upgrade Now'}
   </Button>
@@ -145,7 +145,7 @@ const handleUpgrade = async (planId: 'pro' | 'elite', options?: { trial?: boolea
           {tier === 'pro' && (
             <Button 
               variant="outline" 
-              className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
+              className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white focus:ring-2 focus:ring-deep-blue"
               onClick={() => setShowPricing(true)}
             >
               Upgrade to Elite
@@ -155,7 +155,7 @@ const handleUpgrade = async (planId: 'pro' | 'elite', options?: { trial?: boolea
           <Link to="/profile/subscription" className="block w-full">
             <Button 
               variant="outline" 
-              className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
+              className="w-full rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white focus:ring-2 focus:ring-deep-blue"
             >
               Manage Subscription
             </Button>

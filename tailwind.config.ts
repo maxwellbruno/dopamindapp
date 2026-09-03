@@ -55,15 +55,16 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
-				// Dopamind Color Palette
-				'deep-blue': '#1E3A8A',
-				'mint-green': '#10B981',
+				// Dopamind Color Palette (CSS-variable backed for dark mode)
+				'deep-blue': 'hsl(var(--deep-blue))',
+				'mint-green': 'hsl(var(--mint-green))',
+				'navy': '#1E3A8A',
 				'pure-white': '#FFFFFF',
-				'light-gray': '#F3F4F6',
-				'card-white': '#ffffff',
-				'text-dark': '#1E3A8A',
-				'text-light': '#6B7280',
-				'cool-gray': '#6B7280',
+				'light-gray': 'hsl(var(--light-gray))',
+				'card-white': 'hsl(var(--card-white))',
+				'text-dark': 'hsl(var(--text-dark))',
+				'text-light': 'hsl(var(--text-light))',
+				'cool-gray': 'hsl(var(--cool-gray))',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

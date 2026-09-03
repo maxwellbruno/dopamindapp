@@ -25,7 +25,7 @@ const AuthScreen: React.FC = () => {
       setIsSubmitting(false);
     }
   };
-  return <div className="min-h-screen bg-deep-blue flex items-center justify-center px-4">
+  return <div className="min-h-screen bg-navy flex items-center justify-center px-4">
       <div className="w-full max-w-md">
         {/* Header with app icon */}
         <div className="text-center mb-8">
@@ -41,7 +41,7 @@ const AuthScreen: React.FC = () => {
         </div>
 
         {/* Auth Card */}
-        <div className="bg-pure-white rounded-3xl p-8 shadow-2xl">
+        <div className="bg-card-white rounded-3xl p-8 shadow-2xl">
           <div className="text-center mb-6">
             <h2 className="text-2xl font-bold text-deep-blue mb-2">
               Welcome

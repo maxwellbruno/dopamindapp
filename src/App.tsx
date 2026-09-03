@@ -130,7 +130,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-light-gray dark:bg-deep-blue">
+    <div className="min-h-screen bg-light-gray dark:bg-background">
       <TopNav />
       <main className={isMobile ? "pb-28" : "py-8"}>
         <Routes>

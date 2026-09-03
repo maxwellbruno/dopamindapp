@@ -51,7 +51,7 @@ const MoodForm: React.FC<MoodFormProps> = ({
           onClick={onClose}
           variant="outline"
           size="sm"
-          className="dopamind-modal-close !bg-deep-blue !text-white !border-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white rounded-full w-10 h-10 flex items-center justify-center"
+          className="dopamind-modal-close !bg-navy !text-white !border-deep-blue hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white rounded-full w-10 h-10 flex items-center justify-center"
           style={{
             backgroundColor: "#1E3A8A",
             color: "#fff",

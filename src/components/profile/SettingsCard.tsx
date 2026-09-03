@@ -71,7 +71,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               onClick={handleCancelEdit}
               variant="outline"
               size="sm"
-              className="rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-deep-blue hover:!text-white focus:!bg-deep-blue focus:!text-white active:!bg-deep-blue active:!text-white focus:ring-2 focus:ring-deep-blue"
+              className="rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white focus:ring-2 focus:ring-deep-blue"
             >
               Cancel
             </Button>

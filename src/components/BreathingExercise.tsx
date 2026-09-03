@@ -15,7 +15,7 @@ interface BreathingPhase {
 }
 
 const WIM_INHALE_PHASE = { name: 'Inhale', duration: 1.5, color: 'bg-mint-green', scale: 1.3 };
-const WIM_EXHALE_PHASE = { name: 'Exhale', duration: 1.5, color: 'bg-deep-blue', scale: 1 };
+const WIM_EXHALE_PHASE = { name: 'Exhale', duration: 1.5, color: 'bg-navy', scale: 1 };
 const WIM_HOLD_PHASE = { name: 'Hold after exhale', duration: 30, color: 'bg-warm-orange', scale: 1 };
 const WIM_RECOVERY_PHASE = { name: 'Recovery Breath', duration: 15, color: 'bg-mint-green', scale: 1.3 };
 
@@ -39,34 +39,34 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
         return [ // 4-7-8 Breathing
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Hold', duration: 7, color: 'bg-cool-gray', scale: 1.3 },
-          { name: 'Breathe Out', duration: 8, color: 'bg-deep-blue', scale: 1 }
+          { name: 'Breathe Out', duration: 8, color: 'bg-navy', scale: 1 }
         ];
       case 'box':
         return [
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
-          { name: 'Breathe Out', duration: 4, color: 'bg-deep-blue', scale: 1 },
+          { name: 'Breathe Out', duration: 4, color: 'bg-navy', scale: 1 },
           { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1 }
         ];
       case 'coherent':
         return [
           { name: 'Breathe In', duration: 5.5, color: 'bg-mint-green', scale: 1.3 },
-          { name: 'Breathe Out', duration: 5.5, color: 'bg-deep-blue', scale: 1 }
+          { name: 'Breathe Out', duration: 5.5, color: 'bg-navy', scale: 1 }
         ];
       case 'alternate':
         return [
           { name: 'Inhale (Left)', duration: 4, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
-          { name: 'Exhale (Right)', duration: 4, color: 'bg-deep-blue', scale: 1 },
+          { name: 'Exhale (Right)', duration: 4, color: 'bg-navy', scale: 1 },
           { name: 'Inhale (Right)', duration: 4, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
-          { name: 'Exhale (Left)', duration: 4, color: 'bg-deep-blue', scale: 1 }
+          { name: 'Exhale (Left)', duration: 4, color: 'bg-navy', scale: 1 }
         ];
       default:
         return [
           { name: 'Breathe In', duration: 4, color: 'bg-mint-green', scale: 1.3 },
           { name: 'Hold', duration: 4, color: 'bg-cool-gray', scale: 1.3 },
-          { name: 'Breathe Out', duration: 4, color: 'bg-deep-blue', scale: 1 }
+          { name: 'Breathe Out', duration: 4, color: 'bg-navy', scale: 1 }
         ];
     }
   };
@@ -278,9 +278,9 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ exerciseType, onS
         <Button
           onClick={onStop}
           variant="outline"
-          className="rounded-2xl border-deep-blue text-deep-blue bg-white hover:bg-deep-blue hover:text-white px-6 py-2 
-            focus:bg-deep-blue focus:text-white
-            active:bg-deep-blue active:text-white
+          className="rounded-2xl border-deep-blue text-deep-blue bg-white hover:bg-navy hover:text-white px-6 py-2 
+            focus:bg-navy focus:text-white
+            active:bg-navy active:text-white
             border-deep-blue text-deep-blue
             outline-none ring-0
             "

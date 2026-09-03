@@ -192,7 +192,7 @@ const BecomeTherapistInner: React.FC = () => {
               <button
                 onClick={startKyc}
                 disabled={kycLoading}
-                className="w-full bg-deep-blue text-white font-semibold rounded-2xl py-3 mb-3 disabled:opacity-60"
+                className="w-full bg-navy text-white font-semibold rounded-2xl py-3 mb-3 disabled:opacity-60"
               >
                 {kycLoading ? 'Opening Persona...' : 'Start identity verification'}
               </button>
@@ -370,7 +370,7 @@ const BecomeTherapistInner: React.FC = () => {
                     const active = form.specialties.includes(s);
                     return (
                       <button type="button" key={s} onClick={() => toggleArray('specialties', s)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${active ? 'bg-deep-blue text-white' : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'}`}>
+                        className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${active ? 'bg-navy text-white' : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'}`}>
                         {s}
                       </button>
                     );

@@ -216,7 +216,7 @@ const SessionRoom: React.FC = () => {
                 <button
                   onClick={joinCall}
                   disabled={joining}
-                  className="inline-flex items-center gap-2 bg-deep-blue text-white text-sm font-semibold rounded-2xl px-4 py-2 disabled:opacity-60"
+                  className="inline-flex items-center gap-2 bg-navy text-white text-sm font-semibold rounded-2xl px-4 py-2 disabled:opacity-60"
                 >
                   {joining ? <Loader2 className="w-4 h-4 animate-spin" /> : <Video className="w-4 h-4" />}
                   Join call
