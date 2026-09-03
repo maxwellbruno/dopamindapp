@@ -162,6 +162,25 @@ const Track: React.FC = () => {
     },
   });
 
+  const addShowerMutation = useMutation({
+    mutationFn: async (entry: { shower_type: 'cold' | 'hot'; duration_minutes: number; note: string | null }) => {
+      if (!user) throw new Error("User not logged in");
+      const { error } = await supabase.from('shower_entries').insert([{
+        ...entry,
+        user_id: user.id,
+        date: new Date().toISOString(),
+      }]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['shower_entries', user?.id] });
+      toast({ title: "Success", description: "Shower logged." });
+    },
+    onError: (error: Error) => {
+      toast({ title: "Error", description: `Failed to log shower: ${error.message}`, variant: "destructive" });
+    },
+  });
+
   const addMealMutation = useMutation({
     mutationFn: async (entry: { meal_type: string; description: string; brain_food_rating: number; note: string | null; brain_foods: string[]; brain_herbs: string[]; wellness_teas: string[] }) => {
       if (!user) throw new Error("User not logged in");
