@@ -19,7 +19,7 @@ const LoadingScreen: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-deep-blue flex items-center justify-center relative overflow-hidden">
+    <div className="min-h-screen bg-navy flex items-center justify-center relative overflow-hidden">
       {/* Floating Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-mint-green/10 rounded-full blur-3xl animate-float"></div>

@@ -50,7 +50,7 @@ const BottomNav: React.FC = () => {
       isScrolling ? 'transform translate-y-full' : 'transform translate-y-0'
     }`}>
       <div className="mx-4 mb-4">
-        <div className="bg-deep-blue rounded-3xl px-4 py-3 shadow-lg">
+        <div className="bg-navy rounded-3xl px-4 py-3 shadow-lg">
           <div className="flex justify-around items-center max-w-md mx-auto">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;

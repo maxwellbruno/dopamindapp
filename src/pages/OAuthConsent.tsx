@@ -93,7 +93,7 @@ export default function OAuthConsent() {
   }
 
   const wrap =
-    "min-h-screen flex items-center justify-center p-6 bg-light-gray dark:bg-deep-blue text-text-dark dark:text-white";
+    "min-h-screen flex items-center justify-center p-6 bg-light-gray dark:bg-background text-text-dark dark:text-white";
 
   if (error) {
     return (

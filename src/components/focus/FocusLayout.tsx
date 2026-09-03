@@ -155,7 +155,7 @@ const FocusLayout: React.FC<FocusLayoutProps> = ({
       {/* Modal/Overlay for Breathing Exercise */}
       {isBreathing && selectedBreathingExercise && (
         <div className="fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-40">
-          <div className="bg-white dark:bg-deep-blue max-w-sm w-full p-6 rounded-2xl shadow-2xl relative animate-fade-in-up">
+          <div className="bg-white dark:bg-background max-w-sm w-full p-6 rounded-2xl shadow-2xl relative animate-fade-in-up">
             <BreathingExercise
               exerciseType={selectedBreathingExercise}
               onStop={stopBreathingExercise}

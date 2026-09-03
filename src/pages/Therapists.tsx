@@ -100,7 +100,7 @@ const TherapistsInner: React.FC = () => {
                     onClick={() => setSelectedSpecialty(specialty)}
                     className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                       selectedSpecialty === specialty
-                        ? 'bg-deep-blue text-white'
+                        ? 'bg-navy text-white'
                         : 'bg-white text-text-dark border border-gray-200 hover:border-mint-green'
                     }`}
                   >

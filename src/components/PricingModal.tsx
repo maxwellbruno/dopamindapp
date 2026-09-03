@@ -62,7 +62,7 @@ const PricingModal: React.FC<PricingModalProps> = ({
       <div className="absolute inset-0 bg-black/50" onClick={onClose}></div>
       
       <div className="relative bg-light-gray rounded-3xl w-full max-w-md mx-4 max-h-[80vh] overflow-y-auto">
-        <div className="sticky top-0 bg-deep-blue rounded-t-3xl px-6 py-4 z-10">
+        <div className="sticky top-0 bg-navy rounded-t-3xl px-6 py-4 z-10">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold text-pure-white">Choose Your Plan</h2>
             <button 

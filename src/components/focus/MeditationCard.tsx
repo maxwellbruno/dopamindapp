@@ -93,7 +93,7 @@ const MeditationCard: React.FC<MeditationCardProps> = ({ selectedSound, setSelec
               role="button"
               tabIndex={0}
             >
-              <div className="bg-deep-blue p-2 rounded-full">
+              <div className="bg-navy p-2 rounded-full">
                 <ArrowDown className="text-white" size={20} />
               </div>
               <div>

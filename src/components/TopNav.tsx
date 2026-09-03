@@ -14,7 +14,7 @@ const TopNav: React.FC = () => {
   ];
 
   return (
-    <header className="hidden md:flex bg-white dark:bg-deep-blue shadow-sm sticky top-0 z-40">
+    <header className="hidden md:flex bg-white dark:bg-background shadow-sm sticky top-0 z-40">
       <div className="container mx-auto px-6 py-3">
         <div className="flex justify-between items-center">
           <Link to="/home" className="flex items-center space-x-2">

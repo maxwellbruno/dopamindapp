@@ -49,14 +49,14 @@
   }
 
   .dark {
-    --background: 225 63% 33%;
-    --foreground: 0 0% 98%;
+    --background: 222 47% 9%;
+    --foreground: 214 32% 91%;
 
-    --card: 225 63% 33%;
-    --card-foreground: 0 0% 98%;
+    --card: 222 40% 13%;
+    --card-foreground: 214 32% 91%;
 
-    --popover: 225 63% 33%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 222 40% 13%;
+    --popover-foreground: 214 32% 91%;
 
     --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
@@ -64,18 +64,28 @@
     --secondary: 160 84% 39%; /* Mint Green */
     --secondary-foreground: 0 0% 100%; /* White */
 
-    --muted: 215 20% 34%;
-    --muted-foreground: 215 25% 65%;
+    --muted: 220 25% 20%;
+    --muted-foreground: 215 20% 70%;
 
-    --accent: 225 63% 33%;
-    --accent-foreground: 0 0% 98%;
+    --accent: 220 25% 20%;
+    --accent-foreground: 214 32% 91%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 215 20% 34%;
-    --input: 215 20% 34%;
+    --border: 220 25% 22%;
+    --input: 220 25% 22%;
     --ring: 160 84% 39%;
+
+    /* Dopamind Color Palette — dark overrides */
+    --deep-blue: 217 45% 85%;
+    --mint-green: 160 84% 39%;
+    --pure-white: 222 40% 13%;
+    --light-gray: 222 47% 9%;
+    --card-white: 222 40% 13%;
+    --text-dark: 217 45% 85%;
+    --text-light: 215 20% 70%;
+    --cool-gray: 215 20% 70%;
   }
 }
 
@@ -115,8 +125,8 @@
     transition: background-color 0.2s, color 0.2s, border-color 0.2s;
   }
 
-  .dark button:not(.bg-mint-green):not(.bg-deep-blue):not(.dopamind-modal-close),
-  .dark .button:not(.bg-mint-green):not(.bg-deep-blue):not(.dopamind-modal-close) {
+  .dark button:not(.bg-mint-green):not(.bg-navy):not(.dopamind-modal-close),
+  .dark .button:not(.bg-mint-green):not(.bg-navy):not(.dopamind-modal-close) {
     color: hsl(var(--foreground)) !important;
     border-color: hsl(var(--foreground)) !important;
   }
@@ -128,15 +138,15 @@
     border-color: #10B981 !important;
   }
 
-  button.bg-deep-blue,
-  .button.bg-deep-blue {
+  button.bg-navy,
+  .button.bg-navy {
     background-color: #1E3A8A !important;
     color: #fff !important;
     border-color: #1E3A8A !important;
   }
 
-  button.bg-deep-blue:hover,
-  .button.bg-deep-blue:hover {
+  button.bg-navy:hover,
+  .button.bg-navy:hover {
     background-color: #1c347a !important;
     border-color: #1c347a !important;
     color: #fff !important;
@@ -426,4 +436,35 @@
 .show-nav {
   transform: translateY(0);
   transition: transform 0.3s ease-in-out;
+}
+
+/* Dark mode overrides for custom components */
+.dark .dopamind-card {
+  background: hsl(var(--card-white));
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark .dopamind-card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+}
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="time"],
+.dark textarea,
+.dark select {
+  background-color: hsl(220 25% 16%);
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: hsl(var(--light-gray));
 }
