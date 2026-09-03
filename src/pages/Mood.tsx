@@ -86,6 +86,20 @@ const Track: React.FC = () => {
     enabled: !!user,
   });
 
+  const { data: showerEntries = [] } = useQuery<ShowerEntry[]>({
+    queryKey: ['shower_entries', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('shower_entries')
+        .select('id, date, shower_type, duration_minutes, note')
+        .order('date', { ascending: false });
+      if (error) throw new Error(error.message);
+      return (data ?? []) as ShowerEntry[];
+    },
+    enabled: !!user,
+  });
+
   const { data: mealEntries = [] } = useQuery<MealEntry[]>({
     queryKey: ['meal_entries', user?.id],
     queryFn: async () => {
