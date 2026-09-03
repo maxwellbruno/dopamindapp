@@ -396,6 +396,11 @@ const Track: React.FC = () => {
                 onLog={(amount) => addWaterMutation.mutate(amount)}
                 submitting={addWaterMutation.isPending}
               />
+              <ShowerTracker
+                entries={showerEntries}
+                onLog={(entry) => addShowerMutation.mutate(entry)}
+                submitting={addShowerMutation.isPending}
+              />
             </TabsContent>
 
             <TabsContent value="meals">
