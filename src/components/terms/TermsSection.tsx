@@ -36,7 +36,7 @@ const TermsSection: React.FC = () => {
 
       <div className="space-y-4">
         <h3 className="text-lg font-semibold text-deep-blue">4. Important Medical Disclaimer</h3>
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+        <div className="bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-6">
           <p className="text-text-dark leading-relaxed font-semibold mb-3">
             DOPAMIND IS NOT MEDICATION, MEDICAL TREATMENT, OR THERAPY
           </p>
