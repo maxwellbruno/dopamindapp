@@ -1,5 +1,5 @@
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -16,28 +16,20 @@ import { useSubscription } from '@/hooks/useSubscription';
 import { useTherapistProfile } from '@/hooks/useTherapistProfile';
 import { useIsAdmin } from '@/hooks/useIsAdmin';
 
+const DEFAULT_SETTINGS: UserSettings = {
+  dailyFocusGoal: 120,
+  reminderTime: '09:00',
+  theme: 'light',
+  customAffirmation: 'I am focused and productive'
+};
+
 const Profile: React.FC = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { tier } = useSubscription();
   const { therapist } = useTherapistProfile();
   const { isAdmin } = useIsAdmin();
-  const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', {
-    dailyFocusGoal: 120,
-    reminderTime: '09:00',
-    theme: 'light',
-    customAffirmation: 'I am focused and productive'
-  });
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    const canUseDarkMode = tier === 'pro' || tier === 'elite';
-    if (settings.theme === 'dark' && canUseDarkMode) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [settings.theme, tier]);
+  const [settings, setSettings] = useLocalStorage<UserSettings>('dopamind_settings', DEFAULT_SETTINGS);
 
   const { data: profileData } = useQuery({
     queryKey: ['profileStats', user?.id],
