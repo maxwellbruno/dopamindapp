@@ -18,9 +18,10 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
   const [isEditing, setIsEditing] = useState(false);
   const [tempSettings, setTempSettings] = useState(settings);
 
-  useEffect(() => {
+  const handleStartEditing = () => {
     setTempSettings(settings);
-  }, [settings]);
+    setIsEditing(true);
+  };
 
   const handleSaveSettings = () => {
     setSettings(tempSettings);
@@ -52,7 +53,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
         <h3 className="text-lg font-semibold text-text-dark">Settings</h3>
         {!isEditing ? (
           <Button 
-            onClick={() => setIsEditing(true)}
+            onClick={handleStartEditing}
             className="bg-mint-green text-white rounded-xl hover:bg-mint-green/90"
             size="sm"
           >
