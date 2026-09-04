@@ -39,7 +39,7 @@ const AISoundscapeCard: React.FC<AISoundscapeCardProps> = ({ isElite, isPremium 
 
   return (
     <>
-      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200 hover:border-purple-300 transition-all duration-200 hover:shadow-lg">
+      <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950 border-purple-200 dark:border-purple-800 hover:border-purple-300 dark:hover:border-purple-700 transition-all duration-200 hover:shadow-lg">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
