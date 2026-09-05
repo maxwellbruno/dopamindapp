@@ -52,11 +52,11 @@ const StatsCard: React.FC<StatsCardProps> = ({ stats, sessions, dailyFocusGoal }
         </div>
       </div>
 
-      <div className="bg-gray-100 rounded-2xl p-4">
+      <div className="bg-gray-100 dark:bg-muted rounded-2xl p-4">
         <div className="text-sm text-text-light mb-2">
           Daily Goal Progress: {dailyFocusGoal > 0 ? Math.min(100, Math.round((stats.totalFocusMinutes / dailyFocusGoal) * 100)) : 0}%
         </div>
-        <div className="w-full bg-gray-200 rounded-full h-3">
+        <div className="w-full bg-gray-200 dark:bg-muted-foreground/20 rounded-full h-3">
           <div 
             className="bg-gradient-to-r from-mint-green to-mint-green h-3 rounded-full transition-all duration-300"
             style={{ 

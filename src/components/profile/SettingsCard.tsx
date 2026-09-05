@@ -72,7 +72,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               onClick={handleCancelEdit}
               variant="outline"
               size="sm"
-              className="rounded-xl !bg-white !border-deep-blue !text-deep-blue hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white focus:ring-2 focus:ring-deep-blue"
+              className="rounded-xl !bg-white dark:!bg-muted !border-deep-blue dark:!border-border !text-deep-blue dark:!text-foreground hover:!bg-navy hover:!text-white focus:!bg-navy focus:!text-white active:!bg-navy active:!text-white focus:ring-2 focus:ring-deep-blue"
             >
               Cancel
             </Button>
@@ -97,7 +97,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
             />
           ) : (
-            <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
+            <div className="mt-1 text-deep-blue bg-gray-100 dark:bg-muted rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
           )}
         </div>
 
@@ -115,7 +115,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
             />
           ) : (
-            <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3">{settings.reminderTime}</div>
+            <div className="mt-1 text-deep-blue bg-gray-100 dark:bg-muted rounded-xl p-3">{settings.reminderTime}</div>
           )}
         </div>
 
@@ -133,7 +133,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
             />
           ) : (
-            <div className="mt-1 text-deep-blue bg-white rounded-xl p-3 italic border border-gray-200">"{settings.customAffirmation}"</div>
+            <div className="mt-1 text-deep-blue bg-white dark:bg-muted rounded-xl p-3 italic border border-gray-200 dark:border-border">"{settings.customAffirmation}"</div>
           )}
         </div>
 
@@ -175,7 +175,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               )}
             </Tooltip>
           ) : (
-            <div className="mt-1 text-deep-blue bg-gray-100 rounded-xl p-3 capitalize">{settings.theme}</div>
+            <div className="mt-1 text-deep-blue bg-gray-100 dark:bg-muted rounded-xl p-3 capitalize">{settings.theme}</div>
           )}
         </div>
 

@@ -63,7 +63,7 @@ const AISoundscape: React.FC = () => {
 
         <div className="grid gap-6 md:gap-8">
           {/* Generation Card */}
-          <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+          <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-slate-900 dark:to-indigo-950 border-purple-200 dark:border-purple-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-3 text-deep-blue">
                 <span className="text-2xl">🎵</span>
@@ -101,9 +101,9 @@ const AISoundscape: React.FC = () => {
                 <CardTitle className="text-deep-blue">Your Generated Soundscape</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="bg-purple-50 p-4 rounded-xl">
+                <div className="bg-purple-50 dark:bg-purple-950/40 p-4 rounded-xl">
                   <p className="text-sm text-deep-blue mb-3">Generated audio:</p>
-                  <div className="bg-white p-3 rounded-lg border border-purple-200">
+                  <div className="bg-white dark:bg-muted p-3 rounded-lg border border-purple-200 dark:border-purple-800">
                     <p className="text-sm text-text-light">{generatedAudio}</p>
                   </div>
                 </div>
