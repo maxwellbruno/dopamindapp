@@ -283,7 +283,7 @@ const BecomeTherapistInner: React.FC = () => {
             {/* Profile picture */}
             <section className="dopamind-card p-5 space-y-4">
               <h2 className="text-sm font-bold text-text-dark uppercase tracking-wide">Professional profile picture</h2>
-              <p className="text-xs text-text-light">
+              <p className="text-xs text-text-light dark:text-muted-foreground">
                 Upload a clear, professional headshot (JPG or PNG, max 10MB). This will appear on your public profile.
               </p>
               <FileUpload
@@ -300,7 +300,7 @@ const BecomeTherapistInner: React.FC = () => {
             {/* Legal documents */}
             <section className="dopamind-card p-5 space-y-4">
               <h2 className="text-sm font-bold text-text-dark uppercase tracking-wide">Legal documents</h2>
-              <p className="text-xs text-text-light">
+              <p className="text-xs text-text-light dark:text-muted-foreground">
                 Documents are stored privately and reviewed only by our verification team. Accepted: PDF, JPG, PNG (max 10MB each).
               </p>
               <FileUpload
@@ -453,7 +453,9 @@ const FileUpload: React.FC<{
     <label
       htmlFor={id}
       className={`flex items-center justify-between gap-3 p-3 border-2 border-dashed rounded-2xl cursor-pointer transition-colors ${
-        file ? 'border-mint-green bg-mint-green/5' : 'border-gray-200 hover:border-mint-green bg-white'
+        file
+          ? 'border-mint-green bg-mint-green/5'
+          : 'border-gray-200 dark:border-border hover:border-mint-green bg-white dark:bg-muted'
       }`}
     >
       <div className="flex items-center gap-3 min-w-0">
@@ -461,10 +463,10 @@ const FileUpload: React.FC<{
           {icon}
         </div>
         <div className="min-w-0">
-          <p className="text-sm font-medium text-text-dark truncate">
+          <p className="text-sm font-medium text-text-dark dark:text-foreground truncate">
             {label} {required && <span className="text-red-500">*</span>}
           </p>
-          <p className="text-xs text-text-light truncate">
+          <p className="text-xs text-text-light dark:text-muted-foreground truncate">
             {file ? file.name : 'Tap to choose a file'}
           </p>
         </div>

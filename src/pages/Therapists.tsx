@@ -233,9 +233,9 @@ const TherapistsInner: React.FC = () => {
           </div>
 
           {/* Disclaimer */}
-          <div className="mt-8 p-4 bg-white rounded-2xl border border-gray-200 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-            <p className="text-xs text-text-light leading-relaxed">
-              <strong className="text-text-dark">Important:</strong> Dopamind is a wellness tool and does not provide therapy or medical treatment. Therapists listed here are independent professionals. Dopamind charges a 15% platform fee on each session. Always consult a qualified healthcare provider for medical or mental health concerns.
+          <div className="mt-8 p-4 bg-white dark:bg-card rounded-2xl border border-gray-200 dark:border-border animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+            <p className="text-xs text-text-light dark:text-muted-foreground leading-relaxed">
+              <strong className="text-text-dark dark:text-foreground">Important:</strong> Dopamind is a wellness tool and does not provide therapy or medical treatment. Therapists listed here are independent professionals. Dopamind charges a 15% platform fee on each session. Always consult a qualified healthcare provider for medical or mental health concerns.
             </p>
           </div>
         </div>
