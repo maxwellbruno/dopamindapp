@@ -94,7 +94,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               }))}
               min="30"
               max="480"
-              className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
+              className="mt-1 rounded-xl border-gray-300 dark:border-border focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue dark:text-foreground bg-white dark:bg-muted placeholder:text-cool-gray dark:placeholder:text-muted-foreground"
             />
           ) : (
             <div className="mt-1 text-deep-blue bg-gray-100 dark:bg-muted rounded-xl p-3">{settings.dailyFocusGoal} minutes</div>
@@ -133,7 +133,7 @@ const SettingsCard: React.FC<SettingsCardProps> = ({ settings, setSettings, subs
               className="mt-1 rounded-xl border-gray-300 focus:border-deep-blue focus:ring-2 focus:ring-deep-blue/20 focus:outline-none text-deep-blue bg-white"
             />
           ) : (
-            <div className="mt-1 text-deep-blue bg-white dark:bg-muted rounded-xl p-3 italic border border-gray-200 dark:border-border">"{settings.customAffirmation}"</div>
+            <div className="mt-1 text-deep-blue dark:text-foreground bg-white dark:bg-muted rounded-xl p-3 italic border border-gray-200 dark:border-border">"{settings.customAffirmation}"</div>
           )}
         </div>
 
