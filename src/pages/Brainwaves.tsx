@@ -64,7 +64,7 @@ const Brainwaves: React.FC = () => {
           {BRAINWAVE_DATA.map((wave) => (
             <div
               key={wave.id}
-              className="rounded-xl md:rounded-2xl bg-white border border-mint-green/30 p-4 md:p-6 flex flex-col items-center gap-2 shadow-md hover:scale-[1.02] md:hover:scale-[1.03] transition-transform cursor-pointer"
+              className="rounded-xl md:rounded-2xl bg-white dark:bg-muted border border-mint-green/30 p-4 md:p-6 flex flex-col items-center gap-2 shadow-md hover:scale-[1.02] md:hover:scale-[1.03] transition-transform cursor-pointer"
               onClick={() => navigate(`/brainwave/${wave.id}`)}
               role="button"
               tabIndex={0}
