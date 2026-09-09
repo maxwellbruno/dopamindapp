@@ -133,21 +133,21 @@ const AISoundscape: React.FC = () => {
                 instruments, or feelings you want, and our AI will generate unique soundscapes tailored to your needs.
               </p>
               <div className="grid sm:grid-cols-2 gap-3 md:gap-4 mt-4">
-                <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/40 rounded-lg">
                   <span className="text-lg">🎧</span>
-                  <span className="text-sm text-deep-blue">High-quality audio generation</span>
+                  <span className="text-sm text-deep-blue dark:text-purple-100">High-quality audio generation</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/40 rounded-lg">
                   <span className="text-lg">⚡</span>
-                  <span className="text-sm text-deep-blue">Fast processing</span>
+                  <span className="text-sm text-deep-blue dark:text-purple-100">Fast processing</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/40 rounded-lg">
                   <span className="text-lg">🎯</span>
-                  <span className="text-sm text-deep-blue">Personalized results</span>
+                  <span className="text-sm text-deep-blue dark:text-purple-100">Personalized results</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
+                <div className="flex items-center gap-3 p-3 bg-purple-50 dark:bg-purple-950/40 rounded-lg">
                   <span className="text-lg">💾</span>
-                  <span className="text-sm text-deep-blue">Save & organize</span>
+                  <span className="text-sm text-deep-blue dark:text-purple-100">Save & organize</span>
                 </div>
               </div>
             </CardContent>
