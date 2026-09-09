@@ -40,6 +40,8 @@ import SessionRoom from './pages/SessionRoom';
 import MySessions from './pages/MySessions';
 import TherapistDashboard from './pages/TherapistDashboard';
 import AdminTherapistApplications from './pages/AdminTherapistApplications';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminTherapists from './pages/AdminTherapists';
 import { PrivyProvider } from '@privy-io/react-auth';
 import NameSetupDialog from './components/NameSetupDialog';
 import OAuthConsent from './pages/OAuthConsent';
@@ -159,6 +161,8 @@ const AppContent: React.FC = () => {
           <Route path="/sessions" element={<MySessions />} />
           <Route path="/sessions/:bookingId" element={<SessionRoom />} />
           <Route path="/therapist-dashboard" element={<TherapistDashboard />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/therapists" element={<AdminTherapists />} />
           <Route path="/admin/therapist-applications" element={<AdminTherapistApplications />} />
           <Route path="/terms" element={<TermsAndConditions />} />
           <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />

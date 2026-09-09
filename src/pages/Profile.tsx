@@ -159,7 +159,7 @@ const Profile: React.FC = () => {
 
                 {isAdmin && (
                   <button
-                    onClick={() => navigate('/admin/therapist-applications')}
+                    onClick={() => navigate('/admin')}
                     className="dopamind-card p-4 flex items-center justify-between hover:bg-soft-gray transition-colors animate-fade-in-up"
                     style={{ animationDelay: '0.5s' }}
                   >
@@ -168,8 +168,8 @@ const Profile: React.FC = () => {
                         <ShieldCheck className="h-5 w-5 text-deep-blue" />
                       </div>
                       <div className="text-left">
-                        <p className="font-semibold text-text-dark">Therapist applications</p>
-                        <p className="text-sm text-text-secondary">Review KYC & approve therapists</p>
+                        <p className="font-semibold text-text-dark">Admin dashboard</p>
+                        <p className="text-sm text-text-secondary">Applications, therapists & reports</p>
                       </div>
                     </div>
                     <ChevronRight className="h-5 w-5 text-text-secondary" />
