@@ -17,6 +17,7 @@ import DailyInsightCard from '../components/home/DailyInsightCard';
 import QuickActions from '../components/home/QuickActions';
 import PremiumFeatures from '../components/home/PremiumFeatures';
 import TalkToTherapist from '../components/home/TalkToTherapist';
+import WellnessStoreBanner from '../components/home/WellnessStoreBanner';
 
 
 interface Session {
@@ -188,6 +189,11 @@ const Home: React.FC = () => {
             averageMoodLabel={getMoodLabel(averageMood)}
             moodsCount={moods.length}
           />
+
+          {/* Wellness Store — strategic CTA near top for visibility */}
+          <div className="mt-6 mb-2">
+            <WellnessStoreBanner />
+          </div>
 
           <div className="md:grid md:grid-cols-2 md:gap-6">
             <div>

@@ -35,6 +35,7 @@ import TherapistDetail from './pages/TherapistDetail';
 import BecomeTherapist from './pages/BecomeTherapist';
 import Wallet from './pages/Wallet';
 import Rewards from './pages/Rewards';
+import WellnessStore from './pages/WellnessStore';
 import BookSession from './pages/BookSession';
 import SessionRoom from './pages/SessionRoom';
 import MySessions from './pages/MySessions';
@@ -147,6 +148,7 @@ const AppContent: React.FC = () => {
           <Route path="/profile/subscription" element={<SubscriptionManager />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/rewards" element={<Rewards />} />
+          <Route path="/store" element={<WellnessStore />} />
           <Route path="/sound/:id" element={<SoundGenre />} />
           <Route path="/meditation/brainwaves" element={<Brainwaves />} />
           <Route path="/brainwave/:type" element={<BrainwaveDetail />} />
