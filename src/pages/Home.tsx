@@ -190,11 +190,6 @@ const Home: React.FC = () => {
             moodsCount={moods.length}
           />
 
-          {/* Wellness Store — strategic CTA near top for visibility */}
-          <div className="mt-6 mb-2">
-            <WellnessStoreBanner />
-          </div>
-
           <div className="md:grid md:grid-cols-2 md:gap-6">
             <div>
               <StreakCard streak={currentStreak} />
@@ -209,6 +204,11 @@ const Home: React.FC = () => {
 
           <div className="mt-8">
             <TalkToTherapist />
+          </div>
+
+          {/* Wellness Store — placed below Talk to a Therapist */}
+          <div className="mt-8 mb-2">
+            <WellnessStoreBanner />
           </div>
 
           {!isPremium ? (
