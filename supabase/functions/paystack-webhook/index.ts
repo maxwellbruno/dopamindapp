@@ -155,6 +155,18 @@ async function handlePaymentFailed(supabaseClient: any, data: any) {
 }
 
 async function handleChargeSuccess(supabaseClient: any, data: any) {
+  if (data?.metadata?.type === 'store_order') {
+    const orderId = data.metadata.order_id;
+    const { data: order } = await supabaseClient.from('store_orders').select('total_kes, status').eq('id', orderId).maybeSingle();
+    if (!order) { console.error('Store order not found', orderId); return; }
+    if (data.currency !== 'KES' || Number(data.amount) < order.total_kes * 100) {
+      console.error('Store payment amount mismatch', orderId, data.amount);
+      return;
+    }
+    const { error } = await supabaseClient.rpc('mark_store_order_paid', { _order_id: orderId, _tx_hash: null });
+    if (error) console.error('Failed to mark store order paid', error);
+    return;
+  }
   console.log('Processing charge success for KES subscription');
   
   const { metadata, customer, amount, currency, paid_at } = data;

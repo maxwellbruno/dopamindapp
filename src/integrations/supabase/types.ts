@@ -348,6 +348,180 @@ export type Database = {
         }
         Relationships: []
       }
+      store_order_items: {
+        Row: {
+          created_at: string
+          emoji: string | null
+          id: string
+          name: string
+          order_id: string
+          product_id: string | null
+          quantity: number
+          unit_price_kes: number
+        }
+        Insert: {
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          name: string
+          order_id: string
+          product_id?: string | null
+          quantity: number
+          unit_price_kes: number
+        }
+        Update: {
+          created_at?: string
+          emoji?: string | null
+          id?: string
+          name?: string
+          order_id?: string
+          product_id?: string | null
+          quantity?: number
+          unit_price_kes?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "store_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "store_order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "store_products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_orders: {
+        Row: {
+          address: string
+          city: string
+          created_at: string
+          delivery_notes: string | null
+          full_name: string
+          id: string
+          paid_at: string | null
+          payment_method: string
+          paystack_reference: string | null
+          phone: string
+          status: string
+          total_kes: number
+          total_usd_cents: number | null
+          tracking_note: string | null
+          tx_hash: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address: string
+          city: string
+          created_at?: string
+          delivery_notes?: string | null
+          full_name: string
+          id?: string
+          paid_at?: string | null
+          payment_method: string
+          paystack_reference?: string | null
+          phone: string
+          status?: string
+          total_kes: number
+          total_usd_cents?: number | null
+          tracking_note?: string | null
+          tx_hash?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string
+          city?: string
+          created_at?: string
+          delivery_notes?: string | null
+          full_name?: string
+          id?: string
+          paid_at?: string | null
+          payment_method?: string
+          paystack_reference?: string | null
+          phone?: string
+          status?: string
+          total_kes?: number
+          total_usd_cents?: number | null
+          tracking_note?: string | null
+          tx_hash?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      store_products: {
+        Row: {
+          benefit: string | null
+          category: string
+          created_at: string
+          description: string
+          emoji: string
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          price_kes: number
+          sort_order: number
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          benefit?: string | null
+          category: string
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          price_kes: number
+          sort_order?: number
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          benefit?: string | null
+          category?: string
+          created_at?: string
+          description?: string
+          emoji?: string
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          price_kes?: number
+          sort_order?: number
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      store_settings: {
+        Row: {
+          id: number
+          kes_per_usd: number
+          updated_at: string
+        }
+        Insert: {
+          id?: number
+          kes_per_usd?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: number
+          kes_per_usd?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       subscription_plans: {
         Row: {
           created_at: string
@@ -1012,6 +1186,10 @@ export type Database = {
         Returns: boolean
       }
       increment_mood_entries_count: { Args: never; Returns: undefined }
+      mark_store_order_paid: {
+        Args: { _order_id: string; _tx_hash?: string }
+        Returns: boolean
+      }
       recompute_therapist_score: {
         Args: { _therapist_id: string }
         Returns: undefined
